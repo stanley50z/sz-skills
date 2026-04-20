@@ -5,125 +5,150 @@ description: Helps users discover and install agent skills when they ask questio
 
 # Find Skills
 
-Help users discover and install skills from the open agent skills ecosystem.
+This skill helps you discover and install skills from the open agent skills ecosystem.
 
-## Primary Source
+## When to Use This Skill
 
-Start with the curated catalog at `https://github.com/VoltAgent/awesome-agent-skills`.
-Use it as the default discovery source because it aggregates official and community
-skills across Claude Code, Codex, OpenCode, Cursor, Gemini CLI, and other agents.
+Use this skill when the user:
 
-Treat the VoltAgent catalog as the first place to look for recommendations.
-Only fall back to `npx skills find` or `https://skills.sh/` when:
+- Asks "how do I do X" where X might be a common task with an existing skill
+- Says "find a skill for X" or "is there a skill for X"
+- Asks "can you do X" where X is a specialized capability
+- Expresses interest in extending agent capabilities
+- Wants to search for tools, templates, or workflows
+- Mentions they wish they had help with a specific domain (design, testing, deployment, etc.)
 
-- the catalog does not cover the user's domain
-- you need additional search breadth
-- you need a package-manager-oriented install target after identifying a skill
+## What is the Skills CLI?
 
-The catalog is curated, not audited. If the user is making a security-sensitive
-choice, say that explicitly.
+The Skills CLI (`npx skills`) is the package manager for the open agent skills ecosystem. Skills are modular packages that extend agent capabilities with specialized knowledge, workflows, and tools.
 
-## Search Order
+**Key commands:**
 
-### Step 1: Understand the need
+- `npx skills find [query]` - Search for skills interactively or by keyword
+- `npx skills add <package>` - Install a skill from GitHub or other sources
+- `npx skills check` - Check for skill updates
+- `npx skills update` - Update all installed skills
 
-Identify:
+**Browse skills at:** https://skills.sh/
 
-1. The domain, such as React, testing, security, deployment, docs, or design
-2. The concrete task, such as PR review, changelog generation, or Playwright testing
-3. The target agent, if it matters: Claude Code, Codex, OpenCode, Cursor, etc.
+## How to Help Users Find Skills
 
-### Step 2: Check the VoltAgent catalog first
+### Step 1: Understand What They Need
 
-Use `VoltAgent/awesome-agent-skills` to find likely matches. Prefer:
+When a user asks for help with something, identify:
 
-1. Official vendor or team-maintained skills before community skills
-2. Skills that explicitly match the user's agent or install path
-3. Focused skills that directly solve the request
-4. Repos with clear installation guidance
+1. The domain (e.g., React, testing, design, deployment)
+2. The specific task (e.g., writing tests, creating animations, reviewing PRs)
+3. Whether this is a common enough task that a skill likely exists
 
-When the catalog yields multiple candidates, surface the strongest 1-3 options.
+### Step 2: Check the Curated Catalog First
 
-### Step 3: Use the Skills CLI as a fallback
+Start with the [VoltAgent awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog. It aggregates official and community skills across Claude Code, Codex, OpenCode, Cursor, Gemini CLI, and other agents. Use it as the default discovery source because it is curated and organized by category.
 
-If the catalog is insufficient, search with:
+Fetch the catalog README and search it for relevant skills before trying other sources:
+
+```bash
+gh api repos/VoltAgent/awesome-agent-skills/readme --jq '.content' | base64 -d
+```
+
+The catalog is curated, not audited. If the user is making a security-sensitive choice, say that explicitly.
+
+### Step 3: Check the Leaderboard
+
+If the catalog doesn't cover the user's need, check the [skills.sh leaderboard](https://skills.sh/) to see if a well-known skill already exists for the domain. The leaderboard ranks skills by total installs, surfacing the most popular and battle-tested options.
+
+For example, top skills for web development include:
+- `vercel-labs/agent-skills` — React, Next.js, web design (100K+ installs each)
+- `anthropics/skills` — Frontend design, document processing (100K+ installs)
+
+### Step 4: Search via CLI
+
+If neither source covers the user's need, run the find command:
 
 ```bash
 npx skills find [query]
 ```
 
-Examples:
+For example:
 
-- `npx skills find react performance`
-- `npx skills find pr review`
-- `npx skills find changelog`
+- User asks "how do I make my React app faster?" → `npx skills find react performance`
+- User asks "can you help me with PR reviews?" → `npx skills find pr review`
+- User asks "I need to create a changelog" → `npx skills find changelog`
 
-Useful commands:
+### Step 5: Verify Quality Before Recommending
 
-- `npx skills find [query]`
-- `npx skills add <package>`
-- `npx skills check`
-- `npx skills update`
+**Do not recommend a skill based solely on search results.** Always verify:
 
-Browse at `https://skills.sh/`.
+1. **Install count** — Prefer skills with 1K+ installs. Be cautious with anything under 100.
+2. **Source reputation** — Official sources (`vercel-labs`, `anthropics`, `microsoft`) are more trustworthy than unknown authors.
+3. **GitHub stars** — Check the source repository. A skill from a repo with <100 stars should be treated with skepticism.
 
-## How to Present Recommendations
+### Step 6: Present Options to the User
 
-For each recommendation, include:
+When you find relevant skills, present them to the user with:
 
-1. The skill name
-2. What it does
-3. Why it was prioritized
-4. The install command, if known
-5. A link to the upstream repo or `skills.sh`
+1. The skill name and what it does
+2. The install count and source
+3. The install command they can run
+4. A link to learn more at skills.sh
 
-Example:
+Example response:
 
-```text
-I found a strong match in the VoltAgent curated catalog. The
-"vercel-react-best-practices" skill is maintained by Vercel Engineering and
-focuses on React and Next.js performance guidance.
+```
+I found a skill that might help! The "react-best-practices" skill provides
+React and Next.js performance optimization guidelines from Vercel Engineering.
+(185K installs)
 
 To install it:
-npx skills add vercel-labs/agent-skills@vercel-react-best-practices
+npx skills add vercel-labs/agent-skills@react-best-practices
 
-Learn more: https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices
+Learn more: https://skills.sh/vercel-labs/agent-skills/react-best-practices
 ```
 
-## Installation
+### Step 7: Offer to Install
 
-If the user wants you to install a skill, prefer the install method documented by
-the skill's upstream repo. If the skill supports the Skills CLI, you can install it with:
+If the user wants to proceed, you can install the skill for them:
 
 ```bash
-npx skills add <package> -g -y
+npx skills add <owner/repo@skill> -g -y
 ```
 
-The `-g` flag installs globally and `-y` skips prompts.
+The `-g` flag installs globally (user-level) and `-y` skips confirmation prompts.
 
-## Search Heuristics
+## Common Skill Categories
 
-- Use specific keywords instead of broad categories
-- Try alternate terms like `deployment`, `ci-cd`, `accessibility`, or `best-practices`
-- Start with the VoltAgent catalog before broader search
-- Prefer official sources such as Anthropic, OpenAI, Vercel, Stripe, Cloudflare, Google, Trail of Bits, Sentry, or other product teams
-- Use `npx skills find` only when the curated catalog does not produce a strong result
+When searching, consider these common categories:
 
-## If Nothing Good Exists
+| Category        | Example Queries                          |
+| --------------- | ---------------------------------------- |
+| Web Development | react, nextjs, typescript, css, tailwind |
+| Testing         | testing, jest, playwright, e2e           |
+| DevOps          | deploy, docker, kubernetes, ci-cd        |
+| Documentation   | docs, readme, changelog, api-docs        |
+| Code Quality    | review, lint, refactor, best-practices   |
+| Design          | ui, ux, design-system, accessibility     |
+| Productivity    | workflow, automation, git                |
 
-If no strong skill is available:
+## Tips for Effective Searches
 
-1. Say that you checked the VoltAgent catalog first
-2. Note whether CLI search also failed
-3. Offer to help directly without a skill
-4. Suggest creating a new skill with `npx skills init`
+1. **Use specific keywords**: "react testing" is better than just "testing"
+2. **Try alternative terms**: If "deploy" doesn't work, try "deployment" or "ci-cd"
+3. **Check popular sources**: Many skills come from `vercel-labs/agent-skills`, `ComposioHQ/awesome-claude-skills`, or the [VoltAgent catalog](https://github.com/VoltAgent/awesome-agent-skills)
+
+## When No Skills Are Found
+
+If no relevant skills exist:
+
+1. Acknowledge that no existing skill was found
+2. Offer to help with the task directly using your general capabilities
+3. Suggest the user could create their own skill with `npx skills init`
 
 Example:
 
-```text
-I checked the VoltAgent curated skill catalog and didn't find a strong match for this.
-I also couldn't find a good result via `npx skills find`.
+```
+I searched for skills related to "xyz" but didn't find any matches.
+I can still help you with this task directly! Would you like me to proceed?
 
-I can still help directly. If this is a recurring need, you could also create a custom skill:
-npx skills init my-skill
+If this is something you do often, you could create your own skill:
+npx skills init my-xyz-skill
 ```

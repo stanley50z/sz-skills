@@ -7,7 +7,14 @@ My personal collection of AI agent skills, synced across devices.
 | Skill | Description |
 |---|---|
 | [commit](commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
-| [find-skills](find-skills/) | Helps discover and install agent skills from the open ecosystem |
+
+## Vendor Skills (customized)
+
+Skills sourced from other projects with local edits. These are skipped by `update.ps1` — update manually when needed.
+
+| Skill | Description | Source | Customization |
+|---|---|---|---|
+| [find-skills](find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
 
 ## Vendor Skills
 

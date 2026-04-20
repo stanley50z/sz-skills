@@ -10,6 +10,10 @@ $repoRoot = Split-Path $MyInvocation.MyCommand.Path
 
 # Define upstream sources: local_dir -> (repo, path_in_repo)
 $upstream = @{
+    "find-skills" = @{
+        repo = "vercel-labs/skills"
+        path = "skills/find-skills"
+    }
     "gh-cli" = @{
         repo = "github/awesome-copilot"
         path = "skills/gh-cli"
@@ -20,7 +24,14 @@ $upstream = @{
     }
 }
 
+# Skills with local customizations — pull upstream then re-apply patches
+$patched = @("find-skills")
+
 foreach ($skill in $upstream.Keys) {
+    if ($patched -contains $skill) {
+        Write-Host "Skipping $skill (has local customizations — update manually)" -ForegroundColor Yellow
+        continue
+    }
     $src = $upstream[$skill]
     $localDir = Join-Path $repoRoot $skill
     Write-Host "Updating $skill from $($src.repo)..." -ForegroundColor Cyan
