@@ -43,6 +43,8 @@ description: Use when the user asks to commit, create a commit, or save changes 
 
 5. **Run `git status`** to verify success.
 
+6. **Push if remote branch exists** — after a successful commit, check if the current branch tracks a remote. If it does, run `git push`. If it doesn't, skip the push.
+
 ## Message Format
 
 ```
