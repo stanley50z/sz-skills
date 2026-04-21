@@ -15,7 +15,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | Skill | Description | Source | Customization |
 |---|---|---|---|
 | [find-skills](find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
-| **superpowers suite** | | [obra/superpowers](https://github.com/obra/superpowers) | Tailored workflow |
+| **superpowers suite** | | [obra/superpowers](https://github.com/obra/superpowers) | [Tailored workflow](docs/superpowers-customization-rationale.md) |
 | [brainstorming](brainstorming/) | Explore intent, requirements, and design before creative work | ↳ `skills/brainstorming` |
 | [dispatching-parallel-agents](dispatching-parallel-agents/) | Dispatch 2+ independent tasks to parallel agents | ↳ `skills/dispatching-parallel-agents` |
 | [executing-plans](executing-plans/) | Execute implementation plans with review checkpoints | ↳ `skills/executing-plans` |
