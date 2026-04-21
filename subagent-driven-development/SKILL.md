@@ -114,8 +114,17 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 2. If the task requires more reasoning, re-dispatch with a more capable model
 3. If the task is too large, break it into smaller pieces
 4. If the plan itself is wrong, escalate to the human
+5. **If a `[USER-REQ]` task is blocked**, always escalate to the human — user requirements are non-negotiable
 
 **Never** ignore an escalation or force the same model to retry without changes. If the implementer said it's stuck, something needs to change.
+
+## Conflict Resolution: User Requirements vs Agent Decisions
+
+Tasks in the plan are tagged `[USER-REQ]` (non-negotiable) or `[AGENT-DECISION]` (flexible). When dispatching implementer subagents, include this context:
+
+- If the task is `[AGENT-DECISION]` and the implementer encounters problems, you (the controller) may adapt the approach — simplify, change implementation details, or drop non-essential parts. Note what you changed and why.
+- If the task is `[USER-REQ]` and the implementer encounters problems, **stop and surface to the user**. Do not silently reinterpret, weaken, or skip a user requirement.
+- The spec compliance reviewer should verify that all `[USER-REQ]` tasks are implemented exactly as specified. `[AGENT-DECISION]` tasks have more latitude.
 
 ## Prompt Templates
 
@@ -246,6 +255,8 @@ Done!
 - Let implementer self-review replace actual review (both are needed)
 - **Start code quality review before spec compliance is ✅** (wrong order)
 - Move to next task while either review has open issues
+- **Silently weaken or skip a `[USER-REQ]` task** — always escalate to the user
+- **Adapt a `[USER-REQ]` task without user approval** — only `[AGENT-DECISION]` tasks are flexible
 
 **If subagent asks questions:**
 - Answer clearly and completely

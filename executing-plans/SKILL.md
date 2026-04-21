@@ -43,8 +43,17 @@ After all tasks complete and verified:
 - Plan has critical gaps preventing starting
 - You don't understand an instruction
 - Verification fails repeatedly
+- A `[USER-REQ]` task cannot be completed as specified — user requirements are non-negotiable, do not work around them silently
 
 **Ask for clarification rather than guessing.**
+
+## Conflict Resolution: User Requirements vs Agent Decisions
+
+Tasks in the plan are tagged `[USER-REQ]` (non-negotiable) or `[AGENT-DECISION]` (flexible).
+
+- If an `[AGENT-DECISION]` task conflicts with implementation reality, adapt it — change approach, simplify, or drop it if it's not essential. Note what you changed and why.
+- If a `[USER-REQ]` task conflicts with implementation reality, **stop and surface to the user**. Do not silently reinterpret, weaken, or skip a user requirement.
+- If two tasks conflict with each other, the `[USER-REQ]` task wins. If both are `[USER-REQ]`, surface to the user.
 
 ## When to Revisit Earlier Steps
 
@@ -59,6 +68,8 @@ After all tasks complete and verified:
 - Follow plan steps exactly
 - Don't skip verifications
 - Reference skills when plan says to
+- `[USER-REQ]` tasks are non-negotiable — stop and ask the user if they can't be met
+- `[AGENT-DECISION]` tasks are flexible — adapt if implementation demands it
 - Stop when blocked, don't guess
 - Never start implementation on main/master branch without explicit user consent
 

@@ -18,8 +18,9 @@ Task tool (general-purpose):
 
     | Category | What to Look For |
     |----------|------------------|
+    | Requirement Separation | Spec has distinct "User Requirements" and "Agent Design Decisions" sections. Every user requirement traces to something the user said or chose. No user requirement was silently demoted to an agent decision. No agent decision was promoted to a user requirement. |
     | Completeness | TODOs, placeholders, "TBD", incomplete sections |
-    | Consistency | Internal contradictions, conflicting requirements |
+    | Consistency | Internal contradictions, conflicting requirements. Agent design decisions must not contradict user requirements. |
     | Clarity | Requirements ambiguous enough to cause someone to build the wrong thing |
     | Scope | Focused enough for a single plan — not covering multiple independent subsystems |
     | YAGNI | Unrequested features, over-engineering |

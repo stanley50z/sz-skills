@@ -51,6 +51,8 @@ This structure informs the task decomposition. Each task should produce self-con
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Priority rule:** Tasks tagged `[USER-REQ]` implement non-negotiable user requirements. Tasks tagged `[AGENT-DECISION]` implement flexible agent design decisions. If a conflict arises during implementation, agent decisions yield to user requirements. If a user requirement cannot be met, stop and surface to the user.
+
 **Goal:** [One sentence describing what this builds]
 
 **Architecture:** [2-3 sentences about approach]
@@ -62,8 +64,14 @@ This structure informs the task decomposition. Each task should produce self-con
 
 ## Task Structure
 
+Each task title MUST include a source tag from the spec:
+- `[USER-REQ]` — implements a user requirement (non-negotiable)
+- `[AGENT-DECISION]` — implements an agent design decision (flexible, can be revised)
+
+If a task serves both, tag it `[USER-REQ]` — the user requirement takes priority.
+
 ````markdown
-### Task N: [Component Name]
+### Task N: [Component Name] [USER-REQ]
 
 **Files:**
 - Create: `exact/path/to/file.py`
@@ -108,6 +116,8 @@ git commit -m "feat: add specific feature"
 - Complete code in plan (not "add validation")
 - Exact commands with expected output
 - Reference relevant skills with @ syntax
+- Tag every task `[USER-REQ]` or `[AGENT-DECISION]` based on the spec's requirement source sections
+- Every user requirement from the spec must map to at least one task
 - DRY, YAGNI, TDD, frequent commits
 
 ## Plan Review Loop

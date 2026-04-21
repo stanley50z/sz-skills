@@ -19,6 +19,8 @@ Task tool (general-purpose):
 
     | Category | What to Look For |
     |----------|------------------|
+    | User Requirement Coverage | Every item in the spec's "User Requirements" section maps to at least one task tagged `[USER-REQ]`. No user requirement was silently dropped. |
+    | Source Tagging | Every task is tagged `[USER-REQ]` or `[AGENT-DECISION]`. Tags match the spec's sections. |
     | Completeness | TODOs, placeholders, incomplete tasks, missing steps |
     | Spec Alignment | Plan covers spec requirements, no major scope creep |
     | Task Decomposition | Tasks have clear boundaries, steps are actionable |

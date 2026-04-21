@@ -80,6 +80,16 @@ digraph brainstorming {
 - Only one question per message - if a topic needs more exploration, break it into multiple questions
 - Focus on understanding: purpose, constraints, success criteria
 
+**Tracking requirement sources:**
+
+As you ask questions and the user responds, mentally maintain two lists:
+- **User Requirements** — things the user explicitly stated, chose from options you presented, or confirmed when you asked. These are facts.
+- **Agent Design Decisions** — things you inferred, assumed, or recommended that the user did not explicitly request. These are your best guesses.
+
+When proposing approaches: the user's choice of approach is a User Requirement. The implementation details you fill in around that choice are Agent Design Decisions.
+
+When the user says "yes" or "looks good" to a design section: the items they originally requested remain User Requirements. The items you added remain Agent Design Decisions — approval of a section does not promote agent decisions to user requirements.
+
 **Exploring approaches:**
 
 - Propose 2-3 different approaches with trade-offs
@@ -116,6 +126,33 @@ digraph brainstorming {
 - Use elements-of-style:writing-clearly-and-concisely skill if available
 - Commit the design document to git
 
+**Spec document structure — requirement source separation:**
+
+The spec MUST have two clearly labeled top-level sections that separate what the user specified from what the agent filled in:
+
+```markdown
+## User Requirements
+Items the user explicitly stated, chose, or confirmed during brainstorming.
+Each item should be traceable to something the user actually said or selected.
+
+- [requirement]: [brief trace — e.g., "user's initial request", "chose from options", "confirmed when asked"]
+- ...
+
+## Agent Design Decisions
+Everything the agent inferred, recommended, or filled in to complete the design.
+Each item notes which user requirement it serves.
+
+- [decision]: serves [which user requirement]. [rationale]
+- ...
+```
+
+Rules for classification:
+- If the user said it, chose it, or explicitly confirmed it as their own intent → User Requirement
+- If the agent proposed it and the user said "looks good" or "yes" to a batch → Agent Design Decision (blanket approval does not promote agent decisions)
+- For mixed items (user said "authentication," agent picked OAuth2): split them. "Authentication required" is a User Requirement. "OAuth2 with Google provider" is an Agent Design Decision that serves the authentication requirement.
+
+**Priority hierarchy:** User Requirements are non-negotiable during implementation. Agent Design Decisions are flexible — they can be revised or dropped if they conflict with a User Requirement or if implementation reality demands it. This hierarchy carries forward into the plan and execution.
+
 **Spec Review Loop:**
 After writing the spec document:
 
@@ -139,6 +176,7 @@ Wait for the user's response. If they request changes, make them and re-run the 
 
 - **One question at a time** - Don't overwhelm with multiple questions
 - **Multiple choice preferred** - Easier to answer than open-ended when possible
+- **User requirements first** - Never let agent design decisions override what the user explicitly said or chose. Track the source of every decision throughout the process.
 - **YAGNI ruthlessly** - Remove unnecessary features from all designs
 - **Explore alternatives** - Always propose 2-3 approaches before settling
 - **Incremental validation** - Present design, get approval before moving on
