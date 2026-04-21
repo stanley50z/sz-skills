@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,State,Use useState for local state,Simple component state should use useState hook,useState for form inputs toggles counters,Class components this.state,"const [count, setCount] = useState(0)",this.state = { count: 0 },Medium,https://react.dev/reference/react/useState
 2,State,Lift state up when needed,Share state between siblings by lifting to parent,Lift shared state to common ancestor,Prop drilling through many levels,Parent holds state passes down,Deep prop chains,Medium,https://react.dev/learn/sharing-state-between-components
 3,State,Use useReducer for complex state,Complex state logic benefits from reducer pattern,useReducer for state with multiple sub-values,Multiple useState for related values,useReducer with action types,5+ useState calls that update together,Medium,https://react.dev/reference/react/useReducer

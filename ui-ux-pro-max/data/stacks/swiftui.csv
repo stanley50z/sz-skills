@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Views,Use struct for views,SwiftUI views are value types,struct MyView: View,class MyView: View,struct ContentView: View { var body: some View },class ContentView: View,High,https://developer.apple.com/documentation/swiftui/view
 2,Views,Keep views small and focused,Single responsibility for each view,Extract subviews for complex layouts,Large monolithic views,Extract HeaderView FooterView,500+ line View struct,Medium,
 3,Views,Use body computed property,body returns the view hierarchy,var body: some View { },func body() -> some View,"var body: some View { Text(""Hello"") }",func body() -> Text,High,

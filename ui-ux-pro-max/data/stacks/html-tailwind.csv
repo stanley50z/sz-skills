@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Animation,Use Tailwind animate utilities,Built-in animations are optimized and respect reduced-motion,Use animate-pulse animate-spin animate-ping,Custom @keyframes for simple effects,animate-pulse,@keyframes pulse {...},Medium,https://tailwindcss.com/docs/animation
 2,Animation,Limit bounce animations,Continuous bounce is distracting and causes motion sickness,Use animate-bounce sparingly on CTAs only,Multiple bounce animations on page,Single CTA with animate-bounce,5+ elements with animate-bounce,High,
 3,Animation,Transition duration,Use appropriate transition speeds for UI feedback,duration-150 to duration-300 for UI,duration-1000 or longer for UI elements,transition-all duration-200,transition-all duration-1000,Medium,https://tailwindcss.com/docs/transition-duration

@@ -1,4 +1,4 @@
-﻿goal,emotion,layout_pattern,direction,visual_weight,break_pattern,use_bg_image
+goal,emotion,layout_pattern,direction,visual_weight,break_pattern,use_bg_image
 hook,curiosity,split-hero,visual-right,70-visual,false,true
 problem,frustration,card-grid,centered,balanced,false,false
 agitation,fear,full-bleed-stat,centered,100-text,true,false

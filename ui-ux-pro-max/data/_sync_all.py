@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Sync colors.csv and ui-reasoning.csv with the updated products.csv (161 entries).
 - Remove deleted product types

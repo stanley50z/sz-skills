@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Setup,Use CLI for installation,Install components via shadcn CLI for proper setup,npx shadcn@latest add component-name,Manual copy-paste from docs,npx shadcn@latest add button,Copy component code manually,High,https://ui.shadcn.com/docs/cli
 2,Setup,Initialize project properly,Run init command to set up components.json and globals.css,npx shadcn@latest init before adding components,Skip init and add components directly,npx shadcn@latest init,npx shadcn@latest add button (without init),High,https://ui.shadcn.com/docs/installation
 3,Setup,Configure path aliases,Set up proper import aliases in tsconfig and components.json,Use @/components/ui path aliases,Relative imports like ../../components,import { Button } from "@/components/ui/button",import { Button } from "../../components/ui/button",Medium,https://ui.shadcn.com/docs/installation

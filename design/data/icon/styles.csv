@@ -1,4 +1,4 @@
-﻿id,name,description,stroke_width,fill,best_for,keywords
+id,name,description,stroke_width,fill,best_for,keywords
 outlined,Outlined,"Clean stroke-based icons with no fill, open paths",2px,none,"UI interfaces, web apps, dashboards","outline line stroke open clean"
 filled,Filled,"Solid filled shapes with no stroke, bold presence",0,solid,"Mobile apps, nav bars, toolbars","solid fill bold flat shape"
 duotone,Duotone,"Two-tone layered icons with primary and 30% opacity secondary",0,dual,"Marketing, landing pages, feature sections","two-tone layer opacity dual color"

@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Components,Use functional components,Hooks-based components are standard,Functional components with hooks,Class components,const App = () => { },class App extends Component,Medium,https://reactnative.dev/docs/intro-react
 2,Components,Keep components small,Single responsibility principle,Split into smaller components,Large monolithic components,<Header /><Content /><Footer />,500+ line component,Medium,
 3,Components,Use TypeScript,Type safety for props and state,TypeScript for new projects,JavaScript without types,const Button: FC<Props> = () => { },const Button = (props) => { },Medium,

@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Composable,Pure UI composables,Composable functions should only render UI,Accept state and callbacks,Calling usecase/repo,Pure UI composable,Business logic in UI,High,https://developer.android.com/jetpack/compose/mental-model
 2,Composable,Small composables,Each composable has single responsibility,Split into components,Huge composable,Reusable UI,Monolithic UI,Medium,
 3,Composable,Stateless by default,Prefer stateless composables,Hoist state,Local mutable state,Stateless UI,Hidden state,High,https://developer.android.com/jetpack/compose/state#state-hoisting

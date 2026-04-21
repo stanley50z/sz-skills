@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Widgets,Use StatelessWidget when possible,Immutable widgets are simpler,StatelessWidget for static UI,StatefulWidget for everything,class MyWidget extends StatelessWidget,class MyWidget extends StatefulWidget (static),Medium,https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html
 2,Widgets,Keep widgets small,Single responsibility principle,Extract widgets into smaller pieces,Large build methods,Column(children: [Header() Content()]),500+ line build method,Medium,
 3,Widgets,Use const constructors,Compile-time constants for performance,const MyWidget() when possible,Non-const for static widgets,const Text('Hello'),Text('Hello') for literals,High,https://dart.dev/guides/language/language-tour#constant-constructors

@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Components,Use standalone components,Angular 17+ default; no NgModule needed,Standalone components for all new code,NgModule-based components for new projects,"@Component({ standalone: true imports: [CommonModule] })","@NgModule({ declarations: [MyComp] })",High,https://angular.dev/guide/components/importing
 2,Components,Use signals for state,Signals are Angular's reactive primitive for fine-grained reactivity,Signals for component state over class properties,Mutable class properties without signals,"count = signal(0); increment() { this.count.update(v => v + 1) }","count = 0; increment() { this.count++ }",High,https://angular.dev/guide/signals
 3,Components,Use @if/@for/@switch control flow,Built-in control flow syntax replaces *ngIf/*ngFor directives,@if and @for in templates,*ngIf and *ngFor structural directives,"@if (isLoggedIn) { <Dashboard /> } @else { <Login /> }","<div *ngIf=""isLoggedIn""><Dashboard /></div>",High,https://angular.dev/guide/templates/control-flow

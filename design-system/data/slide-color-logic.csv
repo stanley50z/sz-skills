@@ -1,4 +1,4 @@
-﻿emotion,background,text_color,accent_usage,use_full_bleed,gradient,card_style
+emotion,background,text_color,accent_usage,use_full_bleed,gradient,card_style
 frustration,dark-surface,foreground,minimal,false,none,subtle-border
 hope,accent-bleed,dark,none,true,none,none
 fear,dark-background,primary,stats-only,false,none,glow-primary

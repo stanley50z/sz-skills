@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Composition,Use Composition API for new projects,Composition API offers better TypeScript support and logic reuse,<script setup> for components,Options API for new projects,<script setup>,export default { data() },Medium,https://vuejs.org/guide/extras/composition-api-faq.html
 2,Composition,Use script setup syntax,Cleaner syntax with automatic exports,<script setup> with defineProps,setup() function manually,<script setup>,<script> setup() { return {} },Low,https://vuejs.org/api/sfc-script-setup.html
 3,Reactivity,Use ref for primitives,ref() for primitive values that need reactivity,ref() for strings numbers booleans,reactive() for primitives,const count = ref(0),const count = reactive(0),Medium,https://vuejs.org/guide/essentials/reactivity-fundamentals.html

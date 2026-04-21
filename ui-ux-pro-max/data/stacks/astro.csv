@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Architecture,Use Islands Architecture,Astro's partial hydration only loads JS for interactive components,Interactive components with client directives,Hydrate entire page like traditional SPA,<Counter client:load />,Everything as client component,High,https://docs.astro.build/en/concepts/islands/
 2,Architecture,Default to zero JS,Astro ships zero JS by default - add only when needed,Static components without client directive,Add client:load to everything,<Header /> (static),<Header client:load /> (unnecessary),High,https://docs.astro.build/en/basics/astro-components/
 3,Architecture,Choose right client directive,Different directives for different hydration timing,client:visible for below-fold client:idle for non-critical,client:load for everything,<Comments client:visible />,<Comments client:load />,Medium,https://docs.astro.build/en/reference/directives-reference/#client-directives

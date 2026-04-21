@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Reactivity,Use $: for reactive statements,Automatic dependency tracking,$: for derived values,Manual recalculation,$: doubled = count * 2,let doubled; count && (doubled = count * 2),Medium,https://svelte.dev/docs/svelte-components#script-3-$-marks-a-statement-as-reactive
 2,Reactivity,Trigger reactivity with assignment,Svelte tracks assignments not mutations,Reassign arrays/objects to trigger update,Mutate without reassignment,"items = [...items, newItem]",items.push(newItem),High,https://svelte.dev/docs/svelte-components#script-2-assignments-are-reactive
 3,Reactivity,Use $state in Svelte 5,Runes for explicit reactivity,let count = $state(0),Implicit reactivity in Svelte 5,let count = $state(0),let count = 0 (Svelte 5),Medium,https://svelte.dev/blog/runes

@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Installation,Add Nuxt UI module,Install and configure Nuxt UI in your Nuxt project,pnpm add @nuxt/ui and add to modules,Manual component imports,"modules: ['@nuxt/ui']","import { UButton } from '@nuxt/ui'",High,https://ui.nuxt.com/docs/getting-started/installation/nuxt
 2,Installation,Import Tailwind and Nuxt UI CSS,Required CSS imports in main.css file,@import tailwindcss and @import @nuxt/ui,Skip CSS imports,"@import ""tailwindcss""; @import ""@nuxt/ui"";",No CSS imports,High,https://ui.nuxt.com/docs/getting-started/installation/nuxt
 3,Installation,Wrap app with UApp component,UApp provides global configs for Toast Tooltip and overlays,<UApp> wrapper in app.vue,Skip UApp wrapper,<UApp><NuxtPage/></UApp>,<NuxtPage/> without wrapper,High,https://ui.nuxt.com/docs/components/app

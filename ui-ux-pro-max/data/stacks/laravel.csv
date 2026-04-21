@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Blade Templates,Use Blade components for reusable UI,Extract repeated markup into named Blade components,Use x-* components with @props for all reusable UI,Duplicate HTML blocks across views,<x-card :title="$title">{{ $slot }}</x-card>,@include('card' ['title' => $title]),High,https://laravel.com/docs/blade#components
 2,Blade Templates,Use layouts with @extends and @section,Define one master layout and extend it per page,@extends layout with named @section blocks,Duplicate header/footer HTML in every view,@extends('layouts.app') @section('content'),Full HTML in every view file,High,https://laravel.com/docs/blade#layouts-using-template-inheritance
 3,Blade Templates,Use @props for component type-safety,Declare accepted props inside components with @props,@props with defaults to document component API,Pass arbitrary variables without declaration,@props(['title' => '' 'variant' => 'primary']),No @props declaration in component,Medium,https://laravel.com/docs/blade#component-data-and-attributes

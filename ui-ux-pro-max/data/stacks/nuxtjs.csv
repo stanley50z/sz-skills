@@ -1,4 +1,4 @@
-﻿No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
+No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 1,Routing,Use file-based routing,Create routes by adding files in pages directory,pages/ directory with index.vue,Manual route configuration,pages/dashboard/index.vue,Custom router setup,Medium,https://nuxt.com/docs/getting-started/routing
 2,Routing,Use dynamic route parameters,Create dynamic routes with bracket syntax,[id].vue for dynamic params,Hardcoded routes for dynamic content,pages/posts/[id].vue,pages/posts/post1.vue,Medium,https://nuxt.com/docs/getting-started/routing
 3,Routing,Use catch-all routes,Handle multiple path segments with [...slug],[...slug].vue for catch-all,Multiple nested dynamic routes,pages/[...slug].vue,pages/[a]/[b]/[c].vue,Low,https://nuxt.com/docs/getting-started/routing

@@ -10,7 +10,7 @@ My personal collection of AI agent skills, synced across devices.
 
 ## Vendor Skills (customized)
 
-Skills sourced from other projects with local edits. These are skipped by `update.ps1` — update manually when needed.
+Skills sourced from other projects with local edits. These are skipped by `update.py` — update manually when needed.
 
 | Skill | Description | Source | Customization |
 |---|---|---|---|
@@ -18,7 +18,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 
 ## Vendor Skills
 
-Skills sourced from other projects. Run `.\update.ps1` to pull latest versions.
+Skills sourced from other projects. Run `python update.py` to pull latest versions.
 
 | Skill | Description | Source |
 |---|---|---|
@@ -33,24 +33,26 @@ Skills sourced from other projects. Run `.\update.ps1` to pull latest versions.
 | [ui-styling](ui-styling/) | UI styling — Tailwind, shadcn/ui, canvas design system, bundled fonts | ↳ `.claude/skills/ui-styling` |
 
 > **Note:** `ui-styling` includes font license files (OFL) but binary `.ttf` files are skipped during
-> `update.ps1` to keep the repo lightweight. If you need the actual font files, download them from the
+> `update.py` to keep the repo lightweight. If you need the actual font files, download them from the
 > upstream repo or use Google Fonts.
 
 ## Setup
 
-```powershell
+Requires: Python 3.8+, [gh CLI](https://cli.github.com/) (authenticated)
+
+```sh
 git clone https://github.com/stanley50z/sz-skills ~/.sz-skills
 cd ~/.sz-skills
-.\setup.ps1
+python setup.py
 ```
 
-`setup.ps1` creates junctions from `~\.agents\skills\` and `~\.claude\skills\` into this repo.
+`setup.py` creates junctions (Windows) or symlinks (macOS/Linux) from `~/.agents/skills/` and `~/.claude/skills/` into this repo.
 
 ## Updating Vendor Skills
 
-```powershell
+```sh
 cd ~/.sz-skills
-.\update.ps1
+python update.py
 git diff              # review changes
-git add -A && git commit -m "update vendor skills"
+git add -A && git commit -m "chore: update vendor skills"
 ```

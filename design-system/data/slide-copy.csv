@@ -1,4 +1,4 @@
-﻿id,formula_name,keywords,components,use_case,example_template,emotion_trigger,slide_type,source
+id,formula_name,keywords,components,use_case,example_template,emotion_trigger,slide_type,source
 1,AIDA,"aida, attention, interest, desire, action",Attention→Interest→Desire→Action,Lead-gen CTAs general persuasion,"{Attention hook} → {Interesting detail} → {Desirable outcome} → {Action step}",Curiosity→Engagement→Want→Urgency,CTA slides,Classic copywriting 1898
 2,PAS,"pas, problem, agitation, solution, dan kennedy",Problem→Agitate→Solution,Sales pages problem slides most reliable,"You're struggling with {problem}. It's costing you {agitation}. {Solution} fixes this.",Frustration→Fear→Relief,Problem slides,Dan Kennedy
 3,4Ps,"4ps, promise, picture, proof, push, ray edwards",Promise→Picture→Proof→Push,Home pages lead-gen,"{Promise benefit} → {Picture future state} → {Proof it works} → {Push to act}",Hope→Vision→Trust→Action,Solution slides,Ray Edwards

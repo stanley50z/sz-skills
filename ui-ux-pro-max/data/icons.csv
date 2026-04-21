@@ -1,4 +1,4 @@
-﻿No,Category,Icon Name,Keywords,Library,Import Code,Usage,Best For,Style
+No,Category,Icon Name,Keywords,Library,Import Code,Usage,Best For,Style
 1,Navigation,list,hamburger menu navigation toggle bars,Phosphor,import { List } from '@phosphor-icons/react',<List size={20} weight="regular" />,Mobile navigation drawer toggle sidebar,Outline
 2,Navigation,arrow-left,back previous return navigate,Phosphor,import { ArrowLeft } from '@phosphor-icons/react',<ArrowLeft size={20} weight="regular" />,Back button breadcrumb navigation,Outline
 3,Navigation,arrow-right,next forward continue navigate,Phosphor,import { ArrowRight } from '@phosphor-icons/react',<ArrowRight size={20} weight="regular" />,Forward button next step CTA,Outline

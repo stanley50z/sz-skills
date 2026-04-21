@@ -1,4 +1,4 @@
-﻿No,Category,Issue,Platform,Description,Do,Don't,Code Example Good,Code Example Bad,Severity
+No,Category,Issue,Platform,Description,Do,Don't,Code Example Good,Code Example Bad,Severity
 1,Navigation,Smooth Scroll,Web,Anchor links should scroll smoothly to target section,Use scroll-behavior: smooth on html element,Jump directly without transition,html { scroll-behavior: smooth; },<a href='#section'> without CSS,High
 2,Navigation,Sticky Navigation,Web,Fixed nav should not obscure content,Add padding-top to body equal to nav height,Let nav overlap first section content,pt-20 (if nav is h-20),No padding compensation,Medium
 3,Navigation,Active State,All,Current page/section should be visually indicated,Highlight active nav item with color/underline,No visual feedback on current location,text-primary border-b-2,All links same style,Medium
