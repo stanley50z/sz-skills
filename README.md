@@ -23,7 +23,18 @@ Skills sourced from other projects. Run `.\update.ps1` to pull latest versions.
 | Skill | Description | Source |
 |---|---|---|
 | [gh-cli](gh-cli/) | Comprehensive GitHub CLI (gh) reference for repos, issues, PRs, Actions, and more | [github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/skills/gh-cli) |
-| [ui-ux-pro-max](ui-ux-pro-max/) | UI/UX design intelligence — 50+ styles, 161 palettes, 57 font pairings, 25 chart types across 10 stacks | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) |
+| **ui-ux-pro-max suite** | | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) |
+| [ui-ux-pro-max](ui-ux-pro-max/) | UI/UX design intelligence — styles, palettes, font pairings, chart types across 10+ stacks | ↳ `.claude/skills/ui-ux-pro-max` + `src/ui-ux-pro-max` |
+| [banner-design](banner-design/) | Banner design with sizes, styles, and layout references | ↳ `.claude/skills/banner-design` |
+| [brand](brand/) | Brand identity system — guidelines, voice, typography, color, logo rules | ↳ `.claude/skills/brand` |
+| [design](design/) | Design routing — logos, icons, CIP, slides, social photos | ↳ `.claude/skills/design` |
+| [design-system](design-system/) | Design tokens, component specs, slide generation | ↳ `.claude/skills/design-system` |
+| [slides](slides/) | Slide creation — copywriting formulas, layout patterns, strategies | ↳ `.claude/skills/slides` |
+| [ui-styling](ui-styling/) | UI styling — Tailwind, shadcn/ui, canvas design system, bundled fonts | ↳ `.claude/skills/ui-styling` |
+
+> **Note:** `ui-styling` includes font license files (OFL) but binary `.ttf` files are skipped during
+> `update.ps1` to keep the repo lightweight. If you need the actual font files, download them from the
+> upstream repo or use Google Fonts.
 
 ## Setup
 
