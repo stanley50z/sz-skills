@@ -127,6 +127,18 @@ git commit -m "feat: add specific feature"
 - Every user requirement from the spec must map to at least one task
 - DRY, YAGNI, TDD, frequent commits
 
+## When the User Requests a Change During Planning
+
+**A user change during planning is a new User Requirement — not a footnote.**
+
+If the user says "change A to B" while reviewing the plan, do not just edit the plan. Propagate the change back to the spec first:
+
+1. **Spec**: Update the User Requirements section — add B, remove or update A
+2. **Plan**: Update or add `[USER-REQ]` tasks for B, remove tasks for old A
+3. **Tests in plan**: Ensure test steps verify B, not A
+
+The user's request at any stage has the same authority as an initial requirement stated during brainstorming.
+
 ## Plan Review Loop
 
 After writing the complete plan:

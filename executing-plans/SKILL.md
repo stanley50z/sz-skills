@@ -69,6 +69,19 @@ When the plan replaces an existing feature with a new version, commit to the new
 
 **Don't force through blockers** - stop and ask.
 
+## When the User Requests a Change
+
+**A user change at any stage is a new User Requirement — not a local fix.**
+
+If the user says "change A to B" during execution, do not just patch the current code. Propagate the change to all artifacts:
+
+1. **Spec**: Update the User Requirements section — add B, remove or update A
+2. **Plan**: Update or add `[USER-REQ]` tasks for B, remove tasks for old A
+3. **Tests**: Remove/rewrite tests that assert old A behavior, write new tests for B
+4. **Implementation**: Update code to reflect B
+
+The user's request steers the entire process, not just the current phase. A mid-execution change from the user has the same authority as an initial requirement stated during brainstorming.
+
 ## Remember
 - Review plan critically first
 - Follow plan steps exactly

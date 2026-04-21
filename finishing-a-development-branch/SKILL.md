@@ -45,7 +45,7 @@ Stop. Don't proceed to Step 2.
 
 **Wait for the user's response.** Do not proceed until the user confirms.
 
-- If the user reports issues: fix them, re-run automated tests, and ask the user to test again.
+- If the user reports issues or requests changes: treat each change as a new **User Requirement**. Propagate it to all artifacts — update the spec (User Requirements section), update the plan, update tests (remove/rewrite tests for old behavior, add tests for new), and update implementation. Then re-run automated tests and ask the user to test again.
 - If the user confirms it works: continue to Step 3.
 
 ### Step 3: Commit
