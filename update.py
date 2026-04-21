@@ -61,14 +61,22 @@ UPSTREAM = {
     "ui-styling": [
         {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/ui-styling"},
     ],
-    # ── superpowers skill bundle ─────────────────────────────────────────
-    "superpowers": [
-        {"repo": "obra/superpowers", "path": "skills"},
-    ],
 }
 
+# ── superpowers skills (obra/superpowers, each at skills/<name>) ─────────
+_SUPERPOWERS = [
+    "brainstorming", "dispatching-parallel-agents", "executing-plans",
+    "finishing-a-development-branch", "receiving-code-review",
+    "requesting-code-review", "subagent-driven-development",
+    "systematic-debugging", "test-driven-development", "using-git-worktrees",
+    "using-superpowers", "verification-before-completion", "writing-plans",
+    "writing-skills",
+]
+for _s in _SUPERPOWERS:
+    UPSTREAM[_s] = [{"repo": "obra/superpowers", "path": f"skills/{_s}"}]
+
 # Skills with local customizations — skip during auto-update
-PATCHED = {"find-skills", "superpowers"}
+PATCHED = {"find-skills"} | set(_SUPERPOWERS)
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────
 

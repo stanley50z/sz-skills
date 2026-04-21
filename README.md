@@ -15,7 +15,21 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | Skill | Description | Source | Customization |
 |---|---|---|---|
 | [find-skills](find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
-| [superpowers](superpowers/) | Complete dev workflow — brainstorming, planning, TDD, debugging, code review, parallel agents (14 skills) | [obra/superpowers](https://github.com/obra/superpowers) | Tailored workflow |
+| **superpowers suite** | | [obra/superpowers](https://github.com/obra/superpowers) | Tailored workflow |
+| [brainstorming](brainstorming/) | Explore intent, requirements, and design before creative work | ↳ `skills/brainstorming` |
+| [dispatching-parallel-agents](dispatching-parallel-agents/) | Dispatch 2+ independent tasks to parallel agents | ↳ `skills/dispatching-parallel-agents` |
+| [executing-plans](executing-plans/) | Execute implementation plans with review checkpoints | ↳ `skills/executing-plans` |
+| [finishing-a-development-branch](finishing-a-development-branch/) | Guide branch completion — merge, PR, or cleanup | ↳ `skills/finishing-a-development-branch` |
+| [receiving-code-review](receiving-code-review/) | Receive code review with technical rigor | ↳ `skills/receiving-code-review` |
+| [requesting-code-review](requesting-code-review/) | Request code review before merging | ↳ `skills/requesting-code-review` |
+| [subagent-driven-development](subagent-driven-development/) | Execute plans with independent sub-agents | ↳ `skills/subagent-driven-development` |
+| [systematic-debugging](systematic-debugging/) | Debug bugs and test failures systematically | ↳ `skills/systematic-debugging` |
+| [test-driven-development](test-driven-development/) | Write tests before implementation code | ↳ `skills/test-driven-development` |
+| [using-git-worktrees](using-git-worktrees/) | Create isolated git worktrees for feature work | ↳ `skills/using-git-worktrees` |
+| [using-superpowers](using-superpowers/) | Establish skill discovery and usage conventions | ↳ `skills/using-superpowers` |
+| [verification-before-completion](verification-before-completion/) | Run verification before claiming work is complete | ↳ `skills/verification-before-completion` |
+| [writing-plans](writing-plans/) | Write implementation plans before touching code | ↳ `skills/writing-plans` |
+| [writing-skills](writing-skills/) | Create, edit, and verify agent skills | ↳ `skills/writing-skills` |
 
 ## Vendor Skills
 
