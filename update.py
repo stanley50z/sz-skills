@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent
+SKILLS_DIR = REPO_ROOT / "skills"
 
 # Binary extensions to skip (font files, images, etc.)
 BINARY_EXTS = frozenset([
@@ -165,7 +166,7 @@ def main():
             print(_yellow(f"Skipping {skill} (has local customizations — update manually)"))
             continue
 
-        local_dir = REPO_ROOT / skill
+        local_dir = SKILLS_DIR / skill
         print(_cyan(f"Updating {skill}..."))
 
         for src in sources:

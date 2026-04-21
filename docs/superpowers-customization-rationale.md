@@ -93,6 +93,6 @@ A mid-execution change from the user has the same authority as an initial requir
 
 ## Structural Change: Flattened Layout
 
-The upstream repo organizes all 14 skills under a `skills/` subdirectory. Initially these were kept nested under `superpowers/` in this repo, but OpenCode requires skills to be top-level directories (each with a `SKILL.md` at the root) to discover them. All 14 skills were moved to the repo root as independent sibling directories, matching the same flat structure as the ui-ux-pro-max suite.
+The upstream repo organizes all 14 skills under a `skills/` subdirectory. Initially these were kept nested under `superpowers/` in this repo, but OpenCode requires each skill to have its own `SKILL.md` at the directory root to discover them. All 14 skills were flattened into the repo's `skills/` directory as independent sibling directories, matching the same flat structure as the ui-ux-pro-max suite.
 
-**Files changed:** `setup.py` (removed BUNDLES logic), `update.py` (14 individual upstream entries instead of one bundle entry)
+**Files changed:** `setup.py` (discovers skills from `skills/` subdirectory), `update.py` (14 individual upstream entries instead of one bundle entry)

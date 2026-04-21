@@ -19,6 +19,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent
+SKILLS_DIR = REPO_ROOT / "skills"
 HOME = Path.home()
 
 # Directories where AI tools look for skills
@@ -37,10 +38,12 @@ def _red(s):    return f"\033[31m{s}\033[0m"
 # ── Helpers ──────────────────────────────────────────────────────────────
 
 def discover_skills() -> list[str]:
-    """Return names of top-level directories that contain a SKILL.md."""
+    """Return names of directories under skills/ that contain a SKILL.md."""
+    if not SKILLS_DIR.is_dir():
+        return []
     return sorted(
         d.name
-        for d in REPO_ROOT.iterdir()
+        for d in SKILLS_DIR.iterdir()
         if d.is_dir() and (d / "SKILL.md").exists()
     )
 
@@ -59,7 +62,7 @@ def _is_link_or_junction(path: Path) -> bool:
 
 def make_link(source: Path, target: Path):
     """Create a directory junction (Windows) or symlink (Unix) at target -> source."""
-    if target.exists() or target.is_symlink():
+    if target.exists() or target.is_symlink() or _is_link_or_junction(target):
         if _is_link_or_junction(target):
             # Remove junction/symlink without following into target contents
             os.rmdir(target)
@@ -92,7 +95,7 @@ def main():
     for root in TARGET_ROOTS:
         root.mkdir(parents=True, exist_ok=True)
         for skill in skills:
-            source = REPO_ROOT / skill
+            source = SKILLS_DIR / skill
             target = root / skill
             try:
                 make_link(source, target)
