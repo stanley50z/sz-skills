@@ -351,6 +351,51 @@ BEFORE writing a test:
     Test the outcome, not the mechanism
 ```
 
+## Anti-Pattern 8: Stale Tests From Previous Version
+
+**The violation:**
+```typescript
+// User asked to upgrade auth from session-based (v1) to JWT-based (v2)
+// ❌ BAD: v1 tests still in the suite
+test('stores session ID in cookie', () => { ... });      // v1 behavior
+test('validates session on each request', () => { ... }); // v1 behavior
+test('returns JWT token on login', () => { ... });        // v2 behavior
+
+// Agent sees v1 tests failing → adds fallback:
+// "if JWT fails, fall back to session-based auth"
+// Now you have both v1 and v2 running, which is not what the user asked for
+```
+
+**Why this is wrong:**
+- Stale v1 tests assert behavior the user explicitly chose to replace
+- Failing v1 tests trick the agent into re-implementing v1 as a "fallback"
+- You end up with hybrid v1+v2 code that nobody asked for
+- The user's upgrade intent is silently undermined
+
+**The fix:**
+```typescript
+// ✅ GOOD: Remove v1 tests, write v2 tests
+// DELETED: test('stores session ID in cookie')
+// DELETED: test('validates session on each request')
+
+test('returns JWT token on login', () => { ... });
+test('validates JWT on each request', () => { ... });
+test('rejects expired JWT tokens', () => { ... });
+```
+
+### Gate Function
+
+```
+WHEN upgrading/replacing a feature (v1 → v2):
+  1. Identify all tests that assert v1-specific behavior
+  2. Delete or rewrite them for v2 BEFORE writing implementation
+  3. Write new tests for v2 behavior
+  4. Only then implement v2
+
+  NEVER keep v1 tests alongside v2 tests unless the user
+  explicitly asked for backward compatibility
+```
+
 ## When Mocks Become Too Complex
 
 **Warning signs:**
@@ -385,6 +430,7 @@ BEFORE writing a test:
 | Over-complex mocks | Consider integration tests |
 | Fallback to pass tests | Fail explicitly, don't fake success |
 | Testing implementation instead of requirements | Test user-facing behavior, not internal plumbing |
+| Stale tests from previous version | Delete/rewrite v1 tests before implementing v2 |
 
 ## Red Flags
 
@@ -397,6 +443,8 @@ BEFORE writing a test:
 - try/catch that returns a default to make a test green
 - Test verifies an internal function no user would care about
 - Test is a tautology (asserts the code does what the code does)
+- v1 tests still in suite after user asked for v2 upgrade
+- `if v2 fails, fall back to v1` code that nobody requested
 
 ## The Bottom Line
 

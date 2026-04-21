@@ -55,6 +55,12 @@ Tasks in the plan are tagged `[USER-REQ]` (non-negotiable) or `[AGENT-DECISION]`
 - If a `[USER-REQ]` task conflicts with implementation reality, **stop and surface to the user**. Do not silently reinterpret, weaken, or skip a user requirement.
 - If two tasks conflict with each other, the `[USER-REQ]` task wins. If both are `[USER-REQ]`, surface to the user.
 
+**When the planned approach keeps failing:**
+If you've tried the specified approach and it won't work, do NOT silently switch to an alternative. Stop and present the problem to the user with suggested alternatives. The user decides which direction to take.
+
+**Version upgrades (v1 → v2):**
+When the plan replaces an existing feature with a new version, commit to the new version fully. Do not create `if v2 fails, fall back to v1` code unless the user explicitly requested backward compatibility. Remove or rewrite tests that assert the old behavior before implementing the new version — stale tests for old behavior will mislead you into re-implementing what the user asked you to replace.
+
 ## When to Revisit Earlier Steps
 
 **Return to Review (Step 1) when:**

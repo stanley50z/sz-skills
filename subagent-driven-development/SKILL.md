@@ -126,6 +126,12 @@ Tasks in the plan are tagged `[USER-REQ]` (non-negotiable) or `[AGENT-DECISION]`
 - If the task is `[USER-REQ]` and the implementer encounters problems, **stop and surface to the user**. Do not silently reinterpret, weaken, or skip a user requirement.
 - The spec compliance reviewer should verify that all `[USER-REQ]` tasks are implemented exactly as specified. `[AGENT-DECISION]` tasks have more latitude.
 
+**When the planned approach keeps failing:**
+If the implementer has tried the specified approach and it won't work, do NOT silently switch to an alternative. Stop and present the problem to the user with suggested alternatives. The user decides which direction to take.
+
+**Version upgrades (v1 → v2):**
+When the plan replaces an existing feature with a new version, commit to the new version fully. Do not create `if v2 fails, fall back to v1` code unless the user explicitly requested backward compatibility. Ensure stale v1 tests are removed or rewritten before dispatching the implementer — stale tests for old behavior will mislead the implementer into re-implementing what the user asked to replace.
+
 ## Prompt Templates
 
 - `./implementer-prompt.md` - Dispatch implementer subagent

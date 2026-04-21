@@ -219,6 +219,16 @@ function search(query: string): Result[] {
 - A test that passes because of a fallback is worse than a test that fails — the failure tells you the truth, the fallback hides it.
 - If you're adding a try/catch, default return, or `?? fallbackValue` to make a test green, stop and ask: "would this code work correctly in production, or am I just making the test pass?"
 
+**When the planned approach doesn't work:**
+If the implementation approach specified in the plan keeps failing, do NOT silently switch to an alternative. Stop and suggest alternatives to the user. The user decides which direction to take, not the agent.
+
+**Version upgrades (v1 → v2):**
+When the user asks to upgrade, expand, or replace an existing feature (v1) with a new version (v2):
+- **Remove or update v1 tests first.** Stale v1 tests that assert old behavior will cause the agent to re-implement v1 as a "fallback" to make them pass. Delete tests for v1 behavior that v2 intentionally changes.
+- **Never create `if v2 fails, fall back to v1` code** unless the user explicitly asks for backward compatibility. The user chose v2. v1 is no longer the requirement.
+- **Write new tests for v2 behavior.** The test suite should reflect what the user wants now, not what existed before.
+- If v2 can't be implemented as described, surface the problem. Don't silently preserve v1.
+
 ### Verify GREEN - Watch It Pass
 
 **MANDATORY.**
