@@ -13,6 +13,21 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
+## What to Test: Requirements First
+
+Tests should be derived from **user requirements**, not from implementation details.
+
+If the spec has "User Requirements" and "Agent Design Decisions" sections (from the brainstorming skill), the user requirements drive the primary test suite. Each user requirement should have at least one test that verifies the feature works **as the user described it** — from the outside, testing behavior and outcomes.
+
+Agent design decisions get lighter testing. They're often covered implicitly by the user-requirement tests. Don't write separate tests for internal functions just because they exist.
+
+**Test hierarchy:**
+1. **User-requirement tests** — verify the features the user asked for, from the user's perspective. These are the tests that matter most.
+2. **Edge case / error tests** — cover failure modes and boundaries of the above.
+3. **Implementation tests** — only when the internal behavior is complex enough to warrant direct verification. Ask: "would the user care if this worked differently internally?" If no, you probably don't need a dedicated test for it.
+
+**The test for "login redirects to dashboard" is not `expect(generateToken()).toBeString()`.** It's `expect(afterLogin().currentPage).toBe('/dashboard')`. Test the feature, not the plumbing.
+
 ## When to Use
 
 **Always:**
@@ -165,6 +180,45 @@ Over-engineered
 
 Don't add features, refactor other code, or "improve" beyond the test.
 
+### No Fallbacks, No Silent Failure
+
+<HARD-GATE>
+Never write fallback code, default returns, or silent error swallowing to make a test pass. If the feature doesn't work, the code must fail explicitly.
+</HARD-GATE>
+
+**The problem:** The agent writes a test, then writes implementation code that returns a default value, catches and ignores errors, or adds a fallback path that makes the test green without actually implementing the feature. The test passes. The feature doesn't work.
+
+<Bad>
+```typescript
+// Test: "search returns matching results"
+// Implementation that games the test:
+function search(query: string): Result[] {
+  try {
+    return database.search(query);
+  } catch {
+    return [];  // ← Fallback: test passes, feature silently broken
+  }
+}
+```
+</Bad>
+
+<Good>
+```typescript
+// Implementation that fails explicitly:
+function search(query: string): Result[] {
+  return database.search(query);
+  // If database.search throws, the error propagates.
+  // The test fails. You know something is wrong.
+}
+```
+</Good>
+
+**Rules:**
+- If you can't implement the feature, let the test fail. Don't fake it.
+- Error handling is for expected error cases the user would encounter, not for masking incomplete implementations.
+- A test that passes because of a fallback is worse than a test that fails — the failure tells you the truth, the fallback hides it.
+- If you're adding a try/catch, default return, or `?? fallbackValue` to make a test green, stop and ask: "would this code work correctly in production, or am I just making the test pass?"
+
 ### Verify GREEN - Watch It Pass
 
 **MANDATORY.**
@@ -284,6 +338,9 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 - "Already spent X hours, deleting is wasteful"
 - "TDD is dogmatic, I'm being pragmatic"
 - "This is different because..."
+- Test passes because of a fallback/default/stub, not because the feature works
+- Test verifies an implementation detail no user would care about
+- Writing tests for every internal function instead of testing user-facing behavior
 
 **All of these mean: Delete code. Start over with TDD.**
 
@@ -328,10 +385,12 @@ Extract validation for multiple fields if needed.
 
 Before marking work complete:
 
-- [ ] Every new function/method has a test
+- [ ] Every user requirement has at least one behavioral test
+- [ ] Tests verify features from the user's perspective, not implementation internals
 - [ ] Watched each test fail before implementing
 - [ ] Each test failed for expected reason (feature missing, not typo)
 - [ ] Wrote minimal code to pass each test
+- [ ] No fallbacks, default returns, or silent error swallowing to make tests green
 - [ ] All tests pass
 - [ ] Output pristine (no errors, warnings)
 - [ ] Tests use real code (mocks only if unavoidable)

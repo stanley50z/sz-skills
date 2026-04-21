@@ -73,6 +73,8 @@ If a task serves both, tag it `[USER-REQ]` — the user requirement takes priori
 ````markdown
 ### Task N: [Component Name] [USER-REQ]
 
+**Requirement:** [Which user requirement this implements, quoted or paraphrased from the spec]
+
 **Files:**
 - Create: `exact/path/to/file.py`
 - Modify: `exact/path/to/existing.py:123-145`
@@ -80,10 +82,13 @@ If a task serves both, tag it `[USER-REQ]` — the user requirement takes priori
 
 - [ ] **Step 1: Write the failing test**
 
+Test the user-facing behavior, not implementation internals. The test should verify the feature works as the user described it.
+
 ```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
+def test_search_returns_matching_products():
+    seed_products(["Blue Widget", "Red Widget", "Green Gadget"])
+    results = search_products("widget")
+    assert [r.name for r in results] == ["Blue Widget", "Red Widget"]
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -93,9 +98,11 @@ Expected: FAIL with "function not defined"
 
 - [ ] **Step 3: Write minimal implementation**
 
+Implement the feature for real. No fallbacks, no default returns, no silent error swallowing to make the test pass. If it can't be implemented, let the test fail.
+
 ```python
-def function(input):
-    return expected
+def search_products(query):
+    return db.query(Product).filter(Product.name.contains(query)).all()
 ```
 
 - [ ] **Step 4: Run test to verify it passes**

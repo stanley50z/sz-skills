@@ -248,6 +248,109 @@ TDD cycle:
 4. THEN claim complete
 ```
 
+## Anti-Pattern 6: Fallback Code to Pass Tests
+
+**The violation:**
+```typescript
+// ❌ BAD: Feature "works" by silently returning nothing
+async function searchProducts(query: string): Promise<Product[]> {
+  try {
+    const results = await database.query(query);
+    return results;
+  } catch {
+    return [];  // Test passes: "returns empty array for bad query" ✅
+                // Feature broken: search silently fails for all errors
+  }
+}
+```
+
+**Why this is wrong:**
+- The test is green but the feature doesn't work
+- Fallbacks mask real failures — bugs become invisible
+- The code "passes" in tests but fails silently in production
+- You've tricked the test instead of implementing the feature
+
+**The fix:**
+```typescript
+// ✅ GOOD: Fail explicitly
+async function searchProducts(query: string): Promise<Product[]> {
+  return await database.query(query);
+  // No try/catch — if the database fails, the error propagates
+  // The test fails, you see the real problem
+}
+
+// Only add error handling for genuinely expected user-facing error cases:
+async function searchProducts(query: string): Promise<Product[]> {
+  if (!query.trim()) {
+    throw new Error('Search query cannot be empty');
+  }
+  return await database.query(query);
+}
+```
+
+### Gate Function
+
+```
+BEFORE adding try/catch, default return, or ?? fallbackValue:
+  Ask: "Am I handling a real error case the user would encounter?"
+  Ask: "Or am I just making the test pass?"
+
+  IF making the test pass:
+    STOP - Remove the fallback, let the test fail
+    Fix the real problem instead
+
+  IF real error case:
+    The error handling should be tested too — write a test for the error path
+```
+
+## Anti-Pattern 7: Testing Implementation Instead of Requirements
+
+**The violation:**
+```typescript
+// User requirement: "search should return matching products"
+// ❌ BAD: Tests internal plumbing instead of the feature
+test('buildSearchQuery returns SQL string', () => { ... });
+test('normalizeSearchTerms lowercases input', () => { ... });
+test('SearchIndex.tokenize splits on whitespace', () => { ... });
+
+// None of these test: "does search return matching products?"
+```
+
+**Why this is wrong:**
+- Tests are coupled to implementation details that may change
+- The feature could be broken while all internal tests pass
+- Tests become a maintenance burden — every refactor breaks them
+- You end up with many tests that prove nothing about user-facing behavior
+
+**The fix:**
+```typescript
+// ✅ GOOD: Test the feature as the user described it
+test('search returns products matching the query', () => {
+  seedProducts([
+    { name: 'Blue Widget' },
+    { name: 'Red Widget' },
+    { name: 'Green Gadget' },
+  ]);
+  const results = searchProducts('widget');
+  expect(results.map(r => r.name)).toEqual(['Blue Widget', 'Red Widget']);
+});
+```
+
+### Gate Function
+
+```
+BEFORE writing a test:
+  Ask: "Would the user care if this internal behavior changed?"
+
+  IF no:
+    Don't write a dedicated test for it
+    It should be covered by a user-requirement test instead
+
+  IF yes:
+    Write the test from the user's perspective
+    Test the outcome, not the mechanism
+```
+
 ## When Mocks Become Too Complex
 
 **Warning signs:**
@@ -280,6 +383,8 @@ TDD cycle:
 | Incomplete mocks | Mirror real API completely |
 | Tests as afterthought | TDD - tests first |
 | Over-complex mocks | Consider integration tests |
+| Fallback to pass tests | Fail explicitly, don't fake success |
+| Testing implementation instead of requirements | Test user-facing behavior, not internal plumbing |
 
 ## Red Flags
 
@@ -289,6 +394,9 @@ TDD cycle:
 - Test fails when you remove mock
 - Can't explain why mock is needed
 - Mocking "just to be safe"
+- try/catch that returns a default to make a test green
+- Test verifies an internal function no user would care about
+- Test is a tautology (asserts the code does what the code does)
 
 ## The Bottom Line
 
