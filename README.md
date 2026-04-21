@@ -15,6 +15,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | Skill | Description | Source | Customization |
 |---|---|---|---|
 | [find-skills](find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
+| [superpowers](superpowers/) | Complete dev workflow — brainstorming, planning, TDD, debugging, code review, parallel agents (14 skills) | [obra/superpowers](https://github.com/obra/superpowers) | Tailored workflow |
 
 ## Vendor Skills
 

@@ -45,6 +45,19 @@ def discover_skills() -> list[str]:
     )
 
 
+# Skill bundles: directories that don't have their own SKILL.md but contain
+# subdirectories that do. These are linked as a single junction/symlink.
+BUNDLES = ["superpowers"]
+
+
+def discover_bundles() -> list[str]:
+    """Return names of known bundle directories that exist in the repo."""
+    return sorted(
+        name for name in BUNDLES
+        if (REPO_ROOT / name).is_dir()
+    )
+
+
 def _is_link_or_junction(path: Path) -> bool:
     """Check if path is a symlink or NTFS junction."""
     if path.is_symlink():
@@ -82,17 +95,20 @@ def make_link(source: Path, target: Path):
 
 def main():
     skills = discover_skills()
-    if not skills:
-        print(_red("No skills found (directories with SKILL.md)."))
+    bundles = discover_bundles()
+    all_entries = skills + bundles
+
+    if not all_entries:
+        print(_red("No skills or bundles found."))
         sys.exit(1)
 
-    print(_cyan(f"Creating links for: {', '.join(skills)}"))
+    print(_cyan(f"Creating links for: {', '.join(all_entries)}"))
 
     for root in TARGET_ROOTS:
         root.mkdir(parents=True, exist_ok=True)
-        for skill in skills:
-            source = REPO_ROOT / skill
-            target = root / skill
+        for entry in all_entries:
+            source = REPO_ROOT / entry
+            target = root / entry
             try:
                 make_link(source, target)
                 print(f"  {_green(f'{target} -> {source}')}")
