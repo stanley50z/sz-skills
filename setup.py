@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sz-skills setup script — create links from agent skill directories into this repo.
+"""sz-skills setup script — create links from coding harness skill directories into this repo.
 
 Run this after cloning on a new device:
     git clone https://github.com/stanley50z/sz-skills ~/.sz-skills
@@ -22,10 +22,11 @@ REPO_ROOT = Path(__file__).resolve().parent
 SKILLS_DIR = REPO_ROOT / "skills"
 HOME = Path.home()
 
-# Directories where AI tools look for skills
+# Directories where coding harnesses look for skills
 TARGET_ROOTS = [
-    HOME / ".agents" / "skills",
     HOME / ".claude" / "skills",
+    HOME / ".codex" / "skills",
+    HOME / ".config" / "opencode" / "skills",
 ]
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────

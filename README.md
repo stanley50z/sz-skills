@@ -61,7 +61,13 @@ cd ~/.sz-skills
 python setup.py
 ```
 
-`setup.py` creates junctions (Windows) or symlinks (macOS/Linux) from `~/.agents/skills/` and `~/.claude/skills/` into this repo's `skills/` directory.
+`setup.py` creates junctions (Windows) or symlinks (macOS/Linux) for coding harness skill directories:
+
+- `~/.claude/skills/`
+- `~/.codex/skills/`
+- `~/.config/opencode/skills/`
+
+The script creates those directories if they do not exist yet. For each skill in this repo, it adds the skill if missing and replaces the target only when a skill with the same name already exists. Unrelated skills in those directories are left alone.
 
 ## Updating Vendor Skills
 
