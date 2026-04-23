@@ -38,6 +38,12 @@ UPSTREAM = {
     "gh-cli": [
         {"repo": "github/awesome-copilot", "path": "skills/gh-cli"},
     ],
+    "supabase-postgres-best-practices": [
+        {"repo": "supabase/agent-skills", "path": "skills/supabase-postgres-best-practices"},
+    ],
+    "remotion-best-practices": [
+        {"repo": "remotion-dev/skills", "path": "skills/remotion"},
+    ],
     # ── ui-ux-pro-max skill set ──────────────────────────────────────────
     "ui-ux-pro-max": [
         {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/ui-ux-pro-max", "only": ["SKILL.md"]},
