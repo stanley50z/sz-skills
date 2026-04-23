@@ -64,8 +64,10 @@ def _is_link_or_junction(path: Path) -> bool:
 def make_link(source: Path, target: Path):
     """Create a directory junction (Windows) or symlink (Unix) at target -> source."""
     if target.exists() or target.is_symlink() or _is_link_or_junction(target):
-        if _is_link_or_junction(target):
-            # Remove junction/symlink without following into target contents
+        if target.is_symlink():
+            target.unlink()
+        elif _is_link_or_junction(target):
+            # Remove Windows junction without following into target contents
             os.rmdir(target)
         elif target.is_dir():
             shutil.rmtree(target)
