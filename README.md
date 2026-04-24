@@ -65,7 +65,13 @@ cd ~/.sz-skills
 python setup.py
 ```
 
-`setup.py` creates junctions (Windows) or symlinks (macOS/Linux) for coding harness skill directories:
+`setup.py` installs every skill in this repo. To choose specific skills from a terminal menu instead, run:
+
+```sh
+python interactive_setup.py
+```
+
+Both setup scripts create junctions (Windows) or symlinks (macOS/Linux) for coding harness skill directories:
 
 - `~/.claude/skills/`
 - `~/.codex/skills/`

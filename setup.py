@@ -84,6 +84,28 @@ def make_link(source: Path, target: Path):
         target.symlink_to(source)
 
 
+def install_skills(
+    skills: list[str],
+    *,
+    skills_dir: Path = SKILLS_DIR,
+    target_roots: list[Path] = TARGET_ROOTS,
+) -> int:
+    """Link selected skills into each coding harness root and return success count."""
+    installed = 0
+    for root in target_roots:
+        root.mkdir(parents=True, exist_ok=True)
+        for skill in skills:
+            source = skills_dir / skill
+            target = root / skill
+            try:
+                make_link(source, target)
+                installed += 1
+                print(f"  {_green(f'{target} -> {source}')}")
+            except Exception as e:
+                print(f"  {_red(f'FAILED: {target} — {e}')}")
+    return installed
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 
 def main():
@@ -95,16 +117,7 @@ def main():
 
     print(_cyan(f"Creating links for: {', '.join(skills)}"))
 
-    for root in TARGET_ROOTS:
-        root.mkdir(parents=True, exist_ok=True)
-        for skill in skills:
-            source = SKILLS_DIR / skill
-            target = root / skill
-            try:
-                make_link(source, target)
-                print(f"  {_green(f'{target} -> {source}')}")
-            except Exception as e:
-                print(f"  {_red(f'FAILED: {target} — {e}')}")
+    install_skills(skills)
 
     print(f"\n{_cyan('Done. All skills are linked.')}")
 
