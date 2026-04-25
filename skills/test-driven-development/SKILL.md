@@ -13,6 +13,21 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
+## Timeout Rule
+
+Every test run MUST have a timeout. This is a first-class TDD rule, not an optional safety net.
+
+If a test command can hang, the agent can hang with it. Never run bare `npm test`, `pytest`, `go test`, `cargo test`, `vitest`, `jest`, `bun test`, `deno test`, or similar commands without a timeout around the process.
+
+**Use an external timeout that kills the stuck process, not just an in-test assertion timeout.** Runner-level test timeouts help, but they do not replace a command-level timeout.
+
+**Reasonable defaults:**
+- Single test / focused RED or GREEN check: 30-60 seconds
+- Small package or file-level suite: 2-5 minutes
+- Full project suite: 5-15 minutes
+
+If a command times out, treat that as a failure that must be debugged. Do not re-run the same hanging command indefinitely.
+
 ## What to Test: Requirements First
 
 Tests should be derived from **user requirements**, not from implementation details.
@@ -130,17 +145,20 @@ Vague name, tests mock not code
 **MANDATORY. Never skip.**
 
 ```bash
-npm test path/to/test.test.ts
+timeout 45s npm test path/to/test.test.ts
 ```
+
+Use your shell's equivalent external timeout wrapper if `timeout` is unavailable.
 
 Confirm:
 - Test fails (not errors)
 - Failure message is expected
 - Fails because feature missing (not typos)
+- Command did not hang past the timeout
 
 **Test passes?** You're testing existing behavior. Fix test.
 
-**Test errors?** Fix error, re-run until it fails correctly.
+**Test errors or times out?** Fix the issue, then re-run until it fails correctly.
 
 ### GREEN - Minimal Code
 
@@ -234,17 +252,20 @@ When the user asks to upgrade, expand, or replace an existing feature (v1) with 
 **MANDATORY.**
 
 ```bash
-npm test path/to/test.test.ts
+timeout 45s npm test path/to/test.test.ts
 ```
+
+Use your shell's equivalent external timeout wrapper if `timeout` is unavailable.
 
 Confirm:
 - Test passes
 - Other tests still pass
 - Output pristine (no errors, warnings)
+- Command completed before the timeout
 
 **Test fails?** Fix code, not test.
 
-**Other tests fail?** Fix now.
+**Other tests fail or the command times out?** Fix now.
 
 ### REFACTOR - Clean Up
 
@@ -332,6 +353,8 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 | "TDD will slow me down" | TDD faster than debugging. Pragmatic = test-first. |
 | "Manual test faster" | Manual doesn't prove edge cases. You'll re-test every change. |
 | "Existing code has no tests" | You're improving it. Add tests for existing code. |
+| "This test command usually finishes quickly" | Usually is not good enough. Add a timeout anyway. |
+| "The runner has its own timeout" | Runner-level timeout does not guarantee the whole process exits. |
 
 ## Red Flags - STOP and Start Over
 
@@ -351,6 +374,8 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 - Test passes because of a fallback/default/stub, not because the feature works
 - Test verifies an implementation detail no user would care about
 - Writing tests for every internal function instead of testing user-facing behavior
+- Running test commands without an explicit timeout
+- Re-running the same hanging test command without changing anything
 
 **All of these mean: Delete code. Start over with TDD.**
 
@@ -368,7 +393,7 @@ test('rejects empty email', async () => {
 
 **Verify RED**
 ```bash
-$ npm test
+$ timeout 45s npm test
 FAIL: expected 'Email required', got undefined
 ```
 
@@ -384,7 +409,7 @@ function submitForm(data: FormData) {
 
 **Verify GREEN**
 ```bash
-$ npm test
+$ timeout 45s npm test
 PASS
 ```
 
@@ -403,6 +428,7 @@ Before marking work complete:
 - [ ] No fallbacks, default returns, or silent error swallowing to make tests green
 - [ ] All tests pass
 - [ ] Output pristine (no errors, warnings)
+- [ ] Every test command was run with a reasonable timeout
 - [ ] Tests use real code (mocks only if unavoidable)
 - [ ] Edge cases and errors covered
 
@@ -416,6 +442,7 @@ Can't check all boxes? You skipped TDD. Start over.
 | Test too complicated | Design too complicated. Simplify interface. |
 | Must mock everything | Code too coupled. Use dependency injection. |
 | Test setup huge | Extract helpers. Still complex? Simplify design. |
+| Test command hangs | Stop running it bare. Add or shorten the timeout, isolate the stuck test, and debug the hang as a real failure. |
 
 ## Debugging Integration
 
