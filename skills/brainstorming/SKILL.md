@@ -28,8 +28,8 @@ You MUST create a task for each of these items and complete them in order:
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
 6. **Write design doc** — save to `docs/specs/YYYY-MM-DD-<topic>-design.md` and commit
 7. **Spec review loop** — dispatch spec-document-reviewer subagent with precisely crafted review context (never your session history); fix issues and re-dispatch until approved (max 3 iterations, then surface to human)
-8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+8. **User reviews written spec and chooses escalation** - ask user to review the spec file and, in the same prompt, decide whether to invoke `grill-with-docs` for a deeper pass against project language and documented decisions
+9. **Transition to implementation** - invoke writing-plans skill to create implementation plan
 
 ## Process Flow
 
@@ -45,7 +45,9 @@ digraph brainstorming {
     "Write design doc" [shape=box];
     "Spec review loop" [shape=box];
     "Spec review passed?" [shape=diamond];
-    "User reviews spec?" [shape=diamond];
+    "User reviews spec and wants grill-with-docs?" [shape=diamond];
+    "Run grill-with-docs?" [shape=diamond];
+    "Invoke grill-with-docs skill" [shape=box];
     "Invoke writing-plans skill" [shape=doublecircle];
 
     "Explore project context" -> "Visual questions ahead?";
@@ -60,13 +62,16 @@ digraph brainstorming {
     "Write design doc" -> "Spec review loop";
     "Spec review loop" -> "Spec review passed?";
     "Spec review passed?" -> "Spec review loop" [label="issues found,\nfix and re-dispatch"];
-    "Spec review passed?" -> "User reviews spec?" [label="approved"];
-    "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
+    "Spec review passed?" -> "User reviews spec and wants grill-with-docs?" [label="approved"];
+    "User reviews spec and wants grill-with-docs?" -> "Write design doc" [label="changes requested"];
+    "User reviews spec and wants grill-with-docs?" -> "Run grill-with-docs?" [label="approved"];
+    "Run grill-with-docs?" -> "Invoke grill-with-docs skill" [label="yes"];
+    "Invoke grill-with-docs skill" -> "Invoke writing-plans skill" [label="complete"];
+    "Run grill-with-docs?" -> "Invoke writing-plans skill" [label="no"];
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
+**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The only optional skill between brainstorming and writing-plans is `grill-with-docs`, and only when the user explicitly chooses that escalation.
 
 ## The Process
 
@@ -161,16 +166,17 @@ After writing the spec document:
 3. If loop exceeds 3 iterations, surface to human for guidance
 
 **User Review Gate:**
-After the spec review loop passes, ask the user to review the written spec before proceeding:
+After the spec review loop passes, ask the user to review the written spec and choose whether to run `grill-with-docs` before proceeding:
 
-> "Spec written and committed to `<path>`. Please review it and let me know if you want to make any changes before we start writing out the implementation plan."
+> "Spec written and committed to `<path>`. Please review it and let me know if you want to make any changes. Also, do you want to run `grill-with-docs` for a deeper pass against the project language, existing docs, and ADR-level decisions before we write the implementation plan?"
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
+If they approve the spec and say yes to `grill-with-docs`, invoke `grill-with-docs` and follow it before continuing. If they approve the spec and say no, proceed directly to writing-plans.
 
 **Implementation:**
 
 - Invoke the writing-plans skill to create a detailed implementation plan
-- Do NOT invoke any other skill. writing-plans is the next step.
+- Do NOT invoke any other skill except the optional `grill-with-docs` escalation above. writing-plans is the next step after that choice is resolved.
 
 ## Key Principles
 

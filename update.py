@@ -38,6 +38,12 @@ UPSTREAM = {
     "gh-cli": [
         {"repo": "github/awesome-copilot", "path": "skills/gh-cli"},
     ],
+    "grill-with-docs": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/grill-with-docs"},
+    ],
+    "improve-codebase-architecture": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/improve-codebase-architecture"},
+    ],
     "supabase-postgres-best-practices": [
         {"repo": "supabase/agent-skills", "path": "skills/supabase-postgres-best-practices"},
     ],

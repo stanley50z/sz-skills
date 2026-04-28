@@ -91,6 +91,14 @@ A mid-execution change from the user has the same authority as an initial requir
 
 **Files changed:** `executing-plans/SKILL.md`, `subagent-driven-development/SKILL.md`, `finishing-a-development-branch/SKILL.md`, `writing-plans/SKILL.md`
 
+## 7. Optional Deep Planning Pass
+
+**Problem:** The brainstorming skill is the main entry point for the superpowers pipeline, but some designs need a deeper pass against project language, existing docs, and ADR-level decisions before implementation planning. Running a separate prompt after the spec review creates extra ceremony and makes the escalation easy to miss.
+
+**Solution:** Added `grill-with-docs` as an optional escalation in the brainstorming handoff. After the spec review loop passes, the agent asks the user to review the written spec and, in the same prompt, decide whether to run `grill-with-docs` before writing the implementation plan. If the user opts in, `grill-with-docs` runs before `writing-plans`; otherwise the normal superpowers pipeline continues directly to `writing-plans`.
+
+**Files changed:** `brainstorming/SKILL.md`
+
 ## Structural Change: Flattened Layout
 
 The upstream repo organizes all 14 skills under a `skills/` subdirectory. Initially these were kept nested under `superpowers/` in this repo, but OpenCode requires each skill to have its own `SKILL.md` at the directory root to discover them. All 14 skills were flattened into the repo's `skills/` directory as independent sibling directories, matching the same flat structure as the ui-ux-pro-max suite.
