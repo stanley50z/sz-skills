@@ -80,6 +80,17 @@ Result:
 - `update.py` is the machine-facing source of truth for vendor-backed skills.
 - `setup.py` installs every discovered skill folder; it does not decide skill type.
 
+## Update Workflow
+
+When the user asks to update skills, always pull the repo first:
+
+1. Run `git pull --ff-only`.
+2. Run `python update.py`.
+3. Run `python setup.py`.
+4. Review the resulting diff and status.
+
+Do not run `python update.py` before pulling. If local changes already exist, preserve them with an appropriate stash or other non-destructive workflow, then pull and reapply them.
+
 ## Verification Checklist
 
 After adding or reclassifying a skill:
@@ -101,3 +112,4 @@ After adding or reclassifying a skill:
 - Forgetting to update `README.md` after changing skill type.
 - Editing `setup.py` to special-case one skill type.
 - Putting skill files outside `skills/<skill-name>/`.
+- Running `python update.py` before `git pull --ff-only` when updating skills.

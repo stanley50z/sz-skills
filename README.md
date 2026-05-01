@@ -83,9 +83,13 @@ The script creates those directories if they do not exist yet. For each skill in
 
 ## Updating Vendor Skills
 
+Always pull the latest repo state before updating vendor skills. In this repo, "update skills" means:
+
 ```sh
 cd ~/.sz-skills
+git pull --ff-only
 python update.py
+python setup.py
 git diff              # review changes
 git add -A && git commit -m "chore: update vendor skills"
 ```
