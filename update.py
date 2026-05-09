@@ -38,6 +38,9 @@ UPSTREAM = {
     "gh-cli": [
         {"repo": "github/awesome-copilot", "path": "skills/gh-cli"},
     ],
+    "docker-expert": [
+        {"repo": "sickn33/antigravity-awesome-skills", "path": "skills/docker-expert"},
+    ],
     "grill-with-docs": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/grill-with-docs"},
     ],
