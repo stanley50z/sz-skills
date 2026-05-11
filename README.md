@@ -6,6 +6,7 @@ My personal collection of AI agent skills, synced across devices.
 
 | Skill | Description |
 |---|---|
+| [start-sz-video](skills/start-sz-video/) | Start the local sz-video operator UI and API without launching Docker containers |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
 
 ## Vendor Skills (customized)
