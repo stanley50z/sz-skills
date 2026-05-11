@@ -1,0 +1,4 @@
+interface:
+  display_name: "Restart Stale Docker"
+  short_description: "Recover Docker Desktop when the engine hangs."
+  default_prompt: "Use $restart-stale-docker to check whether Docker is stale and restart it if needed."
