@@ -53,6 +53,9 @@ UPSTREAM = {
     "remotion-best-practices": [
         {"repo": "remotion-dev/skills", "path": "skills/remotion"},
     ],
+    "revealjs": [
+        {"repo": "ryanbbrown/revealjs-skill", "path": "skills/revealjs"},
+    ],
     # ── ui-ux-pro-max skill set ──────────────────────────────────────────
     "ui-ux-pro-max": [
         {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/ui-ux-pro-max", "only": ["SKILL.md"]},
