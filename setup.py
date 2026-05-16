@@ -24,9 +24,10 @@ HOME = Path.home()
 
 # Directories where coding harnesses look for skills
 TARGET_ROOTS = [
-    HOME / ".claude" / "skills",
-    HOME / ".codex" / "skills",
-    HOME / ".config" / "opencode" / "skills",
+    HOME / ".claude" / "skills",    # Claude Code
+    HOME / ".codex" / "skills",      # OpenAI Codex
+    HOME / ".config" / "opencode" / "skills",  # Opencode
+    HOME / ".agents" / "skills",     # Pi coding agent
 ]
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────

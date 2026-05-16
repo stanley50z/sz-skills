@@ -79,9 +79,10 @@ python interactive_setup.py
 
 Both setup scripts create junctions (Windows) or symlinks (macOS/Linux) for coding harness skill directories:
 
-- `~/.claude/skills/`
-- `~/.codex/skills/`
-- `~/.config/opencode/skills/`
+- `~/.claude/skills/` — Claude Code
+- `~/.codex/skills/` — OpenAI Codex
+- `~/.config/opencode/skills/` — Opencode
+- `~/.agents/skills/` — Pi coding agent
 
 The script creates those directories if they do not exist yet. For each skill in this repo, it adds the skill if missing and replaces the target only when a skill with the same name already exists. Unrelated skills in those directories are left alone.
 

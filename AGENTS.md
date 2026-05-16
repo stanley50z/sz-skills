@@ -2,9 +2,10 @@
 
 This repo is the source of truth for coding-harness skills that get linked into:
 
-- `~/.claude/skills/`
-- `~/.codex/skills/`
-- `~/.config/opencode/skills/`
+- `~/.claude/skills/` — Claude Code
+- `~/.codex/skills/` — OpenAI Codex
+- `~/.config/opencode/skills/` — Opencode
+- `~/.agents/skills/` — Pi coding agent
 
 `setup.py` auto-discovers every directory under `skills/` that contains a `SKILL.md` file, then links those skills into the harness directories. Do not add skills anywhere else in this repo.
 
@@ -101,9 +102,10 @@ After adding or reclassifying a skill:
 4. Update `update.py` if the skill is vendor-backed.
 5. Run `python setup.py`.
 6. Verify the skill appears in:
-   - `~/.claude/skills/`
-   - `~/.codex/skills/`
-   - `~/.config/opencode/skills/`
+   - `~/.claude/skills/` — Claude Code
+   - `~/.codex/skills/` — OpenAI Codex
+   - `~/.config/opencode/skills/` — Opencode
+   - `~/.agents/skills/` — Pi coding agent
 
 ## Common Mistakes To Avoid
 

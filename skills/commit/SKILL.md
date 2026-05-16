@@ -7,6 +7,8 @@ description: Use when the user asks to commit, create a commit, or save changes 
 
 ## Workflow
 
+When this skill is invoked, execute the workflow below immediately without waiting for further instructions.
+
 0. **Worktree handoff:** Before staging, detect whether the current checkout is a linked git worktree, for example by comparing `git rev-parse --git-dir` and `git rev-parse --git-common-dir` or by inspecting `git worktree list --porcelain`.
 
    If committing inside a linked worktree, **invoke `finishing-a-development-branch` first** unless this commit workflow was already invoked by `finishing-a-development-branch` for its final commit step. When called back from `finishing-a-development-branch`, continue this workflow on the current branch/worktree without repeating the handoff.

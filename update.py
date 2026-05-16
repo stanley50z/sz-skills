@@ -105,10 +105,15 @@ def _yellow(s):  return f"\033[33m{s}\033[0m"
 def _red(s):     return f"\033[31m{s}\033[0m"
 def _dim(s):     return f"\033[90m{s}\033[0m"
 
+def _log(*args, **kwargs):
+    """Print with immediate flush so progress is visible even via pipes."""
+    print(*args, **kwargs, flush=True)
+
 # ── Helpers ──────────────────────────────────────────────────────────────
 
 def gh_api(endpoint: str) -> list | dict | None:
     """Call gh api and return parsed JSON, or None on failure."""
+    _log(_dim(f"  ⏳ gh api repos/{endpoint}"))
     result = subprocess.run(
         ["gh", "api", f"repos/{endpoint}"],
         capture_output=True, text=True,
@@ -148,7 +153,7 @@ def sync_remote_dir(repo: str, remote_path: str, local_dir: Path, indent: str = 
 
     data = gh_api(f"{repo}/contents/{remote_path}")
     if data is None:
-        print(f"{indent}{_red('WARNING: could not list ' + remote_path)}")
+        _log(f"{indent}{_red('WARNING: could not list ' + remote_path)}")
         return
 
     entries = data if isinstance(data, list) else [data]
@@ -165,27 +170,29 @@ def sync_remote_dir(repo: str, remote_path: str, local_dir: Path, indent: str = 
 
         ext = Path(name).suffix.lower()
         if ext in BINARY_EXTS:
-            print(f"{indent}{_dim('Skipping binary: ' + name)}")
+            _log(f"{indent}{_dim('Skipping binary: ' + name)}")
             continue
 
         content = decode_content(entry, repo, remote_full)
         if content is not None:
             local_full.write_bytes(content)
-            print(f"{indent}{_green('Updated ' + name)}")
+            _log(f"{indent}{_green('Updated ' + name)}")
         else:
-            print(f"{indent}{_red('WARNING: no content for ' + name)}")
+            _log(f"{indent}{_red('WARNING: no content for ' + name)}")
 
 
 # ── Main ─────────────────────────────────────────────────────────────────
 
 def main():
-    for skill, sources in UPSTREAM.items():
+    skills_list = list(UPSTREAM.items())
+    total = len(skills_list)
+    for idx, (skill, sources) in enumerate(skills_list, 1):
         if skill in PATCHED:
-            print(_yellow(f"Skipping {skill} (has local customizations — update manually)"))
+            _log(_yellow(f"[{idx}/{total}] Skipping {skill} (has local customizations)"))
             continue
 
         local_dir = SKILLS_DIR / skill
-        print(_cyan(f"Updating {skill}..."))
+        _log(_cyan(f"[{idx}/{total}] Updating {skill}..."))
 
         for src in sources:
             repo = src["repo"]
@@ -194,7 +201,7 @@ def main():
 
             data = gh_api(f"{repo}/contents/{remote_path}")
             if data is None:
-                print(f"  {_red('WARNING: could not list ' + remote_path + ' from ' + repo)}")
+                _log(f"  {_red('WARNING: could not list ' + remote_path + ' from ' + repo)}")
                 continue
 
             entries = data if isinstance(data, list) else [data]
@@ -209,7 +216,7 @@ def main():
 
                 # Skip symlinks
                 if entry_type == "symlink":
-                    print(f"  {_dim('Skipping symlink: ' + name)}")
+                    _log(f"  {_dim('Skipping symlink: ' + name)}")
                     continue
 
                 remote_full = f"{remote_path}/{name}"
@@ -221,18 +228,18 @@ def main():
 
                 ext = Path(name).suffix.lower()
                 if ext in BINARY_EXTS:
-                    print(f"  {_dim('Skipping binary: ' + name)}")
+                    _log(f"  {_dim('Skipping binary: ' + name)}")
                     continue
 
                 content = decode_content(entry, repo, remote_full)
                 if content is not None:
                     ensure_dir(local_full.parent)
                     local_full.write_bytes(content)
-                    print(f"  {_green('Updated ' + name)}")
+                    _log(f"  {_green('Updated ' + name)}")
                 else:
-                    print(f"  {_red('WARNING: no content for ' + name)}")
+                    _log(f"  {_red('WARNING: no content for ' + name)}")
 
-    print(f"\n{_yellow('Done. Run `git diff` to see changes, then commit to pin the new versions.')}")
+    _log(f"\n{_yellow('Done. Run `git diff` to see changes, then commit to pin the new versions.')}")
 
 
 if __name__ == "__main__":
