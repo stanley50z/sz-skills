@@ -6,7 +6,6 @@ My personal collection of AI agent skills, synced across devices.
 
 | Skill | Description |
 |---|---|
-| [start-sz-video](skills/start-sz-video/) | Start the local sz-video operator UI and API without launching Docker containers |
 | [restart-stale-docker](skills/restart-stale-docker/) | Check whether Docker Desktop is stale and restart the Windows/WSL2 engine safely |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
 

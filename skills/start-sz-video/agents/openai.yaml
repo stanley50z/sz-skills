@@ -1,4 +1,0 @@
-interface:
-  display_name: "Start sz-video"
-  short_description: "Start the local sz-video operator UI stack."
-  default_prompt: "Use $start-sz-video to start the local sz-video operator UI and API."
