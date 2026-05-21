@@ -95,7 +95,7 @@ for _s in _SUPERPOWERS:
     UPSTREAM[_s] = [{"repo": "obra/superpowers", "path": f"skills/{_s}"}]
 
 # Skills with local customizations — skip during auto-update
-PATCHED = {"find-skills"} | set(_SUPERPOWERS)
+PATCHED = {"find-skills", "slides"} | set(_SUPERPOWERS)
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────
 

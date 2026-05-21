@@ -99,6 +99,17 @@ A mid-execution change from the user has the same authority as an initial requir
 
 **Files changed:** `brainstorming/SKILL.md`
 
+## 8. Structured HTML Companions
+
+**Problem:** Some brainstorming and planning outputs are difficult to review as linear Markdown. Dense option comparisons, requirement groupings, architecture sketches, dependency maps, and traceability matrices lose clarity when buried in prose.
+
+**Solution:** Added targeted HTML companion guidance to `brainstorming` and `writing-plans`. HTML is not a universal response format and does not replace canonical Markdown specs or plans. It is a review aid for cases where visual hierarchy, scanning, or structured comparison improves human understanding.
+
+- **brainstorming** may create structured HTML companions for option comparison cards, decision matrices, architecture sketches, requirement grouping, approach comparisons, and risks/tradeoffs.
+- **writing-plans** may create HTML plan companions for task dependency maps, file-change maps, requirement-to-task traceability, and plan overview dashboards.
+
+**Files changed:** `brainstorming/SKILL.md`, `writing-plans/SKILL.md`
+
 ## Structural Change: Flattened Layout
 
 The upstream repo organizes all 14 skills under a `skills/` subdirectory. Initially these were kept nested under `superpowers/` in this repo, but OpenCode requires each skill to have its own `SKILL.md` at the directory root to discover them. All 14 skills were flattened into the repo's `skills/` directory as independent sibling directories, matching the same flat structure as the ui-ux-pro-max suite.

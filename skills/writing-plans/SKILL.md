@@ -18,6 +18,19 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 **Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
 - (User preferences for plan location override this default)
 
+## HTML Plan Companion
+
+For large or hard-to-review plans, create an optional HTML companion next to the plan using the same basename with `.html` (for example, `docs/plans/YYYY-MM-DD-feature.html`). The Markdown implementation plan remains the source of truth; the HTML file is a review aid.
+
+Use an HTML Plan Companion when it would make the plan easier to understand through:
+- task dependency maps
+- file-change maps
+- requirement-to-task traceability
+- plan overview dashboards
+- risk or blocker summaries
+
+Do not create HTML for small plans, short task lists, or anything where Markdown is clearer. Do not replace checkbox tasks, exact commands, expected outputs, or TDD steps with HTML-only content.
+
 ## Scope Check
 
 If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.

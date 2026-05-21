@@ -22,7 +22,7 @@ Every project goes through this process. A todo list, a single-function utility,
 You MUST create a task for each of these items and complete them in order:
 
 1. **Explore project context** — check files, docs, recent commits
-2. **Create HTML visual companion** (if topic will involve visual questions) — output the visual companion as an HTML file. See the Visual Companion section below.
+2. **Create HTML visual companion** (if topic will involve visual or highly structured review questions) — output the companion as an HTML file. See the Visual Companion and Structured HTML Companion sections below.
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
@@ -190,16 +190,39 @@ If they approve the spec and say yes to `grill-with-docs`, invoke `grill-with-do
 
 ## Visual Companion
 
-A browser-based companion for showing mockups, diagrams, and visual options during brainstorming. Available as a tool — not a mode. Creating the companion means it's available for questions that benefit from visual treatment; it does NOT mean every question goes through the browser.
+A browser-based companion for showing mockups, diagrams, visual options, and complex structured choices during brainstorming. Available as a tool — not a mode. Creating the companion means it's available for questions that benefit from visual or structured treatment; it does NOT mean every question goes through the browser.
 
-**Creating the companion:** When you anticipate that upcoming questions will involve visual content (mockups, layouts, diagrams), format your response in an HTML file. Do not ask whether the user wants a visual companion, and do not offer a text-only alternative.
+**Creating the companion:** When you anticipate that upcoming questions will involve visual content (mockups, layouts, diagrams) or dense structured comparison, format your response in an HTML file. Do not ask whether the user wants a visual companion, and do not offer a text-only alternative.
 
 **Per-question decision:** Decide FOR EACH QUESTION whether to use the browser or the terminal. The test: **would the user understand this better by seeing it than reading it?**
 
-- **Use the browser** for content that IS visual — mockups, wireframes, layout comparisons, architecture diagrams, side-by-side visual designs
-- **Use the terminal** for content that is text — requirements questions, conceptual choices, tradeoff lists, A/B/C/D text options, scope decisions
+- **Use the browser** for content that IS visual or structurally dense — mockups, wireframes, layout comparisons, architecture diagrams, side-by-side visual designs, option comparison cards, decision matrices, architecture sketches, requirement grouping
+- **Use the terminal** for content that is text — requirements questions, conceptual choices, short tradeoff lists, A/B/C/D text options, scope decisions
 
 A question about a UI topic is not automatically a visual question. "What does personality mean in this context?" is a conceptual question — use the terminal. "Which wizard layout works better?" is a visual question — use the browser.
 
 Before creating the HTML companion, read the detailed guide:
 `skills/brainstorming/visual-companion.md`
+
+## Structured HTML Companion
+
+Use a Structured HTML Companion when the brainstorming output will be easier to review as a visual artifact than as prose. This is most useful for complex specs, many options, or decisions with multiple tradeoffs.
+
+**HTML companion is a review aid, not the canonical spec.** The Markdown spec in `docs/specs/YYYY-MM-DD-<topic>-design.md` remains the source of truth unless the user explicitly asks otherwise.
+
+Good structured companion sections:
+- **User Requirements** — grouped by theme or priority
+- **Agent Design Decisions** — linked to the user requirement each decision serves
+- **Open Questions** — unresolved choices needing user input
+- **Approach Comparison** — recommended option plus alternatives
+- **Risks / Tradeoffs** — visible costs, constraints, and mitigations
+
+Create a structured companion for:
+- option comparison cards
+- decision matrices
+- architecture sketches
+- requirement grouping
+- multi-step user journeys
+- large design reviews where scanning matters
+
+Skip HTML for short answers, ordinary clarification questions, simple scope decisions, commands, logs, or anything that is clearer as plain Markdown.
