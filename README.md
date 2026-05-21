@@ -6,6 +6,7 @@ My personal collection of AI agent skills, synced across devices.
 
 | Skill | Description |
 |---|---|
+| [global-project-preferences](skills/global-project-preferences/) | Default tech stack preferences for new projects, extensions, scripts, and other greenfield work |
 | [restart-stale-docker](skills/restart-stale-docker/) | Check whether Docker Desktop is stale and restart the Windows/WSL2 engine safely |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
 
