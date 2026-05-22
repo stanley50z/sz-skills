@@ -1,91 +1,123 @@
 ---
 name: finishing-a-development-branch
-description: Use when implementation is complete, all tests pass, and you need to finalize the work - verifies tests, asks user to test manually, then commits using the commit skill
+description: Use when implementation is complete, all tests pass, and development work should be finalized
 ---
 
 # Finishing a Development Branch
 
 ## Overview
 
-Guide completion of development work by verifying tests, getting user confirmation, and committing.
+Finalize development work without presenting integration choices.
 
-**Core principle:** Verify tests → User tests manually → Commit with commit skill.
+**Core principle:** Verify tests -> commit remaining changes -> merge to `main` -> verify on `main` -> clean up owned worktree.
 
 **Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
 
 ## The Process
 
-### Step 1: Verify Tests
+### Step 1: Verify Tests On The Feature Branch
 
-**Before anything else, verify tests pass:**
+Run the project's normal test suite before finishing:
 
 ```bash
-# Run project's test suite
 npm test / cargo test / pytest / go test ./...
 ```
 
-**If tests fail:**
+If tests fail, stop and fix the failures. Do not commit or merge failing work.
+
+### Step 2: Commit Remaining Changes
+
+Check status:
+
+```bash
+git status --short
 ```
-Tests failing (<N> failures). Must fix before completing:
 
-[Show failures]
+If there are uncommitted changes, use the `commit` skill to stage and commit the relevant files. If the branch is already clean because the implementation plan made task-level commits, continue.
 
-Cannot proceed until tests pass.
+Do not ask the user whether to commit.
+
+### Step 3: Detect Branch And Worktree State
+
+Collect:
+
+```bash
+git rev-parse --git-dir
+git rev-parse --git-common-dir
+git rev-parse --show-toplevel
+git branch --show-current
+git merge-base HEAD main
 ```
 
-Stop. Don't proceed to Step 2.
+If there is no current branch, create a named branch using the default `codex/` prefix before merging.
 
-**If tests pass:** Continue to Step 2.
+### Step 4: Merge Back To `main`
 
-### Step 2: User Testing Gate
+Do not present merge/PR/keep/discard options. The default final action is always a local merge to `main`.
 
-**After automated tests pass, ask the user to test the feature themselves:**
+Before switching to `main`, verify the main checkout is clean enough to merge:
 
-> "All automated tests pass. Please test the feature yourself before I commit. Let me know when you're done and whether everything works as expected."
+```bash
+git -C <main-worktree-root> status --short
+```
 
-**Wait for the user's response.** Do not proceed until the user confirms.
+If `main` has unrelated uncommitted changes, stop and report the blocker. Do not overwrite or stash user changes unless explicitly instructed.
 
-- If the user reports issues or requests changes: treat each change as a new **User Requirement**. Propagate it to all artifacts — update the spec (User Requirements section), update the plan, update tests (remove/rewrite tests for old behavior, add tests for new), and update implementation. Then re-run automated tests and ask the user to test again.
-- If the user confirms it works: continue to Step 3.
+Merge from the main worktree root:
 
-### Step 3: Commit
+```bash
+git -C <main-worktree-root> checkout main
+git -C <main-worktree-root> pull
+git -C <main-worktree-root> merge <feature-branch>
+```
 
-**Use the `commit` skill to create a commit on the current branch/worktree.**
+If the merge conflicts, stop and report the conflict. Do not guess through conflict resolution.
 
-Invoke the commit skill — it handles staging, message drafting, and the commit itself. Do not manually run git commit.
+### Step 5: Verify On `main`
+
+Run the project's normal test suite again on `main`.
+
+If tests fail after merge, fix them on `main`, commit the fix, and rerun tests. Do not report completion until the merged `main` passes.
+
+### Step 6: Clean Up Owned Worktree And Branch
+
+Only clean up worktrees created under `.worktrees/`, `worktrees/`, or `~/.config/superpowers/worktrees/`.
+
+From the main worktree root:
+
+```bash
+git worktree remove <feature-worktree-path>
+git worktree prune
+git branch -d <feature-branch>
+```
+
+If the worktree is harness-owned or outside those directories, leave it in place and report its path.
 
 ## Common Mistakes
 
-**Skipping test verification**
-- **Problem:** Commit broken code
-- **Fix:** Always verify automated tests before anything else
+**Asking for integration choice**
+- Problem: User has already set the policy.
+- Fix: Always commit and merge back to `main` locally.
 
-**Skipping user testing**
-- **Problem:** Automated tests pass but the feature doesn't work as the user expected
-- **Fix:** Always ask the user to test manually before committing
+**Overwriting dirty `main`**
+- Problem: User changes can be lost.
+- Fix: Stop if `main` has uncommitted changes that would interfere with merge.
 
-**Committing before user confirms**
-- **Problem:** User hasn't verified the feature works
-- **Fix:** Wait for explicit user confirmation after manual testing
+**Skipping post-merge tests**
+- Problem: Feature branch passes but merged `main` breaks.
+- Fix: Always verify again after merge.
 
 ## Red Flags
 
 **Never:**
-- Proceed with failing tests
-- Commit without user testing confirmation
-- Skip the commit skill (don't manually run git commit)
+- Present merge/PR/keep/discard options
+- Push or create a PR as the default finish action
+- Delete or overwrite user changes on `main`
+- Merge failing tests
+- Remove a worktree before the merge and post-merge verification succeed
 
 **Always:**
-- Verify automated tests first
-- Ask user to test the feature themselves
-- Wait for user confirmation before committing
-- Use the commit skill for the final commit
-
-## Integration
-
-**Called by:**
-- **subagent-driven-development** — After all tasks complete
-- **executing-plans** — After all batches complete
-
-**Uses:**
-- **commit** — For creating the final commit
+- Commit remaining work
+- Merge back to `main` locally
+- Verify tests before and after merge
+- Clean up only owned worktrees
