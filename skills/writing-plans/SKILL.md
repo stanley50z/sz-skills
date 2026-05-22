@@ -15,12 +15,13 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Context:** This should be run in a dedicated worktree (created by brainstorming skill).
 
-**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
+**Save plans to:** `docs/plans/<artifact-id>.md`
+- Use the same `YYYY-MM-DD-<topic-slug>` artifact ID chosen during brainstorming and used by the spec (`docs/specs/<artifact-id>-design.md`).
 - (User preferences for plan location override this default)
 
 ## HTML Plan Companion
 
-For large or hard-to-review plans, create an optional HTML companion next to the plan using the same basename with `.html` (for example, `docs/plans/YYYY-MM-DD-feature.html`). The Markdown implementation plan remains the source of truth; the HTML file is a review aid.
+For large or hard-to-review plans, create an optional HTML companion next to the plan using the same basename with `.html` (for example, `docs/plans/<artifact-id>.html`). The Markdown implementation plan remains the source of truth; the HTML file is a review aid.
 
 Use an HTML Plan Companion when it would make the plan easier to understand through:
 - task dependency maps

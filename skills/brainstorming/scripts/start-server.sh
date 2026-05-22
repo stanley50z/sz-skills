@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Start the brainstorm server and output connection info
-# Usage: start-server.sh [--project-dir <path>] [--host <bind-host>] [--url-host <display-host>] [--foreground] [--background]
+# Usage: start-server.sh --artifact-id <YYYY-MM-DD-topic-slug> --project-dir <path> [--host <bind-host>] [--url-host <display-host>] [--foreground] [--background]
 #
 # Starts server on a random high port, outputs JSON with URL.
-# Each session gets its own directory to avoid conflicts.
+# Each process uses the explicit artifact ID chosen for the brainstorming workflow.
 #
 # Options:
-#   --project-dir <path>  Store session files under <path>/.superpowers/brainstorm/
-#                         instead of /tmp. Files persist after server stops.
+#   --artifact-id <id>    Required shared artifact ID, e.g. 2026-05-22-login-flow.
+#   --project-dir <path>  Required project root. Store session files under <path>/docs/brainstorm/<artifact-id>/.
 #   --host <bind-host>    Host/interface to bind (default: 127.0.0.1).
 #                         Use 0.0.0.0 in remote/containerized environments.
 #   --url-host <host>     Hostname shown in returned URL JSON.
@@ -18,6 +18,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Parse arguments
 PROJECT_DIR=""
+ARTIFACT_ID=""
 FOREGROUND="false"
 FORCE_BACKGROUND="false"
 BIND_HOST="127.0.0.1"
@@ -26,6 +27,10 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --project-dir)
       PROJECT_DIR="$2"
+      shift 2
+      ;;
+    --artifact-id)
+      ARTIFACT_ID="$2"
       shift 2
       ;;
     --host)
@@ -74,14 +79,22 @@ if [[ "$FOREGROUND" != "true" && "$FORCE_BACKGROUND" != "true" ]]; then
   fi
 fi
 
-# Generate unique session directory
-SESSION_ID="$$-$(date +%s)"
-
-if [[ -n "$PROJECT_DIR" ]]; then
-  SCREEN_DIR="${PROJECT_DIR}/.superpowers/brainstorm/${SESSION_ID}"
-else
-  SCREEN_DIR="/tmp/brainstorm-${SESSION_ID}"
+if [[ -z "$ARTIFACT_ID" ]]; then
+  echo '{"error": "Missing required --artifact-id <YYYY-MM-DD-topic-slug>"}'
+  exit 1
 fi
+
+if [[ ! "$ARTIFACT_ID" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9][a-z0-9-]*$ ]]; then
+  echo '{"error": "Invalid --artifact-id. Expected YYYY-MM-DD-topic-slug using lowercase letters, numbers, and hyphens."}'
+  exit 1
+fi
+
+if [[ -z "$PROJECT_DIR" ]]; then
+  echo '{"error": "Missing required --project-dir <project-root>"}'
+  exit 1
+fi
+
+SCREEN_DIR="${PROJECT_DIR}/docs/brainstorm/${ARTIFACT_ID}"
 
 PID_FILE="${SCREEN_DIR}/.server.pid"
 LOG_FILE="${SCREEN_DIR}/.server.log"
@@ -139,7 +152,7 @@ for i in {1..50}; do
       sleep 0.1
     done
     if [[ "$alive" != "true" ]]; then
-      echo "{\"error\": \"Server started but was killed. Retry in a persistent terminal with: $SCRIPT_DIR/start-server.sh${PROJECT_DIR:+ --project-dir $PROJECT_DIR} --host $BIND_HOST --url-host $URL_HOST --foreground\"}"
+      echo "{\"error\": \"Server started but was killed. Retry in a persistent terminal with: $SCRIPT_DIR/start-server.sh --artifact-id $ARTIFACT_ID --project-dir $PROJECT_DIR --host $BIND_HOST --url-host $URL_HOST --foreground\"}"
       exit 1
     fi
     grep "server-started" "$LOG_FILE" | head -1

@@ -21,20 +21,22 @@ Every project goes through this process. A todo list, a single-function utility,
 
 You MUST create a task for each of these items and complete them in order:
 
-1. **Explore project context** — check files, docs, recent commits
-2. **Create HTML visual companion** (if topic will involve visual or highly structured review questions) — output the companion as an HTML file. See the Visual Companion and Structured HTML Companion sections below.
-3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
-4. **Propose 2-3 approaches** — with trade-offs and your recommendation
-5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/specs/YYYY-MM-DD-<topic>-design.md` and commit
-7. **Spec review loop** — dispatch spec-document-reviewer subagent with precisely crafted review context (never your session history); fix issues and re-dispatch until approved (max 3 iterations, then surface to human)
-8. **User reviews written spec and chooses escalation** - ask user to review the spec file and, in the same prompt, decide whether to invoke `grill-with-docs` for a deeper pass against project language and documented decisions
-9. **Transition to implementation** - invoke writing-plans skill to create implementation plan
+1. **Choose artifact ID** — create one shared `YYYY-MM-DD-<topic-slug>` ID for this whole workflow before creating any companion, spec, or plan files
+2. **Explore project context** — check files, docs, recent commits
+3. **Create HTML visual companion** (if topic will involve visual or highly structured review questions) — output the companion under `docs/brainstorm/<artifact-id>/`. See the Visual Companion and Structured HTML Companion sections below.
+4. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
+5. **Propose 2-3 approaches** — with trade-offs and your recommendation
+6. **Present design** — in sections scaled to their complexity, get user approval after each section
+7. **Write design doc** — save to `docs/specs/<artifact-id>-design.md` without committing
+8. **Spec review loop** — dispatch spec-document-reviewer subagent with precisely crafted review context (never your session history); fix issues and re-dispatch until approved (max 3 iterations, then surface to human)
+9. **User reviews written spec and chooses escalation** - ask user to review the spec file and, in the same prompt, decide whether to invoke `grill-with-docs` for a deeper pass against project language and documented decisions
+10. **Transition to implementation** - invoke writing-plans skill to create implementation plan using the same artifact ID
 
 ## Process Flow
 
 ```dot
 digraph brainstorming {
+    "Choose artifact ID" [shape=box];
     "Explore project context" [shape=box];
     "Visual questions ahead?" [shape=diamond];
     "Create HTML Visual Companion" [shape=box];
@@ -50,6 +52,7 @@ digraph brainstorming {
     "Invoke grill-with-docs skill" [shape=box];
     "Invoke writing-plans skill" [shape=doublecircle];
 
+    "Choose artifact ID" -> "Explore project context";
     "Explore project context" -> "Visual questions ahead?";
     "Visual questions ahead?" -> "Create HTML Visual Companion" [label="yes"];
     "Visual questions ahead?" -> "Ask clarifying questions" [label="no"];
@@ -77,7 +80,8 @@ digraph brainstorming {
 
 **Understanding the idea:**
 
-- Check out the current project state first (files, docs, recent commits)
+- At the start of the workflow, choose one artifact ID: `YYYY-MM-DD-<topic-slug>` using the current date and a concise lowercase slug. Use the same ID for `docs/brainstorm/<artifact-id>/`, `docs/specs/<artifact-id>-design.md`, and the later implementation plan `docs/plans/<artifact-id>.md`.
+- Check out the current project state next (files, docs, recent commits)
 - Before asking detailed questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't spend questions refining details of a project that needs to be decomposed first.
 - If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then brainstorm the first sub-project through the normal design flow. Each sub-project gets its own spec → plan → implementation cycle.
 - For appropriately-scoped projects, ask questions one at a time to refine the idea
@@ -126,10 +130,10 @@ When the user says "yes" or "looks good" to a design section: the items they ori
 
 **Documentation:**
 
-- Write the validated design (spec) to `docs/specs/YYYY-MM-DD-<topic>-design.md`
+- Write the validated design (spec) to `docs/specs/<artifact-id>-design.md`
   - (User preferences for spec location override this default)
 - Use elements-of-style:writing-clearly-and-concisely skill if available
-- Commit the design document to git
+- Do NOT commit the design document automatically; leave it uncommitted for user review unless the user explicitly asks you to commit
 
 **Spec document structure — requirement source separation:**
 
@@ -168,7 +172,7 @@ After writing the spec document:
 **User Review Gate:**
 After the spec review loop passes, ask the user to review the written spec and choose whether to run `grill-with-docs` before proceeding:
 
-> "Spec written and committed to `<path>`. Please review it and let me know if you want to make any changes. Also, do you want to run `grill-with-docs` for a deeper pass against the project language, existing docs, and ADR-level decisions before we write the implementation plan?"
+> "Spec written to `<path>` and left uncommitted for your review. Please review it and let me know if you want to make any changes. Also, do you want to run `grill-with-docs` for a deeper pass against the project language, existing docs, and ADR-level decisions before we write the implementation plan?"
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
 If they approve the spec and say yes to `grill-with-docs`, invoke `grill-with-docs` and follow it before continuing. If they approve the spec and say no, proceed directly to writing-plans.
@@ -208,7 +212,7 @@ Before creating the HTML companion, read the detailed guide:
 
 Use a Structured HTML Companion when the brainstorming output will be easier to review as a visual artifact than as prose. This is most useful for complex specs, many options, or decisions with multiple tradeoffs.
 
-**HTML companion is a review aid, not the canonical spec.** The Markdown spec in `docs/specs/YYYY-MM-DD-<topic>-design.md` remains the source of truth unless the user explicitly asks otherwise.
+**HTML companion is a review aid, not the canonical spec.** The Markdown spec in `docs/specs/<artifact-id>-design.md` remains the source of truth unless the user explicitly asks otherwise.
 
 Good structured companion sections:
 - **User Requirements** — grouped by theme or priority

@@ -76,7 +76,11 @@ function decodeFrame(buffer) {
 const PORT = process.env.BRAINSTORM_PORT || (49152 + Math.floor(Math.random() * 16383));
 const HOST = process.env.BRAINSTORM_HOST || '127.0.0.1';
 const URL_HOST = process.env.BRAINSTORM_URL_HOST || (HOST === '127.0.0.1' ? 'localhost' : HOST);
-const SCREEN_DIR = process.env.BRAINSTORM_DIR || '/tmp/brainstorm';
+const SCREEN_DIR = process.env.BRAINSTORM_DIR;
+if (!SCREEN_DIR) {
+  console.error(JSON.stringify({ error: 'Missing required BRAINSTORM_DIR' }));
+  process.exit(1);
+}
 const OWNER_PID = process.env.BRAINSTORM_OWNER_PID ? Number(process.env.BRAINSTORM_OWNER_PID) : null;
 
 const MIME_TYPES = {
