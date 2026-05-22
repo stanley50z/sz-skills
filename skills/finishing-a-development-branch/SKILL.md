@@ -33,9 +33,17 @@ Check status:
 git status --short
 ```
 
-If there are uncommitted changes, use the `commit` skill to stage and commit the relevant files. If the branch is already clean because the implementation plan made task-level commits, continue.
+If there are uncommitted changes, confirm you are on a development branch before invoking the `commit` skill:
 
-Do not ask the user whether to commit.
+```bash
+git branch --show-current
+```
+
+If the current branch is `main`, `master`, `trunk`, or empty/detached, stop and report that the working tree is not on a development branch. Do not commit.
+
+If you are on a development branch, use the `commit` skill to stage and commit the relevant files. If the branch is already clean because the implementation plan made task-level commits, continue.
+
+Do not ask the user whether to commit once you have confirmed you are on a development branch.
 
 ### Step 3: Detect Branch And Worktree State
 
