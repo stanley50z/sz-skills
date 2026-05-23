@@ -18,6 +18,12 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 |---|---|---|---|
 | [find-skills](skills/find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
 | [slides](skills/slides/) | Slide creation — copywriting formulas, layout patterns, strategies | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/main/.claude/skills/slides) | Renames invalid upstream skill name `ckm:slides` to `slides` for harness compatibility |
+| **ui-ux-pro-max suite** | | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | Harness-compatible plain skill names |
+| [banner-design](skills/banner-design/) | Banner design with sizes, styles, and layout references | ↳ `.claude/skills/banner-design` | Renames invalid upstream skill name `ckm:banner-design` to `banner-design` |
+| [brand](skills/brand/) | Brand identity system — guidelines, voice, typography, color, logo rules | ↳ `.claude/skills/brand` | Renames invalid upstream skill name `ckm:brand` to `brand` |
+| [design](skills/design/) | Design routing — logos, icons, CIP, slides, social photos | ↳ `.claude/skills/design` | Renames invalid upstream skill name `ckm:design` to `design` |
+| [design-system](skills/design-system/) | Design tokens, component specs, slide generation | ↳ `.claude/skills/design-system` | Renames invalid upstream skill name `ckm:design-system` to `design-system` |
+| [ui-styling](skills/ui-styling/) | UI styling — Tailwind, shadcn/ui, canvas design system, bundled fonts | ↳ `.claude/skills/ui-styling` | Renames invalid upstream skill name `ckm:ui-styling` to `ui-styling` |
 | **superpowers suite** | | [obra/superpowers](https://github.com/obra/superpowers) | [Tailored workflow](docs/superpowers-customization-rationale.md) |
 | [brainstorming](skills/brainstorming/) | Explore intent, requirements, and design before creative work | ↳ `skills/brainstorming` |
 | [dispatching-parallel-agents](skills/dispatching-parallel-agents/) | Dispatch 2+ independent tasks to parallel agents | ↳ `skills/dispatching-parallel-agents` |
@@ -51,11 +57,6 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | [revealjs](skills/revealjs/) | Create polished reveal.js presentations, decks, and slideshows with HTML and CSS | [ryanbbrown/revealjs-skill](https://github.com/ryanbbrown/revealjs-skill/tree/main/skills/revealjs) |
 | **ui-ux-pro-max suite** | | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) |
 | [ui-ux-pro-max](skills/ui-ux-pro-max/) | UI/UX design intelligence — styles, palettes, font pairings, chart types across 10+ stacks | ↳ `.claude/skills/ui-ux-pro-max` + `src/ui-ux-pro-max` |
-| [banner-design](skills/banner-design/) | Banner design with sizes, styles, and layout references | ↳ `.claude/skills/banner-design` |
-| [brand](skills/brand/) | Brand identity system — guidelines, voice, typography, color, logo rules | ↳ `.claude/skills/brand` |
-| [design](skills/design/) | Design routing — logos, icons, CIP, slides, social photos | ↳ `.claude/skills/design` |
-| [design-system](skills/design-system/) | Design tokens, component specs, slide generation | ↳ `.claude/skills/design-system` |
-| [ui-styling](skills/ui-styling/) | UI styling — Tailwind, shadcn/ui, canvas design system, bundled fonts | ↳ `.claude/skills/ui-styling` |
 
 > **Note:** `ui-styling` includes font license files (OFL) but binary `.ttf` files are skipped during
 > `update.py` to keep the repo lightweight. If you need the actual font files, download them from the
