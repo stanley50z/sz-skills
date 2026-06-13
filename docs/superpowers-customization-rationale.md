@@ -30,21 +30,21 @@ This distinction carries forward through the entire pipeline:
 
 ## 3. Requirement-Driven Testing
 
-**Problem:** The TDD skill enforced "write a failing test for every piece of code," which led to:
+**Problem:** The original Superpowers TDD skill enforced "write a failing test for every piece of code," which led to:
 
 - **Too many tests** — the agent tests every internal function, not just the features the user asked for.
 - **Tests that mirror implementation** — tests assert what the code does (tautologies like testing `2 + 2 = 4`) instead of what the feature should do from the user's perspective.
 - **Tests that miss real problems** — because they verify internal plumbing, not user-facing behavior. The feature could be broken while all tests pass.
 
-**Solution:** Reframed TDD around a test hierarchy:
+**Solution:** Replaced the local TDD skill body with Matt Pocock's vertical-slice `tdd` workflow, while keeping the Superpowers-compatible `test-driven-development` skill name. Reapplied the local test hierarchy:
 
 1. **User-requirement tests** — verify features as the user described them, from the outside. These are the primary tests.
 2. **Edge case / error tests** — cover failure modes of the above.
 3. **Implementation tests** — only when internal behavior is complex enough to warrant direct verification. The gate question: "would the user care if this worked differently internally?"
 
-The task template in the plan now includes a `Requirement:` field tracing each task back to the spec, and the test step shows behavioral test examples instead of internal function tests.
+The task template in the plan includes a `Requirement:` field tracing each task back to the spec, and the TDD skill prioritizes behavioral tests over internal function tests.
 
-**Files changed:** `test-driven-development/SKILL.md`, `test-driven-development/testing-anti-patterns.md`, `writing-plans/SKILL.md`
+**Files changed:** `test-driven-development/SKILL.md`, `test-driven-development/tests.md`, `test-driven-development/mocking.md`, `test-driven-development/deep-modules.md`, `test-driven-development/interface-design.md`, `test-driven-development/refactoring.md`, `writing-plans/SKILL.md`
 
 ## 4. No Fallbacks, No Silent Failure
 
@@ -61,11 +61,25 @@ The task template in the plan now includes a `Requirement:` field tracing each t
 - **Hard gate** against fallback code: if the feature can't be implemented, let the test fail. Don't fake success with try/catch, default returns, or `?? fallbackValue`.
 - **Suggest, don't auto-apply**: when the planned approach keeps failing, stop and present alternatives to the user. The user decides.
 - **Version upgrade rules**: when upgrading v1 → v2, remove or rewrite v1 tests *before* implementing v2. Never create v1 fallback code unless the user explicitly asks for backward compatibility.
-- **New anti-patterns** added: "Fallback Code to Pass Tests" (anti-pattern 6), "Testing Implementation Instead of Requirements" (anti-pattern 7), "Stale Tests From Previous Version" (anti-pattern 8).
+- **Main workflow placement**: these checks stay in `SKILL.md` so stale v1 tests are removed or rewritten before v2 implementation starts.
 
-**Files changed:** `test-driven-development/SKILL.md`, `test-driven-development/testing-anti-patterns.md`, `executing-plans/SKILL.md`, `subagent-driven-development/SKILL.md`
+**Files changed:** `test-driven-development/SKILL.md`, `executing-plans/SKILL.md`, `subagent-driven-development/SKILL.md`
 
-## 5. Simplified Finishing Workflow
+## 5. Visual-Only UI Testing
+
+**Problem:** Agents tend to treat UI work like ordinary code by adding component tests, DOM assertions, or snapshot tests. Those checks can pass while the real interface has clipped text, overflowing labels, awkward spacing, misaligned controls, weak hierarchy, or unbalanced visual weight.
+
+**Solution:** The TDD skill now treats UI tests as visual inspections only:
+
+- No code tests for UI layout, styling, responsive behavior, visual hierarchy, or interaction states.
+- Codex agents use the Chrome plugin first when available, then Chrome DevTools MCP, then a stated fallback browser/screenshot tool.
+- Visual checks explicitly cover clipping, overflow, alignment, horizontal and vertical visual balance, interaction states, and responsive viewports.
+- A dedicated `visual-tests.md` reference keeps the visual inspection checklist out of the main workflow.
+- `writing-plans`, `executing-plans`, and the subagent implementer prompt now tell UI work to use visual checks instead of generating or expecting code-test tasks.
+
+**Files changed:** `test-driven-development/SKILL.md`, `test-driven-development/visual-tests.md`, `writing-plans/SKILL.md`, `executing-plans/SKILL.md`, `subagent-driven-development/implementer-prompt.md`
+
+## 6. Simplified Finishing Workflow
 
 **Problem:** The upstream finishing skill presents 4 options after tests pass (merge locally, create PR, keep as-is, discard). This is more ceremony than needed — the typical workflow is just to commit the work. More importantly, the skill proceeds to finishing as soon as automated tests pass, without giving the user a chance to test the feature manually.
 
@@ -76,7 +90,7 @@ The task template in the plan now includes a `Requirement:` field tracing each t
 
 **Files changed:** `finishing-a-development-branch/SKILL.md`
 
-## 6. Cross-Phase User Change Propagation
+## 7. Cross-Phase User Change Propagation
 
 **Problem:** The user-requirement tracking from customization #1 only covers the brainstorming phase. But users give feedback and request changes at every stage — during planning, during execution, during manual testing. When a user says "change A to B" mid-execution, the agent would typically just patch the current code without updating the spec, plan, or tests. The change is scoped to the current phase, and upstream/downstream artifacts become stale.
 
@@ -91,7 +105,7 @@ A mid-execution change from the user has the same authority as an initial requir
 
 **Files changed:** `executing-plans/SKILL.md`, `subagent-driven-development/SKILL.md`, `finishing-a-development-branch/SKILL.md`, `writing-plans/SKILL.md`
 
-## 7. Optional Deep Planning Pass
+## 8. Optional Deep Planning Pass
 
 **Problem:** The brainstorming skill is the main entry point for the superpowers pipeline, but some designs need a deeper pass against project language, existing docs, and ADR-level decisions before implementation planning. Running a separate prompt after the spec review creates extra ceremony and makes the escalation easy to miss.
 
@@ -99,7 +113,7 @@ A mid-execution change from the user has the same authority as an initial requir
 
 **Files changed:** `brainstorming/SKILL.md`
 
-## 8. Structured HTML Companions
+## 9. Structured HTML Companions
 
 **Problem:** Some brainstorming and planning outputs are difficult to review as linear Markdown. Dense option comparisons, requirement groupings, architecture sketches, dependency maps, and traceability matrices lose clarity when buried in prose.
 

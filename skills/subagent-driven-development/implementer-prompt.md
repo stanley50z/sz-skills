@@ -30,7 +30,10 @@ Task tool (general-purpose):
 
     Once you're clear on requirements:
     1. Implement exactly what the task specifies
-    2. Write tests (following TDD if task says to)
+    2. Write tests (following TDD if task says to). For UI tasks, do visual
+       verification only - no component tests, DOM assertions, snapshots, or
+       "renders without crashing" tests for UI layout, styling, responsive
+       behavior, visual hierarchy, or interaction states.
     3. Verify implementation works
     4. Commit your work
     5. Self-review (see below)
@@ -93,6 +96,9 @@ Task tool (general-purpose):
     **Testing:**
     - Do tests actually verify behavior (not just mock behavior)?
     - Did I follow TDD if required?
+    - For UI tasks, did I verify visually instead of writing code tests?
+    - For UI tasks, did I check clipping/overflow, alignment, visual balance,
+      states, and responsive viewports?
     - Are tests comprehensive?
 
     If you find issues during self-review, fix them now before reporting.

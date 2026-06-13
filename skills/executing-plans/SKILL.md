@@ -77,7 +77,7 @@ If the user says "change A to B" during execution, do not just patch the current
 
 1. **Spec**: Update the User Requirements section — add B, remove or update A
 2. **Plan**: Update or add `[USER-REQ]` tasks for B, remove tasks for old A
-3. **Tests**: Remove/rewrite tests that assert old A behavior, write new tests for B
+3. **Tests**: Remove/rewrite tests that assert old A behavior, write new tests for B. For UI changes, use visual checks instead of code tests.
 4. **Implementation**: Update code to reflect B
 
 The user's request steers the entire process, not just the current phase. A mid-execution change from the user has the same authority as an initial requirement stated during brainstorming.
@@ -87,6 +87,7 @@ The user's request steers the entire process, not just the current phase. A mid-
 - Follow plan steps exactly
 - Don't skip verifications
 - Reference skills when plan says to
+- For UI tasks, use visual verification from superpowers:test-driven-development instead of code tests
 - `[USER-REQ]` tasks are non-negotiable — stop and ask the user if they can't be met
 - `[AGENT-DECISION]` tasks are flexible — adapt if implementation demands it
 - Stop when blocked, don't guess

@@ -3,465 +3,289 @@ name: test-driven-development
 description: Use when implementing any feature or bugfix, before writing implementation code
 ---
 
-# Test-Driven Development (TDD)
+# Test-Driven Development
 
-## Overview
+This skill is based on Matt Pocock's `tdd` skill, kept under the
+Superpowers-compatible `test-driven-development` name. It retains the local
+requirements for command timeouts, user-requirement test priority, explicit
+failure over fallback behavior, stale v1/v2 test cleanup, and visual-only UI
+testing.
 
-Write the test first. Watch it fail. Write minimal code to pass.
+## Philosophy
 
-**Core principle:** If you didn't watch the test fail, you don't know if it tests the right thing.
+**Core principle**: Tests should verify behavior through public interfaces,
+not implementation details. Code can change entirely; tests shouldn't.
 
-**Violating the letter of the rules is violating the spirit of the rules.**
+**Good tests** are integration-style: they exercise real code paths through
+public APIs. They describe what the system does, not how it does it. A good
+test reads like a specification - "user can checkout with valid cart" tells
+you exactly what capability exists. These tests survive refactors because they
+don't care about internal structure.
+
+**Bad tests** are coupled to implementation. They mock internal collaborators,
+test private methods, or verify through external means (like querying a
+database directly instead of using the interface). The warning sign: your test
+breaks when you refactor, but behavior hasn't changed. If you rename an
+internal function and tests fail, those tests were testing implementation, not
+behavior.
+
+See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking
+guidelines.
+
+For UI work, see [visual-tests.md](visual-tests.md). UI tests are visual
+checks, not code tests.
 
 ## Timeout Rule
 
-Every test run MUST have a timeout. This is a first-class TDD rule, not an optional safety net.
+Every test run MUST have a command-level timeout. This is a first-class TDD
+rule, not an optional safety net.
 
-If a test command can hang, the agent can hang with it. Never run bare `npm test`, `pytest`, `go test`, `cargo test`, `vitest`, `jest`, `bun test`, `deno test`, or similar commands without a timeout around the process.
+If a test command can hang, the agent can hang with it. Never run bare
+`npm test`, `pytest`, `go test`, `cargo test`, `vitest`, `jest`, `bun test`,
+`deno test`, or similar commands without a timeout around the process.
 
-**Use an external timeout that kills the stuck process, not just an in-test assertion timeout.** Runner-level test timeouts help, but they do not replace a command-level timeout.
+Use an external timeout that kills the stuck process, not just an in-test
+assertion timeout. Runner-level test timeouts help, but they do not replace a
+command-level timeout.
 
-**Reasonable defaults:**
-- Single test / focused RED or GREEN check: 30-60 seconds
+Reasonable defaults:
+
+- Single test or focused RED/GREEN check: 30-60 seconds
 - Small package or file-level suite: 2-5 minutes
 - Full project suite: 5-15 minutes
 
-If a command times out, treat that as a failure that must be debugged. Do not re-run the same hanging command indefinitely.
+If a command times out, treat that as a failure that must be debugged. Do not
+re-run the same hanging command without changing anything.
 
-## What to Test: Requirements First
+## What to Test First
 
-Tests should be derived from **user requirements**, not from implementation details.
+Tests should be derived from user requirements, not implementation details.
 
-If the spec has "User Requirements" and "Agent Design Decisions" sections (from the brainstorming skill), the user requirements drive the primary test suite. Each user requirement should have at least one test that verifies the feature works **as the user described it** — from the outside, testing behavior and outcomes.
+If the spec has "User Requirements" and "Agent Design Decisions" sections, the
+user requirements drive the primary test suite. Each user requirement should
+have at least one behavioral test that verifies the feature works as the user
+described it, from the outside.
 
-Agent design decisions get lighter testing. They're often covered implicitly by the user-requirement tests. Don't write separate tests for internal functions just because they exist.
+Agent design decisions get lighter testing. They're often covered implicitly by
+the user-requirement tests. Don't write separate tests for internal functions
+just because they exist.
 
-**Test hierarchy:**
-1. **User-requirement tests** — verify the features the user asked for, from the user's perspective. These are the tests that matter most.
-2. **Edge case / error tests** — cover failure modes and boundaries of the above.
-3. **Implementation tests** — only when the internal behavior is complex enough to warrant direct verification. Ask: "would the user care if this worked differently internally?" If no, you probably don't need a dedicated test for it.
+Test hierarchy:
 
-**The test for "login redirects to dashboard" is not `expect(generateToken()).toBeString()`.** It's `expect(afterLogin().currentPage).toBe('/dashboard')`. Test the feature, not the plumbing.
+1. User-requirement tests - verify features the user asked for, from the user's
+   perspective.
+2. Edge case / error tests - cover failure modes and boundaries of the
+   user-facing behavior.
+3. Implementation tests - only when the internal behavior is complex enough to
+   warrant direct verification. Ask: "would the user care if this worked
+   differently internally?" If no, skip the dedicated internal test.
 
-## When to Use
+The test for "login redirects to dashboard" is not
+`expect(generateToken()).toBeString()`. It is
+`expect(afterLogin().currentPage).toBe('/dashboard')`. Test the feature, not
+the plumbing.
 
-**Always:**
-- New features
-- Bug fixes
-- Refactoring
-- Behavior changes
-
-**Exceptions (ask your human partner):**
-- Throwaway prototypes
-- Generated code
-- Configuration files
-
-Thinking "skip TDD just this once"? Stop. That's rationalization.
-
-## The Iron Law
-
-```
-NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
-```
-
-Write code before the test? Delete it. Start over.
-
-**No exceptions:**
-- Don't keep it as "reference"
-- Don't "adapt" it while writing tests
-- Don't look at it
-- Delete means delete
-
-Implement fresh from tests. Period.
-
-## Red-Green-Refactor
-
-```dot
-digraph tdd_cycle {
-    rankdir=LR;
-    red [label="RED\nWrite failing test", shape=box, style=filled, fillcolor="#ffcccc"];
-    verify_red [label="Verify fails\ncorrectly", shape=diamond];
-    green [label="GREEN\nMinimal code", shape=box, style=filled, fillcolor="#ccffcc"];
-    verify_green [label="Verify passes\nAll green", shape=diamond];
-    refactor [label="REFACTOR\nClean up", shape=box, style=filled, fillcolor="#ccccff"];
-    next [label="Next", shape=ellipse];
-
-    red -> verify_red;
-    verify_red -> green [label="yes"];
-    verify_red -> red [label="wrong\nfailure"];
-    green -> verify_green;
-    verify_green -> refactor [label="yes"];
-    verify_green -> green [label="no"];
-    refactor -> verify_green [label="stay\ngreen"];
-    verify_green -> next;
-    next -> red;
-}
-```
-
-### RED - Write Failing Test
-
-Write one minimal test showing what should happen.
-
-<Good>
-```typescript
-test('retries failed operations 3 times', async () => {
-  let attempts = 0;
-  const operation = () => {
-    attempts++;
-    if (attempts < 3) throw new Error('fail');
-    return 'success';
-  };
-
-  const result = await retryOperation(operation);
-
-  expect(result).toBe('success');
-  expect(attempts).toBe(3);
-});
-```
-Clear name, tests real behavior, one thing
-</Good>
-
-<Bad>
-```typescript
-test('retry works', async () => {
-  const mock = jest.fn()
-    .mockRejectedValueOnce(new Error())
-    .mockRejectedValueOnce(new Error())
-    .mockResolvedValueOnce('success');
-  await retryOperation(mock);
-  expect(mock).toHaveBeenCalledTimes(3);
-});
-```
-Vague name, tests mock not code
-</Bad>
-
-**Requirements:**
-- One behavior
-- Clear name
-- Real code (no mocks unless unavoidable)
-
-### Verify RED - Watch It Fail
-
-**MANDATORY. Never skip.**
-
-```bash
-timeout 45s npm test path/to/test.test.ts
-```
-
-Use your shell's equivalent external timeout wrapper if `timeout` is unavailable.
-
-Confirm:
-- Test fails (not errors)
-- Failure message is expected
-- Fails because feature missing (not typos)
-- Command did not hang past the timeout
-
-**Test passes?** You're testing existing behavior. Fix test.
-
-**Test errors or times out?** Fix the issue, then re-run until it fails correctly.
-
-### GREEN - Minimal Code
-
-Write simplest code to pass the test.
-
-<Good>
-```typescript
-async function retryOperation<T>(fn: () => Promise<T>): Promise<T> {
-  for (let i = 0; i < 3; i++) {
-    try {
-      return await fn();
-    } catch (e) {
-      if (i === 2) throw e;
-    }
-  }
-  throw new Error('unreachable');
-}
-```
-Just enough to pass
-</Good>
-
-<Bad>
-```typescript
-async function retryOperation<T>(
-  fn: () => Promise<T>,
-  options?: {
-    maxRetries?: number;
-    backoff?: 'linear' | 'exponential';
-    onRetry?: (attempt: number) => void;
-  }
-): Promise<T> {
-  // YAGNI
-}
-```
-Over-engineered
-</Bad>
-
-Don't add features, refactor other code, or "improve" beyond the test.
-
-### No Fallbacks, No Silent Failure
+## UI Tests Are Visual
 
 <HARD-GATE>
-Never write fallback code, default returns, or silent error swallowing to make a test pass. If the feature doesn't work, the code must fail explicitly.
+All UI testing is visual testing. Do not write code tests for UI layout,
+styling, responsive behavior, visual hierarchy, or interaction states.
 </HARD-GATE>
 
-**The problem:** The agent writes a test, then writes implementation code that returns a default value, catches and ignores errors, or adds a fallback path that makes the test green without actually implementing the feature. The test passes. The feature doesn't work.
+For UI work, the RED/GREEN loop is still one behavior at a time, but the test
+artifact is visual evidence and inspection notes. Use [visual-tests.md](visual-tests.md)
+for the checklist.
 
-<Bad>
+Tool priority:
+
+1. Codex agents use the Chrome plugin first when it is available.
+2. If Chrome plugin is unavailable or insufficient, use Chrome DevTools MCP.
+3. If neither is available, use the best available browser/screenshot tool and
+   state the fallback.
+
+Project instructions may name a more specific browser tool for a target. Follow
+those instructions when they are more specific than this default order.
+
+Visual checks must cover:
+
+- Text is not clipped, truncated unexpectedly, overflowing its container, or
+  hidden behind other elements.
+- UI components align to a coherent grid and do not drift by a few pixels.
+- Horizontal and vertical visual weight feel balanced; the screen should not
+  feel lopsided, crowded in one area, or empty in another.
+- Spacing, grouping, and hierarchy make the primary workflow obvious.
+- Interactive states are visible and usable: hover, focus, active, disabled,
+  selected, loading, empty, and error states when relevant.
+- Responsive layouts work at realistic desktop and mobile viewports.
+- The inspection is based on screenshots or live browser observation, not DOM
+  guesses or implementation details.
+
+## Anti-Pattern: Horizontal Slices
+
+**DO NOT write all tests first, then all implementation.** This is "horizontal
+slicing" - treating RED as "write all tests" and GREEN as "write all code."
+
+This produces poor tests:
+
+- Tests written in bulk test imagined behavior, not actual behavior
+- You end up testing the shape of things (data structures, function signatures)
+  rather than user-facing behavior
+- Tests become insensitive to real changes - they pass when behavior breaks,
+  fail when behavior is fine
+- You outrun your headlights, committing to test structure before understanding
+  the implementation
+
+**Correct approach**: Vertical slices via tracer bullets. One test -> one
+implementation -> repeat. Each test responds to what you learned from the
+previous cycle. Because you just wrote the code, you know exactly what behavior
+matters and how to verify it.
+
+```text
+WRONG (horizontal):
+  RED:   test1, test2, test3, test4, test5
+  GREEN: impl1, impl2, impl3, impl4, impl5
+
+RIGHT (vertical):
+  RED->GREEN: test1->impl1
+  RED->GREEN: test2->impl2
+  RED->GREEN: test3->impl3
+  ...
+```
+
+## Workflow
+
+### 1. Planning
+
+When exploring the codebase, use the project's domain glossary so that test
+names and interface vocabulary match the project's language, and respect ADRs
+in the area you're touching.
+
+Before writing any code:
+
+- [ ] Confirm with user what interface changes are needed
+- [ ] Confirm with user which user-facing behaviors to test first
+- [ ] For UI changes, define the visual states and viewports to inspect
+- [ ] Identify opportunities for [deep modules](deep-modules.md)
+- [ ] Design interfaces for [testability](interface-design.md)
+- [ ] List the behaviors to test, not implementation steps
+- [ ] Confirm whether existing v1 behavior is being preserved or replaced
+
+Ask: "What should the public interface look like? Which behaviors are most
+important to test?"
+
+You can't test everything. Focus testing effort on user requirements, critical
+paths, and complex logic, not every possible edge case.
+
+### 2. Tracer Bullet
+
+Write ONE test that confirms ONE thing about the system:
+
+```text
+RED:   Write test for first behavior -> test fails
+GREEN: Write minimal code to pass -> test passes
+```
+
+This is your tracer bullet - it proves the path works end-to-end.
+
+Verify RED with a timeout. Confirm the test fails for the expected reason
+(feature missing), not because of a typo, setup error, or hang.
+
+### 3. Incremental Loop
+
+For each remaining behavior:
+
+```text
+RED:   Write next test -> fails
+GREEN: Minimal code to pass -> passes
+```
+
+Rules:
+
+- One test at a time
+- Only enough code to pass the current test
+- Don't anticipate future tests
+- Keep tests focused on observable behavior
+- Run every RED and GREEN check with a timeout
+- For UI, use visual inspection instead of code tests
+
+### 4. No Fallbacks, No Silent Failure
+
+<HARD-GATE>
+Never write fallback code, default returns, or silent error swallowing to make a
+test pass. If the feature doesn't work, the code must fail explicitly.
+</HARD-GATE>
+
+Bad:
+
 ```typescript
-// Test: "search returns matching results"
-// Implementation that games the test:
 function search(query: string): Result[] {
   try {
     return database.search(query);
   } catch {
-    return [];  // ← Fallback: test passes, feature silently broken
+    return [];
   }
 }
 ```
-</Bad>
 
-<Good>
+That code can make a test green while hiding a broken feature.
+
+Good:
+
 ```typescript
-// Implementation that fails explicitly:
 function search(query: string): Result[] {
   return database.search(query);
-  // If database.search throws, the error propagates.
-  // The test fails. You know something is wrong.
 }
 ```
-</Good>
 
-**Rules:**
+Rules:
+
 - If you can't implement the feature, let the test fail. Don't fake it.
-- Error handling is for expected error cases the user would encounter, not for masking incomplete implementations.
-- A test that passes because of a fallback is worse than a test that fails — the failure tells you the truth, the fallback hides it.
-- If you're adding a try/catch, default return, or `?? fallbackValue` to make a test green, stop and ask: "would this code work correctly in production, or am I just making the test pass?"
+- Error handling is for expected user-facing error cases, not for masking
+  incomplete implementation.
+- If you're adding a `try/catch`, default return, or `?? fallbackValue` to make
+  a test green, stop and ask whether the code works correctly in production.
+- If the planned approach keeps failing, stop and present alternatives to the
+  user instead of silently switching approaches.
 
-**When the planned approach doesn't work:**
-If the implementation approach specified in the plan keeps failing, do NOT silently switch to an alternative. Stop and suggest alternatives to the user. The user decides which direction to take, not the agent.
+### 5. Version Upgrades
 
-**Version upgrades (v1 → v2):**
-When the user asks to upgrade, expand, or replace an existing feature (v1) with a new version (v2):
-- **Remove or update v1 tests first.** Stale v1 tests that assert old behavior will cause the agent to re-implement v1 as a "fallback" to make them pass. Delete tests for v1 behavior that v2 intentionally changes.
-- **Never create `if v2 fails, fall back to v1` code** unless the user explicitly asks for backward compatibility. The user chose v2. v1 is no longer the requirement.
-- **Write new tests for v2 behavior.** The test suite should reflect what the user wants now, not what existed before.
-- If v2 can't be implemented as described, surface the problem. Don't silently preserve v1.
+When the user asks to upgrade, expand, or replace existing behavior (v1) with a
+new version (v2):
 
-### Verify GREEN - Watch It Pass
+- Remove or update stale v1 tests first. Tests asserting intentionally replaced
+  behavior will pull the implementation back toward v1.
+- Never create `if v2 fails, fall back to v1` code unless the user explicitly
+  asks for backward compatibility.
+- Write new tests for v2 behavior. The test suite should reflect what the user
+  wants now, not what existed before.
+- If v2 can't be implemented as described, surface the problem. Don't silently
+  preserve v1.
 
-**MANDATORY.**
+### 6. Refactor
 
-```bash
-timeout 45s npm test path/to/test.test.ts
+After all tests pass, look for [refactor candidates](refactoring.md):
+
+- [ ] Extract duplication
+- [ ] Deepen modules by moving complexity behind simple interfaces
+- [ ] Apply SOLID principles where natural
+- [ ] Consider what new code reveals about existing code
+- [ ] Run tests after each refactor step, with a timeout
+
+**Never refactor while RED.** Get to GREEN first.
+
+## Checklist Per Cycle
+
+```text
+[ ] Test is driven by a user requirement, edge case, or justified internal complexity
+[ ] Test describes behavior, not implementation
+[ ] Test uses public interface only
+[ ] Test would survive internal refactor
+[ ] RED run failed for the expected reason
+[ ] RED and GREEN commands used command-level timeouts
+[ ] UI changes were verified visually, not with code tests
+[ ] Visual check covered clipping/overflow, alignment, visual balance, states, and responsive viewports
+[ ] Code is minimal for this test
+[ ] No speculative features added
+[ ] No fallback/default/silent failure added to make the test pass
+[ ] Stale v1 tests were removed or updated before implementing v2 behavior
 ```
-
-Use your shell's equivalent external timeout wrapper if `timeout` is unavailable.
-
-Confirm:
-- Test passes
-- Other tests still pass
-- Output pristine (no errors, warnings)
-- Command completed before the timeout
-
-**Test fails?** Fix code, not test.
-
-**Other tests fail or the command times out?** Fix now.
-
-### REFACTOR - Clean Up
-
-After green only:
-- Remove duplication
-- Improve names
-- Extract helpers
-
-Keep tests green. Don't add behavior.
-
-### Repeat
-
-Next failing test for next feature.
-
-## Good Tests
-
-| Quality | Good | Bad |
-|---------|------|-----|
-| **Minimal** | One thing. "and" in name? Split it. | `test('validates email and domain and whitespace')` |
-| **Clear** | Name describes behavior | `test('test1')` |
-| **Shows intent** | Demonstrates desired API | Obscures what code should do |
-
-## Why Order Matters
-
-**"I'll write tests after to verify it works"**
-
-Tests written after code pass immediately. Passing immediately proves nothing:
-- Might test wrong thing
-- Might test implementation, not behavior
-- Might miss edge cases you forgot
-- You never saw it catch the bug
-
-Test-first forces you to see the test fail, proving it actually tests something.
-
-**"I already manually tested all the edge cases"**
-
-Manual testing is ad-hoc. You think you tested everything but:
-- No record of what you tested
-- Can't re-run when code changes
-- Easy to forget cases under pressure
-- "It worked when I tried it" ≠ comprehensive
-
-Automated tests are systematic. They run the same way every time.
-
-**"Deleting X hours of work is wasteful"**
-
-Sunk cost fallacy. The time is already gone. Your choice now:
-- Delete and rewrite with TDD (X more hours, high confidence)
-- Keep it and add tests after (30 min, low confidence, likely bugs)
-
-The "waste" is keeping code you can't trust. Working code without real tests is technical debt.
-
-**"TDD is dogmatic, being pragmatic means adapting"**
-
-TDD IS pragmatic:
-- Finds bugs before commit (faster than debugging after)
-- Prevents regressions (tests catch breaks immediately)
-- Documents behavior (tests show how to use code)
-- Enables refactoring (change freely, tests catch breaks)
-
-"Pragmatic" shortcuts = debugging in production = slower.
-
-**"Tests after achieve the same goals - it's spirit not ritual"**
-
-No. Tests-after answer "What does this do?" Tests-first answer "What should this do?"
-
-Tests-after are biased by your implementation. You test what you built, not what's required. You verify remembered edge cases, not discovered ones.
-
-Tests-first force edge case discovery before implementing. Tests-after verify you remembered everything (you didn't).
-
-30 minutes of tests after ≠ TDD. You get coverage, lose proof tests work.
-
-## Common Rationalizations
-
-| Excuse | Reality |
-|--------|---------|
-| "Too simple to test" | Simple code breaks. Test takes 30 seconds. |
-| "I'll test after" | Tests passing immediately prove nothing. |
-| "Tests after achieve same goals" | Tests-after = "what does this do?" Tests-first = "what should this do?" |
-| "Already manually tested" | Ad-hoc ≠ systematic. No record, can't re-run. |
-| "Deleting X hours is wasteful" | Sunk cost fallacy. Keeping unverified code is technical debt. |
-| "Keep as reference, write tests first" | You'll adapt it. That's testing after. Delete means delete. |
-| "Need to explore first" | Fine. Throw away exploration, start with TDD. |
-| "Test hard = design unclear" | Listen to test. Hard to test = hard to use. |
-| "TDD will slow me down" | TDD faster than debugging. Pragmatic = test-first. |
-| "Manual test faster" | Manual doesn't prove edge cases. You'll re-test every change. |
-| "Existing code has no tests" | You're improving it. Add tests for existing code. |
-| "This test command usually finishes quickly" | Usually is not good enough. Add a timeout anyway. |
-| "The runner has its own timeout" | Runner-level timeout does not guarantee the whole process exits. |
-
-## Red Flags - STOP and Start Over
-
-- Code before test
-- Test after implementation
-- Test passes immediately
-- Can't explain why test failed
-- Tests added "later"
-- Rationalizing "just this once"
-- "I already manually tested it"
-- "Tests after achieve the same purpose"
-- "It's about spirit not ritual"
-- "Keep as reference" or "adapt existing code"
-- "Already spent X hours, deleting is wasteful"
-- "TDD is dogmatic, I'm being pragmatic"
-- "This is different because..."
-- Test passes because of a fallback/default/stub, not because the feature works
-- Test verifies an implementation detail no user would care about
-- Writing tests for every internal function instead of testing user-facing behavior
-- Running test commands without an explicit timeout
-- Re-running the same hanging test command without changing anything
-
-**All of these mean: Delete code. Start over with TDD.**
-
-## Example: Bug Fix
-
-**Bug:** Empty email accepted
-
-**RED**
-```typescript
-test('rejects empty email', async () => {
-  const result = await submitForm({ email: '' });
-  expect(result.error).toBe('Email required');
-});
-```
-
-**Verify RED**
-```bash
-$ timeout 45s npm test
-FAIL: expected 'Email required', got undefined
-```
-
-**GREEN**
-```typescript
-function submitForm(data: FormData) {
-  if (!data.email?.trim()) {
-    return { error: 'Email required' };
-  }
-  // ...
-}
-```
-
-**Verify GREEN**
-```bash
-$ timeout 45s npm test
-PASS
-```
-
-**REFACTOR**
-Extract validation for multiple fields if needed.
-
-## Verification Checklist
-
-Before marking work complete:
-
-- [ ] Every user requirement has at least one behavioral test
-- [ ] Tests verify features from the user's perspective, not implementation internals
-- [ ] Watched each test fail before implementing
-- [ ] Each test failed for expected reason (feature missing, not typo)
-- [ ] Wrote minimal code to pass each test
-- [ ] No fallbacks, default returns, or silent error swallowing to make tests green
-- [ ] All tests pass
-- [ ] Output pristine (no errors, warnings)
-- [ ] Every test command was run with a reasonable timeout
-- [ ] Tests use real code (mocks only if unavoidable)
-- [ ] Edge cases and errors covered
-
-Can't check all boxes? You skipped TDD. Start over.
-
-## When Stuck
-
-| Problem | Solution |
-|---------|----------|
-| Don't know how to test | Write wished-for API. Write assertion first. Ask your human partner. |
-| Test too complicated | Design too complicated. Simplify interface. |
-| Must mock everything | Code too coupled. Use dependency injection. |
-| Test setup huge | Extract helpers. Still complex? Simplify design. |
-| Test command hangs | Stop running it bare. Add or shorten the timeout, isolate the stuck test, and debug the hang as a real failure. |
-
-## Debugging Integration
-
-Bug found? Write failing test reproducing it. Follow TDD cycle. Test proves fix and prevents regression.
-
-Never fix bugs without a test.
-
-## Testing Anti-Patterns
-
-When adding mocks or test utilities, read @testing-anti-patterns.md to avoid common pitfalls:
-- Testing mock behavior instead of real behavior
-- Adding test-only methods to production classes
-- Mocking without understanding dependencies
-
-## Final Rule
-
-```
-Production code → test exists and failed first
-Otherwise → not TDD
-```
-
-No exceptions without your human partner's permission.

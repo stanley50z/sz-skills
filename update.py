@@ -47,6 +47,12 @@ UPSTREAM = {
     "improve-codebase-architecture": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/improve-codebase-architecture"},
     ],
+    # Superpowers-compatible fork of Matt Pocock's `tdd` skill. The local
+    # directory/name stays `test-driven-development` because other Superpowers
+    # skills reference `superpowers:test-driven-development`.
+    "test-driven-development": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/tdd"},
+    ],
     "supabase-postgres-best-practices": [
         {"repo": "supabase/agent-skills", "path": "skills/supabase-postgres-best-practices"},
     ],
@@ -87,7 +93,7 @@ _SUPERPOWERS = [
     "brainstorming", "dispatching-parallel-agents", "executing-plans",
     "finishing-a-development-branch", "receiving-code-review",
     "requesting-code-review", "subagent-driven-development",
-    "systematic-debugging", "test-driven-development", "using-git-worktrees",
+    "systematic-debugging", "using-git-worktrees",
     "using-superpowers", "verification-before-completion", "writing-plans",
     "writing-skills",
 ]
@@ -102,6 +108,7 @@ PATCHED = {
     "brand",
     "design",
     "design-system",
+    "test-driven-development",
     "ui-styling",
 } | set(_SUPERPOWERS)
 
