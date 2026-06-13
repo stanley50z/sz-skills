@@ -30,12 +30,17 @@ is verifiable by CLI; run the command, read the output, and act on it.
    content with `git diff --cached --name-status` and the staged diff.
 
 4. Commit. Draft a human message from the staged diff. Write it to a temporary
-   file, run `git commit -F <file>`, then remove the temp file. Prefer this over
-   shell-specific heredocs.
+   file without a UTF-8 BOM, run `git commit -F <file>`, then remove the temp
+   file. Prefer this over shell-specific heredocs. In PowerShell, avoid
+   `Out-File` and `Set-Content -Encoding utf8`; use a BOM-free writer such as
+   `[System.IO.File]::WriteAllText($path, $message, [System.Text.UTF8Encoding]::new($false))`.
+   After committing, read back `git log -1 --format=%s` before any push.
 
 5. Verify and push. Run `git status --short`. For standalone commits, push if a
    remote exists: use the existing upstream when present, otherwise
-   `git push -u origin <branch>`. When called by
+   `git push -u origin <branch>`. When checking for an upstream with Git's
+   `@{u}` syntax, quote it as `'@{u}'` so PowerShell does not parse `@{}` as a
+   hashtable. When called by
    `finishing-a-development-branch`, do not push; return control.
 
 ## Message Rules
