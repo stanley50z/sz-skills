@@ -35,9 +35,6 @@ UPSTREAM = {
     "find-skills": [
         {"repo": "vercel-labs/skills", "path": "skills/find-skills"},
     ],
-    "gh-cli": [
-        {"repo": "github/awesome-copilot", "path": "skills/gh-cli"},
-    ],
     "docker-expert": [
         {"repo": "sickn33/antigravity-awesome-skills", "path": "skills/docker-expert"},
     ],

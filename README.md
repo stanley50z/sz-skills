@@ -49,7 +49,6 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | Skill | Description | Source |
 |---|---|---|
 | [docker-expert](skills/docker-expert/) | Docker containerization expertise for optimization, hardening, multi-stage builds, Compose, and production deployment | [sickn33/antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills/tree/main/skills/docker-expert) |
-| [gh-cli](skills/gh-cli/) | Comprehensive GitHub CLI (gh) reference for repos, issues, PRs, Actions, and more | [github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/skills/gh-cli) |
 | [grill-with-docs](skills/grill-with-docs/) | Deeper planning review against project language, documented decisions, and inline docs updates | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/grill-with-docs) |
 | [improve-codebase-architecture](skills/improve-codebase-architecture/) | Find architecture improvements, refactoring opportunities, and deeper module boundaries | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture) |
 | [supabase-postgres-best-practices](skills/supabase-postgres-best-practices/) | Postgres best practices for Supabase projects, including schema design, RLS, migrations, and query performance | [supabase/agent-skills](https://github.com/supabase/agent-skills/tree/main/skills/supabase-postgres-best-practices) |
