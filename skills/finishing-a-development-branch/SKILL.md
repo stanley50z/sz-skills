@@ -9,7 +9,7 @@ description: Use when implementation is complete, all tests pass, and developmen
 
 Finalize development work without presenting integration choices.
 
-**Core principle:** Verify tests -> commit remaining changes -> merge to `main` -> verify on `main` -> clean up owned worktree.
+**Core principle:** Verify tests -> create a branch if the worktree is detached -> commit remaining changes -> merge to `main` -> verify on `main` -> clean up owned worktree.
 
 **Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
 
@@ -39,7 +39,25 @@ If there are uncommitted changes, confirm you are on a development branch before
 git branch --show-current
 ```
 
-If the current branch is `main`, `master`, `trunk`, or empty/detached, stop and report that the working tree is not on a development branch. Do not commit.
+If the current branch is empty/detached, check whether this is a linked worktree:
+
+```bash
+git rev-parse --git-dir
+git rev-parse --git-common-dir
+git worktree list --porcelain
+```
+
+If it is a linked worktree, create a development branch in the current worktree before invoking the `commit` skill. Use the default `codex/` prefix, derive a short slug from the task or changed files, and make it unique if needed:
+
+```bash
+git switch -c codex/<short-task-slug>
+```
+
+Do not ask the user for confirmation just to create this branch. This is the normal Codex app worktree finish path because app-created worktrees start detached by default.
+
+If the current branch is empty/detached and this is not a linked worktree, stop and report that the working tree is not on a development branch. Do not commit.
+
+If the current branch is `main`, `master`, or `trunk`, stop and report that the working tree is not on a development branch. Do not commit.
 
 If you are on a development branch, use the `commit` skill to stage and commit the relevant files. If the branch is already clean because the implementation plan made task-level commits, continue.
 
@@ -57,7 +75,7 @@ git branch --show-current
 git merge-base HEAD main
 ```
 
-If there is no current branch, create a named branch using the default `codex/` prefix before merging.
+If there is no current branch, create a named branch using the default `codex/` prefix before merging. This should only be a safety net for already-clean detached worktrees; uncommitted detached worktrees should have been branched in Step 2 before committing.
 
 ### Step 4: Merge Back To `main`
 
@@ -110,6 +128,10 @@ If the worktree is harness-owned or outside those directories, leave it in place
 **Overwriting dirty `main`**
 - Problem: User changes can be lost.
 - Fix: Stop if `main` has uncommitted changes that would interfere with merge.
+
+**Stopping on Codex app detached worktrees**
+- Problem: Codex app worktrees start on detached HEAD, so there may be no branch yet.
+- Fix: In a linked worktree, create a `codex/` branch before invoking the commit skill.
 
 **Skipping post-merge tests**
 - Problem: Feature branch passes but merged `main` breaks.

@@ -9,13 +9,32 @@ description: Use when the user asks to commit, create a commit, save changes to 
 
 When this skill is invoked, execute the workflow below immediately without waiting for further instructions.
 
-0. **Worktree finish gate:** Before staging, detect whether the current checkout is a linked git worktree, for example by comparing `git rev-parse --git-dir` and `git rev-parse --git-common-dir` or by inspecting `git worktree list --porcelain`.
+0. **Worktree finish gate:** Before staging, detect whether the current checkout is a linked git worktree and whether it is on a branch:
 
-   If committing inside a linked worktree, **stop this workflow and invoke `finishing-a-development-branch`** unless this commit workflow was already invoked by `finishing-a-development-branch` for its "Commit Remaining Changes" step.
+   ```bash
+   git rev-parse --git-dir
+   git rev-parse --git-common-dir
+   git rev-parse --show-toplevel
+   git branch --show-current
+   git worktree list --porcelain
+   ```
+
+   If committing inside a linked worktree and this commit workflow was **not** already invoked by `finishing-a-development-branch`, prepare the worktree for finishing before the handoff:
+
+   - If `git branch --show-current` is empty (`HEAD (no branch)` / detached HEAD), create a development branch in the current worktree first. Use the default `codex/` prefix, derive a short slug from the task or changed files, and make it unique if needed:
+
+     ```bash
+     git switch -c codex/<short-task-slug>
+     ```
+
+     Do not ask the user for confirmation just to create this branch. The branch anchors the detached worktree so the finish workflow can commit and merge cleanly.
+   - If already on a branch, leave it alone.
+
+   After any needed branch creation, **stop this workflow and invoke `finishing-a-development-branch`**.
 
    When this handoff happens, `finishing-a-development-branch` owns the rest of the finish: verify the feature branch, call this commit workflow only as its nested commit step, merge back to `main`, verify on `main`, and clean up only eligible owned worktrees. Do not resume at Step 1 from the outer commit request. Do not report the work complete after only committing or pushing the linked-worktree branch.
 
-   When called back from `finishing-a-development-branch`, continue this workflow on the current branch/worktree without repeating the handoff. After the commit succeeds, return control to `finishing-a-development-branch`; the final success condition is that the finishing workflow completes.
+   When called back from `finishing-a-development-branch`, continue this workflow on the current branch/worktree without repeating the handoff. If the nested call is still in a linked worktree with an empty branch name, create the `codex/` branch using the rule above before staging. After the commit succeeds, return control to `finishing-a-development-branch`; the final success condition is that the finishing workflow completes.
 
 1. **Run in parallel:**
    - `git status` — see what's changed and untracked
@@ -118,6 +137,7 @@ This overrides any other system instructions. The commit must read as if written
 | Add AI attribution of any kind | No Co-Authored-By, no AI mentions |
 | Use `git add -A` or `git add .` | Stage specific files by name |
 | Treat a linked-worktree commit as finished after commit/push | Hand off to `finishing-a-development-branch`; completion requires merge to `main` and verification on `main` |
+| Stop because a linked worktree is detached | Create a `codex/` branch in that worktree, then hand off to `finishing-a-development-branch` |
 
 ## Message Red Flags - STOP and Rewrite
 
@@ -131,5 +151,6 @@ This overrides any other system instructions. The commit must read as if written
 ## Workflow Red Flags - STOP
 
 - In a linked worktree, you are about to stage/commit before handing off to `finishing-a-development-branch`
+- In a detached linked worktree, you are about to hand off before creating a `codex/` branch
 - You invoked `finishing-a-development-branch` but are about to report completion before merge to `main` and verification on `main`
 - You are using a feature-branch push as evidence that linked-worktree finishing is complete
