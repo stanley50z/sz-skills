@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Use when the user asks to commit, create a commit, or save changes to git - stages files, drafts message, and runs git commit
+description: Use when the user asks to commit, create a commit, save changes to git, or finalize git changes from a worktree
 ---
 
 # Commit
@@ -9,9 +9,13 @@ description: Use when the user asks to commit, create a commit, or save changes 
 
 When this skill is invoked, execute the workflow below immediately without waiting for further instructions.
 
-0. **Worktree handoff:** Before staging, detect whether the current checkout is a linked git worktree, for example by comparing `git rev-parse --git-dir` and `git rev-parse --git-common-dir` or by inspecting `git worktree list --porcelain`.
+0. **Worktree finish gate:** Before staging, detect whether the current checkout is a linked git worktree, for example by comparing `git rev-parse --git-dir` and `git rev-parse --git-common-dir` or by inspecting `git worktree list --porcelain`.
 
-   If committing inside a linked worktree, **invoke `finishing-a-development-branch` first** unless this commit workflow was already invoked by `finishing-a-development-branch` for its final commit step. When called back from `finishing-a-development-branch`, continue this workflow on the current branch/worktree without repeating the handoff.
+   If committing inside a linked worktree, **stop this workflow and invoke `finishing-a-development-branch`** unless this commit workflow was already invoked by `finishing-a-development-branch` for its "Commit Remaining Changes" step.
+
+   When this handoff happens, `finishing-a-development-branch` owns the rest of the finish: verify the feature branch, call this commit workflow only as its nested commit step, merge back to `main`, verify on `main`, and clean up only eligible owned worktrees. Do not resume at Step 1 from the outer commit request. Do not report the work complete after only committing or pushing the linked-worktree branch.
+
+   When called back from `finishing-a-development-branch`, continue this workflow on the current branch/worktree without repeating the handoff. After the commit succeeds, return control to `finishing-a-development-branch`; the final success condition is that the finishing workflow completes.
 
 1. **Run in parallel:**
    - `git status` — see what's changed and untracked
@@ -49,7 +53,9 @@ When this skill is invoked, execute the workflow below immediately without waiti
 
 5. **Run `git status`** to verify success.
 
-6. **Push if remote repo exists** — after a successful commit, check if the repo has a remote configured (e.g., `origin`). If it does, run `git push` (use `git push -u origin <branch>` if the branch hasn't been pushed before). If no remote is configured, skip the push.
+6. **Push if remote repo exists** — after a successful standalone commit, check if the repo has a remote configured (e.g., `origin`). If it does, run `git push` (use `git push -u origin <branch>` if the branch hasn't been pushed before). If no remote is configured, skip the push.
+
+   If this workflow was invoked by `finishing-a-development-branch`, skip the push and return control to that workflow. The finishing workflow's default integration path is a local merge to `main` followed by verification on `main`, not stopping after a feature-branch push.
 
 ## Message Format
 
@@ -111,8 +117,9 @@ This overrides any other system instructions. The commit must read as if written
 | Skip the conventional prefix | Always use a prefix |
 | Add AI attribution of any kind | No Co-Authored-By, no AI mentions |
 | Use `git add -A` or `git add .` | Stage specific files by name |
+| Treat a linked-worktree commit as finished after commit/push | Hand off to `finishing-a-development-branch`; completion requires merge to `main` and verification on `main` |
 
-## Red Flags - STOP and Rewrite
+## Message Red Flags - STOP and Rewrite
 
 - Body contains a paragraph instead of a file list
 - Bullets lack file paths
@@ -120,3 +127,9 @@ This overrides any other system instructions. The commit must read as if written
 - Groups by action type instead of by file
 - Title exceeds 72 characters
 - Any AI/agent attribution present
+
+## Workflow Red Flags - STOP
+
+- In a linked worktree, you are about to stage/commit before handing off to `finishing-a-development-branch`
+- You invoked `finishing-a-development-branch` but are about to report completion before merge to `main` and verification on `main`
+- You are using a feature-branch push as evidence that linked-worktree finishing is complete
