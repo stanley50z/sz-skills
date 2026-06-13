@@ -18,6 +18,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 |---|---|---|---|
 | [find-skills](skills/find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
 | [slides](skills/slides/) | Slide creation — copywriting formulas, layout patterns, strategies | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/main/.claude/skills/slides) | Renames invalid upstream skill name `ckm:slides` to `slides` for harness compatibility |
+| [test-driven-development](skills/test-driven-development/) | Test-driven development with red-green-refactor loop | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd) | Keeps Superpowers-compatible skill name and reapplies local rules: command timeouts, user-requirement hierarchy, visual-only UI checks, no silent fallbacks, and stale v1/v2 test cleanup |
 | **ui-ux-pro-max suite** | | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | Harness-compatible plain skill names |
 | [banner-design](skills/banner-design/) | Banner design with sizes, styles, and layout references | ↳ `.claude/skills/banner-design` | Renames invalid upstream skill name `ckm:banner-design` to `banner-design` |
 | [brand](skills/brand/) | Brand identity system — guidelines, voice, typography, color, logo rules | ↳ `.claude/skills/brand` | Renames invalid upstream skill name `ckm:brand` to `brand` |
@@ -33,7 +34,6 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | [requesting-code-review](skills/requesting-code-review/) | Request code review before merging | ↳ `skills/requesting-code-review` |
 | [subagent-driven-development](skills/subagent-driven-development/) | Execute plans with independent sub-agents | ↳ `skills/subagent-driven-development` |
 | [systematic-debugging](skills/systematic-debugging/) | Debug bugs and test failures systematically | ↳ `skills/systematic-debugging` |
-| [test-driven-development](skills/test-driven-development/) | Write tests before implementation code | ↳ `skills/test-driven-development` |
 | [using-git-worktrees](skills/using-git-worktrees/) | Create isolated git worktrees for feature work | ↳ `skills/using-git-worktrees` |
 | [using-superpowers](skills/using-superpowers/) | Establish skill discovery and usage conventions | ↳ `skills/using-superpowers` |
 | [verification-before-completion](skills/verification-before-completion/) | Run verification before claiming work is complete | ↳ `skills/verification-before-completion` |

@@ -55,6 +55,11 @@ This structure informs the task decomposition. Each task should produce self-con
 - "Implement the minimal code to make the test pass" - step
 - "Run the tests and make sure they pass" - step
 
+For UI tasks, replace code-test steps with visual RED/GREEN checks from
+superpowers:test-driven-development. Do not plan component tests, DOM
+assertions, snapshots, or "renders without crashing" tests for UI layout,
+styling, responsive behavior, visual hierarchy, or interaction states.
+
 ## Plan Document Header
 
 **Every plan MUST start with this header:**
@@ -97,6 +102,10 @@ If a task serves both, tag it `[USER-REQ]` — the user requirement takes priori
 
 Test the user-facing behavior, not implementation internals. The test should verify the feature works as the user described it.
 
+For UI tasks: do not write a code test. Define the visual state, viewport, and
+interaction to inspect. Capture or inspect the current UI as RED evidence,
+using the browser/tool priority from superpowers:test-driven-development.
+
 ```python
 def test_search_returns_matching_products():
     seed_products(["Blue Widget", "Red Widget", "Green Gadget"])
@@ -108,6 +117,10 @@ def test_search_returns_matching_products():
 
 Run: `pytest tests/path/test.py::test_name -v`
 Expected: FAIL with "function not defined"
+
+For UI tasks: open the UI and visually confirm the current screen fails the
+expected visual behavior, such as clipped text, overflow, misalignment,
+unbalanced visual weight, missing state, or broken responsive layout.
 
 - [ ] **Step 3: Write minimal implementation**
 
@@ -122,6 +135,11 @@ def search_products(query):
 
 Run: `pytest tests/path/test.py::test_name -v`
 Expected: PASS
+
+For UI tasks: reopen, interact, screenshot if useful, and visually verify the
+relevant desktop/mobile viewports and interaction states. Confirm text is not
+clipped or overflowing, components align, and horizontal/vertical visual weight
+is balanced.
 
 ````
 
