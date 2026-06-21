@@ -23,20 +23,28 @@ is verifiable by CLI; run the command, read the output, and act on it.
    commit, merge to `main`, post-merge verification, and cleanup. If this skill
    was called by that workflow, continue here and return control after commit.
 
-3. Stage explicitly. Stage all non-secret modified and untracked files shown by
+3. Update agent-facing files and docs. Before staging, check whether the
+   changes require synchronized updates to agent instruction files or project
+   docs. Update relevant `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `README.md`,
+   skill docs, or other documentation now, and run the repo's setup/sync
+   command when docs are propagated to agent directories. Do not commit until
+   the staged diff includes the needed agent-file and docs updates, or you can
+   explicitly explain why none are needed.
+
+4. Stage explicitly. Stage all non-secret modified and untracked files shown by
    status, including files outside the current session, by exact path. Never use
    `git add -A` or `git add .`. Do not stage `.env`, credentials, keys, tokens,
    or private configs; inspect suspicious files before deciding. Verify staged
    content with `git diff --cached --name-status` and the staged diff.
 
-4. Commit. Draft a human message from the staged diff. Write it to a temporary
+5. Commit. Draft a human message from the staged diff. Write it to a temporary
    file without a UTF-8 BOM, run `git commit -F <file>`, then remove the temp
    file. Prefer this over shell-specific heredocs. In PowerShell, avoid
    `Out-File` and `Set-Content -Encoding utf8`; use a BOM-free writer such as
    `[System.IO.File]::WriteAllText($path, $message, [System.Text.UTF8Encoding]::new($false))`.
    After committing, read back `git log -1 --format=%s` before any push.
 
-5. Verify and push. Run `git status --short`. For standalone commits, push if a
+6. Verify and push. Run `git status --short`. For standalone commits, push if a
    remote exists: use the existing upstream when present, otherwise
    `git push -u origin <branch>`. When checking for an upstream with Git's
    `@{u}` syntax, quote it as `'@{u}'` so PowerShell does not parse `@{}` as a
