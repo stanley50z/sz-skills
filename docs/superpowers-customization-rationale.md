@@ -72,7 +72,7 @@ The task template in the plan includes a `Requirement:` field tracing each task 
 **Solution:** The TDD skill now treats UI tests as visual inspections only:
 
 - No code tests for UI layout, styling, responsive behavior, visual hierarchy, or interaction states.
-- Codex agents use the Chrome plugin first when available, then Chrome DevTools MCP, then a stated fallback browser/screenshot tool.
+- Agents use the strongest available real-browser inspection tool; local `file://` pages prefer Chrome DevTools MCP when available, including Claude Code, t3code, and other harnesses with DevTools/browser MCP support.
 - Visual checks explicitly cover clipping, overflow, alignment, horizontal and vertical visual balance, interaction states, and responsive viewports.
 - A dedicated `visual-tests.md` reference keeps the visual inspection checklist out of the main workflow.
 - `writing-plans`, `executing-plans`, and the subagent implementer prompt now tell UI work to use visual checks instead of generating or expecting code-test tasks.

@@ -5,10 +5,14 @@ styling, responsive behavior, visual hierarchy, or interaction states.
 
 ## Tool Priority
 
-1. Codex agents use the Chrome plugin first when it is available.
-2. If Chrome plugin is unavailable or insufficient, use Chrome DevTools MCP.
-3. If neither is available, use the best available browser/screenshot tool and
-   state the fallback.
+1. Use the strongest available real-browser inspection tool that supports
+   screenshots, live inspection, and simulated clicks/keys.
+2. For local `file://` pages, prefer Chrome DevTools MCP when it is available.
+3. In Codex, the Chrome plugin may satisfy this role; in Claude Code, t3code,
+   or other harnesses, use Chrome DevTools MCP or the harness's equivalent
+   DevTools/browser MCP.
+4. If no DevTools-capable browser tool is available, use the best available
+   browser/screenshot tool and state the fallback.
 
 Project instructions may name a more specific browser tool for a target. Follow
 those instructions when they are more specific than this default order.
