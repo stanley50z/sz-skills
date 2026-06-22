@@ -20,6 +20,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent
 SKILLS_DIR = REPO_ROOT / "skills"
+GLOBAL_DIR = REPO_ROOT / "global"
 HOME = Path.home()
 
 # Directories where coding harnesses look for skills
@@ -28,6 +29,12 @@ TARGET_ROOTS = [
     HOME / ".codex" / "skills",      # OpenAI Codex
     HOME / ".config" / "opencode" / "skills",  # Opencode
     HOME / ".agents" / "skills",     # Pi coding agent
+]
+
+# Global instruction files for harnesses that support user-level memory.
+GLOBAL_INSTRUCTION_LINKS = [
+    (GLOBAL_DIR / "AGENTS.md", HOME / ".codex" / "AGENTS.md"),
+    (GLOBAL_DIR / "CLAUDE.md", HOME / ".claude" / "CLAUDE.md"),
 ]
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────
@@ -85,6 +92,31 @@ def make_link(source: Path, target: Path):
         target.symlink_to(source)
 
 
+def make_file_link(source: Path, target: Path):
+    """Create a file symlink at target -> source, falling back to a hard link on Windows."""
+    if not source.is_file():
+        raise FileNotFoundError(source)
+
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if target.exists() or target.is_symlink() or _is_link_or_junction(target):
+        if target.is_symlink():
+            target.unlink()
+        elif _is_link_or_junction(target):
+            os.rmdir(target)
+        elif target.is_dir():
+            shutil.rmtree(target)
+        else:
+            target.unlink()
+
+    if platform.system() == "Windows":
+        try:
+            target.symlink_to(source)
+        except OSError:
+            os.link(source, target)
+    else:
+        target.symlink_to(source)
+
+
 def install_skills(
     skills: list[str],
     *,
@@ -107,6 +139,21 @@ def install_skills(
     return installed
 
 
+def install_global_instructions(
+    links: list[tuple[Path, Path]] = GLOBAL_INSTRUCTION_LINKS,
+) -> int:
+    """Link repo-managed global instruction files into harness locations."""
+    installed = 0
+    for source, target in links:
+        try:
+            make_file_link(source, target)
+            installed += 1
+            print(f"  {_green(f'{target} -> {source}')}")
+        except Exception as e:
+            print(f"  {_red(f'FAILED: {target} — {e}')}")
+    return installed
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 
 def main():
@@ -120,7 +167,10 @@ def main():
 
     install_skills(skills)
 
-    print(f"\n{_cyan('Done. All skills are linked.')}")
+    print(f"\n{_cyan('Creating global instruction links')}")
+    install_global_instructions()
+
+    print(f"\n{_cyan('Done. Skills and global instructions are linked.')}")
 
 
 if __name__ == "__main__":

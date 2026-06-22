@@ -1,6 +1,20 @@
 # AGENTS.md
 
-This repo is the source of truth for coding-harness skills that get linked into:
+## Browser Tool Preference
+
+For plain local `file://` HTML pages, prefer Chrome DevTools MCP for visual inspection, screenshots, and simulated button/key presses.
+
+For other browser verification and control tasks, prefer tools in this order:
+
+1. Codex Chrome Plugin, when the harness is Codex and the plugin is available.
+2. Chrome DevTools MCP connected to the existing user profile and session.
+3. Chrome DevTools MCP in a new session/window.
+
+After finishing Chrome DevTools MCP work, close the Chrome DevTools session window so its profile is not left locked for the next turn.
+
+This repo is the source of truth for coding-harness skills and global instruction files.
+
+Skills get linked into:
 
 - `~/.claude/skills/` — Claude Code
 - `~/.codex/skills/` — OpenAI Codex
@@ -8,6 +22,11 @@ This repo is the source of truth for coding-harness skills that get linked into:
 - `~/.agents/skills/` — Pi coding agent
 
 `setup.py` auto-discovers every directory under `skills/` that contains a `SKILL.md` file, then links those skills into the harness directories. Do not add skills anywhere else in this repo.
+
+Global instruction files live under `global/`:
+
+- `global/AGENTS.md` links to `~/.codex/AGENTS.md`.
+- `global/CLAUDE.md` links to `~/.claude/CLAUDE.md` and imports the global Agents file.
 
 ## Repo Model
 

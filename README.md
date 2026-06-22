@@ -71,7 +71,8 @@ cd ~/.sz-skills
 python setup.py
 ```
 
-`setup.py` installs every skill in this repo. To choose specific skills from a terminal menu instead, run:
+`setup.py` installs every skill in this repo and links the repo-managed global instruction files under `global/`.
+To choose specific skills from a terminal menu instead, run:
 
 ```sh
 python interactive_setup.py
@@ -85,6 +86,11 @@ Both setup scripts create junctions (Windows) or symlinks (macOS/Linux) for codi
 - `~/.agents/skills/` — Pi coding agent
 
 The script creates those directories if they do not exist yet. For each skill in this repo, it adds the skill if missing and replaces the target only when a skill with the same name already exists. Unrelated skills in those directories are left alone.
+
+`setup.py` also links:
+
+- `global/AGENTS.md` -> `~/.codex/AGENTS.md`
+- `global/CLAUDE.md` -> `~/.claude/CLAUDE.md`
 
 ## Updating Vendor Skills
 
