@@ -7,3 +7,7 @@ For other browser verification and control tasks, prefer tools in this order:
 3. Chrome DevTools MCP in a new session/window.
 
 After finishing Chrome DevTools MCP work, close the Chrome DevTools session window so its profile is not left locked for the next turn.
+
+## Scripting Defaults
+
+When asked to write a script and no language is specified, use Python by default. Keep cross-platform compatibility in mind, especially for paths, shell invocation, filesystem behavior, and environment assumptions.
