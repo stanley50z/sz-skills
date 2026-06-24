@@ -10,7 +10,7 @@ For other browser verification and control tasks, prefer tools in this order:
 2. Chrome DevTools MCP connected to the existing user profile and session.
 3. Chrome DevTools MCP in a new session/window.
 
-After finishing Chrome DevTools MCP work, close the Chrome DevTools session window so its profile is not left locked for the next turn.
+After finishing Chrome DevTools MCP work, close the entire DevTools-controlled browser/window, not just the task tabs, so its profile is not left locked for the next turn.
 
 This repo is the source of truth for coding-harness skills and global instruction files.
 
