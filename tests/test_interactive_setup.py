@@ -3,6 +3,7 @@ import unittest
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
+from unittest.mock import patch
 
 import interactive_setup
 
@@ -50,6 +51,30 @@ class InstallSelectionTests(unittest.TestCase):
                 self.assertTrue((root / "beta").exists())
                 self.assertFalse((root / "alpha").exists())
                 self.assertFalse((root / "gamma").exists())
+
+    def test_main_installs_global_instruction_links(self):
+        target_roots = [
+            Path("home") / ".claude" / "skills",
+            Path("home") / ".codex" / "skills",
+        ]
+        global_links = [
+            (Path("repo") / "global" / "AGENTS.md", Path("home") / ".codex" / "AGENTS.md"),
+            (Path("repo") / "global" / "CLAUDE.md", Path("home") / ".claude" / "CLAUDE.md"),
+        ]
+
+        with (
+            patch.object(interactive_setup, "discover_skills", return_value=["alpha"]),
+            patch.object(interactive_setup, "prompt_for_skills", return_value=["alpha"]),
+            patch.object(interactive_setup, "install_selected_skills", return_value=2),
+            patch.object(interactive_setup, "install_global_instructions", return_value=2) as install_globals,
+            patch.object(interactive_setup, "TARGET_ROOTS", target_roots),
+            patch.object(interactive_setup, "GLOBAL_INSTRUCTION_LINKS", global_links),
+            redirect_stdout(StringIO()),
+        ):
+            result = interactive_setup.main()
+
+        self.assertEqual(result, 0)
+        install_globals.assert_called_once_with()
 
 
 if __name__ == "__main__":

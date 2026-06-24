@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 from setup import (
+    GLOBAL_INSTRUCTION_LINKS,
     SKILLS_DIR,
     TARGET_ROOTS,
     _cyan,
@@ -20,6 +21,7 @@ from setup import (
     _red,
     _yellow,
     discover_skills,
+    install_global_instructions,
     install_skills,
 )
 
@@ -108,14 +110,18 @@ def main() -> int:
 
     selected = prompt_for_skills(skills)
     print(_cyan(f"Creating links for: {', '.join(selected)}"))
-    installed = install_selected_skills(selected)
+    installed_skills = install_selected_skills(selected)
 
-    expected = len(selected) * len(TARGET_ROOTS)
+    print(f"\n{_cyan('Creating global instruction links')}")
+    installed_globals = install_global_instructions()
+
+    installed = installed_skills + installed_globals
+    expected = len(selected) * len(TARGET_ROOTS) + len(GLOBAL_INSTRUCTION_LINKS)
     if installed != expected:
         print(_yellow(f"\nDone with warnings. Linked {installed} of {expected} targets."))
         return 1
 
-    print(f"\n{_green('Done. Selected skills are linked.')}")
+    print(f"\n{_green('Done. Selected skills and global instructions are linked.')}")
     return 0
 
 

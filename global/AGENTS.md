@@ -11,3 +11,7 @@ After finishing Chrome DevTools MCP work, close the Chrome DevTools session wind
 ## Scripting Defaults
 
 When asked to write a script and no language is specified, use Python by default. Keep cross-platform compatibility in mind, especially for paths, shell invocation, filesystem behavior, and environment assumptions.
+
+## Encoding on Windows
+
+When reading, writing, or verifying files/command output that may contain Chinese or other non-ASCII text in PowerShell, use UTF-8 explicitly.
