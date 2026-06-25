@@ -12,10 +12,12 @@ On macOS / Linux: creates symlinks.
 
 import os
 import platform
+import json
 import shutil
 import stat
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent
@@ -36,6 +38,17 @@ GLOBAL_INSTRUCTION_LINKS = [
     (GLOBAL_DIR / "AGENTS.md", HOME / ".codex" / "AGENTS.md"),
     (GLOBAL_DIR / "CLAUDE.md", HOME / ".claude" / "CLAUDE.md"),
 ]
+
+# Local plugin registration used only for hook-based bootstrap. Skills are
+# still installed through TARGET_ROOTS to avoid duplicated plugin skill names.
+PLUGIN_NAME = "sz-skills"
+PLUGIN_ID = f"{PLUGIN_NAME}@{PLUGIN_NAME}"
+PLUGIN_VERSION = "1.0.0"
+CODEX_HOOK_PLUGIN_DIR = ".codex-hook-plugin"
+CODEX_CONFIG_PATH = HOME / ".codex" / "config.toml"
+CLAUDE_SETTINGS_PATH = HOME / ".claude" / "settings.json"
+CLAUDE_INSTALLED_PLUGINS_PATH = HOME / ".claude" / "plugins" / "installed_plugins.json"
+CLAUDE_KNOWN_MARKETPLACES_PATH = HOME / ".claude" / "plugins" / "known_marketplaces.json"
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────
 
@@ -117,6 +130,190 @@ def make_file_link(source: Path, target: Path):
         target.symlink_to(source)
 
 
+def _toml_literal(value: str) -> str:
+    """Return a TOML literal string for paths we control."""
+    if "'" in value:
+        escaped = value.replace("\\", "\\\\").replace('"', '\\"')
+        return f'"{escaped}"'
+    return f"'{value}'"
+
+
+def _replace_or_append_toml_table(text: str, header: str, body_lines: list[str]) -> str:
+    block_lines = [header, *body_lines]
+    lines = text.splitlines()
+
+    start = None
+    for index, line in enumerate(lines):
+        if line.strip() == header:
+            start = index
+            break
+
+    if start is None:
+        if lines and lines[-1].strip():
+            lines.append("")
+        lines.extend(block_lines)
+        return "\n".join(lines) + "\n"
+
+    end = start + 1
+    while end < len(lines):
+        if lines[end].startswith("["):
+            break
+        if not lines[end].strip():
+            lookahead = end + 1
+            while lookahead < len(lines) and not lines[lookahead].strip():
+                lookahead += 1
+            if lookahead == len(lines) or lines[lookahead].startswith("["):
+                break
+        end += 1
+
+    lines[start:end] = block_lines
+    return "\n".join(lines) + "\n"
+
+
+def install_codex_plugin_config(
+    *,
+    config_path: Path = CODEX_CONFIG_PATH,
+    repo_root: Path = REPO_ROOT,
+) -> bool:
+    """Register the hook-only Codex plugin package and enable it."""
+    repo_root = repo_root.resolve()
+    codex_plugin_root = (repo_root / CODEX_HOOK_PLUGIN_DIR).resolve()
+    text = config_path.read_text(encoding="utf-8") if config_path.exists() else ""
+
+    text = _replace_or_append_toml_table(
+        text,
+        f"[marketplaces.{PLUGIN_NAME}]",
+        [
+            'source_type = "local"',
+            f"source = {_toml_literal(str(codex_plugin_root))}",
+        ],
+    )
+    updated = _replace_or_append_toml_table(
+        text,
+        f'[plugins."{PLUGIN_ID}"]',
+        ["enabled = true"],
+    )
+
+    if config_path.exists() and config_path.read_text(encoding="utf-8") == updated:
+        return False
+
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(updated, encoding="utf-8")
+    return True
+
+
+def _load_json_file(path: Path, default):
+    if not path.exists():
+        return default
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _write_json_if_changed(path: Path, data) -> bool:
+    rendered = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+    if path.exists() and path.read_text(encoding="utf-8") == rendered:
+        return False
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(rendered, encoding="utf-8")
+    return True
+
+
+def _current_git_commit(repo_root: Path = REPO_ROOT) -> str | None:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+            capture_output=True,
+            check=True,
+            text=True,
+        )
+    except Exception:
+        return None
+    commit = result.stdout.strip()
+    return commit or None
+
+
+def install_claude_plugin_config(
+    *,
+    settings_path: Path = CLAUDE_SETTINGS_PATH,
+    installed_plugins_path: Path = CLAUDE_INSTALLED_PLUGINS_PATH,
+    known_marketplaces_path: Path = CLAUDE_KNOWN_MARKETPLACES_PATH,
+    repo_root: Path = REPO_ROOT,
+    now_iso: str | None = None,
+    git_commit_sha: str | None = None,
+) -> bool:
+    """Register this repo as an enabled Claude Code local plugin."""
+    repo_root = repo_root.resolve()
+    now_iso = now_iso or datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    git_commit_sha = git_commit_sha if git_commit_sha is not None else _current_git_commit(repo_root)
+
+    changed = False
+
+    settings = _load_json_file(settings_path, {})
+    enabled_plugins = settings.setdefault("enabledPlugins", {})
+    if enabled_plugins.get(PLUGIN_ID) is not True:
+        enabled_plugins[PLUGIN_ID] = True
+        changed = True
+    changed = _write_json_if_changed(settings_path, settings) or changed
+
+    installed = _load_json_file(installed_plugins_path, {"version": 2, "plugins": {}})
+    installed.setdefault("version", 2)
+    installed_plugins = installed.setdefault("plugins", {})
+    existing_records = installed_plugins.get(PLUGIN_ID, [])
+    existing_record = existing_records[0] if existing_records else {}
+    install_record = {
+        "scope": "user",
+        "installPath": str(repo_root),
+        "version": PLUGIN_VERSION,
+        "installedAt": existing_record.get("installedAt", now_iso),
+        "lastUpdated": existing_record.get("lastUpdated", now_iso),
+    }
+    if git_commit_sha:
+        install_record["gitCommitSha"] = git_commit_sha
+    if existing_record.get("installPath") != str(repo_root) or existing_record.get("version") != PLUGIN_VERSION:
+        install_record["lastUpdated"] = now_iso
+    if existing_records != [install_record]:
+        installed_plugins[PLUGIN_ID] = [install_record]
+        changed = True
+    changed = _write_json_if_changed(installed_plugins_path, installed) or changed
+
+    known = _load_json_file(known_marketplaces_path, {})
+    existing_marketplace = known.get(PLUGIN_NAME, {})
+    marketplace = {
+        "source": {
+            "source": "local",
+            "path": str(repo_root),
+        },
+        "installLocation": str(repo_root),
+        "lastUpdated": existing_marketplace.get("lastUpdated", now_iso),
+    }
+    if existing_marketplace.get("source", {}).get("path") != str(repo_root):
+        marketplace["lastUpdated"] = now_iso
+    if existing_marketplace != marketplace:
+        known[PLUGIN_NAME] = marketplace
+        changed = True
+    changed = _write_json_if_changed(known_marketplaces_path, known) or changed
+
+    return changed
+
+
+def install_plugin_hooks() -> int:
+    """Enable the local hook plugin for Codex and Claude Code."""
+    installed = 0
+    try:
+        if install_codex_plugin_config():
+            installed += 1
+        print(f"  {_green(f'Codex plugin enabled: {PLUGIN_ID}')}")
+    except Exception as e:
+        print(f"  {_red(f'FAILED: Codex plugin config — {e}')}")
+
+    try:
+        if install_claude_plugin_config():
+            installed += 1
+        print(f"  {_green(f'Claude Code plugin enabled: {PLUGIN_ID}')}")
+    except Exception as e:
+        print(f"  {_red(f'FAILED: Claude Code plugin config — {e}')}")
+    return installed
+
+
 def install_skills(
     skills: list[str],
     *,
@@ -170,7 +367,10 @@ def main():
     print(f"\n{_cyan('Creating global instruction links')}")
     install_global_instructions()
 
-    print(f"\n{_cyan('Done. Skills and global instructions are linked.')}")
+    print(f"\n{_cyan('Enabling plugin hooks')}")
+    install_plugin_hooks()
+
+    print(f"\n{_cyan('Done. Skills, global instructions, and plugin hooks are linked.')}")
 
 
 if __name__ == "__main__":

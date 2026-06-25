@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "sz-skills",
+  "description": "Local sz-skills plugin marketplace",
+  "owner": {
+    "name": "stanley50z"
+  },
+  "plugins": [
+    {
+      "name": "sz-skills",
+      "description": "Bootstrap local skills and Superpowers workflow rules.",
+      "author": {
+        "name": "stanley50z"
+      },
+      "source": ".",
+      "category": "development",
+      "homepage": "https://github.com/stanley50z/sz-skills"
+    }
+  ]
+}

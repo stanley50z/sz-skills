@@ -67,6 +67,7 @@ class InstallSelectionTests(unittest.TestCase):
             patch.object(interactive_setup, "prompt_for_skills", return_value=["alpha"]),
             patch.object(interactive_setup, "install_selected_skills", return_value=2),
             patch.object(interactive_setup, "install_global_instructions", return_value=2) as install_globals,
+            patch.object(interactive_setup, "install_plugin_hooks", return_value=2) as install_hooks,
             patch.object(interactive_setup, "TARGET_ROOTS", target_roots),
             patch.object(interactive_setup, "GLOBAL_INSTRUCTION_LINKS", global_links),
             redirect_stdout(StringIO()),
@@ -75,6 +76,7 @@ class InstallSelectionTests(unittest.TestCase):
 
         self.assertEqual(result, 0)
         install_globals.assert_called_once_with()
+        install_hooks.assert_called_once_with()
 
 
 if __name__ == "__main__":

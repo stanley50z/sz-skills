@@ -1,0 +1,31 @@
+{
+  "name": "sz-skills",
+  "version": "1.0.0",
+  "description": "Local sz-skills context hooks for Codex.",
+  "author": {
+    "name": "stanley50z"
+  },
+  "homepage": "https://github.com/stanley50z/sz-skills",
+  "repository": "https://github.com/stanley50z/sz-skills",
+  "license": "MIT",
+  "keywords": [
+    "hooks",
+    "superpowers",
+    "workflow"
+  ],
+  "hooks": "./hooks/hooks-codex.json",
+  "interface": {
+    "displayName": "sz-skills",
+    "shortDescription": "Inject local skill workflow context",
+    "longDescription": "Injects the using-superpowers skill and Chrome DevTools MCP ownership guidance at session start. It does not bundle skills or run browser cleanup scripts.",
+    "developerName": "stanley50z",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ],
+    "websiteURL": "https://github.com/stanley50z/sz-skills",
+    "brandColor": "#F59E0B",
+    "screenshots": []
+  }
+}

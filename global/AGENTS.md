@@ -6,7 +6,7 @@ For other browser verification and control tasks, prefer tools in this order:
 2. Chrome DevTools MCP connected to the existing user profile and session.
 3. Chrome DevTools MCP in a new session/window.
 
-After finishing Chrome DevTools MCP work, close the entire DevTools-controlled browser/window, not just the task tabs, so its profile is not left locked for the next turn.
+After finishing Chrome DevTools MCP work, close the entire DevTools-controlled browser/window only when it was launched by Chrome DevTools MCP with an owned isolated profile or unique `user-data-dir`. If MCP attached to an existing browser via `browser-url`, `ws-endpoint`, `autoConnect`, or a normal user profile, do not close the browser automatically; close only task tabs when appropriate.
 
 ## Scripting Defaults
 

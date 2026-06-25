@@ -22,6 +22,7 @@ from setup import (
     _yellow,
     discover_skills,
     install_global_instructions,
+    install_plugin_hooks,
     install_skills,
 )
 
@@ -115,13 +116,16 @@ def main() -> int:
     print(f"\n{_cyan('Creating global instruction links')}")
     installed_globals = install_global_instructions()
 
+    print(f"\n{_cyan('Enabling plugin hooks')}")
+    install_plugin_hooks()
+
     installed = installed_skills + installed_globals
     expected = len(selected) * len(TARGET_ROOTS) + len(GLOBAL_INSTRUCTION_LINKS)
     if installed != expected:
         print(_yellow(f"\nDone with warnings. Linked {installed} of {expected} targets."))
         return 1
 
-    print(f"\n{_green('Done. Selected skills and global instructions are linked.')}")
+    print(f"\n{_green('Done. Selected skills, global instructions, and plugin hooks are linked.')}")
     return 0
 
 

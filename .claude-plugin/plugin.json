@@ -1,0 +1,17 @@
+{
+  "name": "sz-skills",
+  "version": "1.0.0",
+  "description": "Local skill collection context hooks for Claude Code.",
+  "author": {
+    "name": "stanley50z"
+  },
+  "homepage": "https://github.com/stanley50z/sz-skills",
+  "repository": "https://github.com/stanley50z/sz-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "hooks",
+    "superpowers",
+    "workflow"
+  ]
+}

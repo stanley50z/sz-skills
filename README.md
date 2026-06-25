@@ -73,7 +73,7 @@ cd ~/.sz-skills
 python setup.py
 ```
 
-`setup.py` installs every skill in this repo and links the repo-managed global instruction files under `global/`.
+`setup.py` installs every skill in this repo, links the repo-managed global instruction files under `global/`, and enables the local `sz-skills` plugin hooks for Codex and Claude Code.
 To choose specific skills from a terminal menu instead, run:
 
 ```sh
@@ -93,6 +93,13 @@ The script creates those directories if they do not exist yet. For each skill in
 
 - `global/AGENTS.md` -> `~/.codex/AGENTS.md`
 - `global/CLAUDE.md` -> `~/.claude/CLAUDE.md`
+
+It also registers local `sz-skills` plugin hooks:
+
+- Codex: adds the hook-only `.codex-hook-plugin` package as the `sz-skills` local marketplace and enables `sz-skills@sz-skills` in `~/.codex/config.toml`.
+- Claude Code: enables `sz-skills@sz-skills` in `~/.claude/settings.json` and records the repo path in Claude's plugin install state.
+
+The Codex plugin package is context-only and does not contain a `skills/` directory, so Codex should load these skills through the skill links above instead of as plugin-bundled skills. The SessionStart hook injects `using-superpowers` and Chrome DevTools MCP ownership guidance so rules are available before the model chooses which skill or browser cleanup behavior applies. It does not run cleanup scripts.
 
 ## Updating Vendor Skills
 
