@@ -7,7 +7,7 @@ description: Use when asked to update docs, visualize a codebase, map repository
 
 ## Overview
 
-Create a navigable architecture snapshot of the non-test code in the current repository. The output is a self-contained HTML page at `doc/repo_structure.htmnel` that future maintainers can scan and click through.
+Create a navigable architecture snapshot of the non-test code in the current repository. The output is a self-contained HTML page at `docs/repo_structure.htmnel` that future maintainers can scan and click through.
 
 ## When to Use
 
@@ -22,7 +22,7 @@ Create a navigable architecture snapshot of the non-test code in the current rep
 3. Read the code files, prioritizing entry points, config, scripts, and modules imported by other files. Do not infer details from filenames alone.
 4. Build a file graph from imports/requires/includes, CLI or config entry references, and obvious runtime calls. Label uncertain or dynamic edges as `dynamic/indirect` instead of inventing certainty.
 5. For each code file, identify purpose, inputs, outputs, key functions/classes, and key module-level variables/constants/state.
-6. Generate `doc/repo_structure.htmnel`, creating `doc/` if needed. Regenerate from source when updating; do not patch stale facts by hand.
+6. Generate `docs/repo_structure.htmnel`, creating `docs/` if needed. Regenerate from source when updating; do not patch stale facts by hand.
 7. Open the local HTML page and verify Mermaid renders, file clicks change the details panel, text is readable, and there are no script errors. Prefer Chrome DevTools MCP for `file://` verification when available; close that browser session afterward.
 
 ## File Details

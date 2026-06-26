@@ -80,12 +80,14 @@ To choose specific skills from a terminal menu instead, run:
 python interactive_setup.py
 ```
 
-Both setup scripts create junctions (Windows) or symlinks (macOS/Linux) for coding harness skill directories:
+Both setup scripts install skills into these coding harness skill directories:
 
 - `~/.claude/skills/` — Claude Code
-- `~/.codex/skills/` — OpenAI Codex
+- `~/.codex/skills/` — OpenAI Codex, copied so Codex keeps plain skill names
 - `~/.config/opencode/skills/` — Opencode
-- `~/.agents/skills/` — Pi coding agent
+- `~/.agents/skills/` — Pi coding agent and Codex-compatible agents, mirrored to the copied Codex skills
+
+The Claude Code and Opencode targets use junctions (Windows) or symlinks (macOS/Linux) into this repo. The Codex target uses real copied directories because Codex scans both `~/.codex/skills` and `~/.agents/skills`; when either target is a junction into this repo, Codex exposes those entries as `sz-skills:<skill>`. The Agents target points to the copied Codex skill directories so Codex-compatible scanners see one canonical plain skill source instead of duplicate entries.
 
 The script creates those directories if they do not exist yet. For each skill in this repo, it adds the skill if missing and replaces the target only when a skill with the same name already exists. Unrelated skills in those directories are left alone.
 
@@ -99,7 +101,7 @@ It also registers local `sz-skills` plugin hooks:
 - Codex: adds the hook-only `.codex-hook-plugin` package as the `sz-skills` local marketplace and enables `sz-skills@sz-skills` in `~/.codex/config.toml`.
 - Claude Code: enables `sz-skills@sz-skills` in `~/.claude/settings.json` and records the repo path in Claude's plugin install state.
 
-The Codex plugin package is context-only and does not contain a `skills/` directory, so Codex should load these skills through the skill links above instead of as plugin-bundled skills. The SessionStart hook injects `using-superpowers` and Chrome DevTools MCP ownership guidance so rules are available before the model chooses which skill or browser cleanup behavior applies. It does not run cleanup scripts.
+The Codex plugin package is context-only and does not contain a `skills/` directory, so Codex should load these skills through the copied/mirrored skill directories above instead of as plugin-bundled skills. The SessionStart hook injects `using-superpowers` and Chrome DevTools MCP ownership guidance so rules are available before the model chooses which skill or browser cleanup behavior applies. A Codex Stop hook also checks the current turn's transcript for Chrome DevTools MCP tool calls and, only when needed, blocks finalization with a reminder to close only owned isolated DevTools browser sessions. It does not run cleanup scripts.
 
 ## Updating Vendor Skills
 

@@ -11,6 +11,17 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" stop-cdp-session-reminder",
+            "timeout": 30
+          }
+        ]
+      }
     ]
   }
 }

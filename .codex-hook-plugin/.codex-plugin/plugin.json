@@ -17,7 +17,7 @@
   "interface": {
     "displayName": "sz-skills",
     "shortDescription": "Inject local skill workflow context",
-    "longDescription": "Injects the using-superpowers skill and Chrome DevTools MCP ownership guidance at session start. It does not bundle skills or run browser cleanup scripts.",
+    "longDescription": "Injects the using-superpowers skill and Chrome DevTools MCP ownership guidance at session start, then uses a Stop hook as a final Chrome DevTools MCP ownership reminder when the current turn used DevTools. It does not bundle skills or run browser cleanup scripts.",
     "developerName": "stanley50z",
     "category": "Coding",
     "capabilities": [

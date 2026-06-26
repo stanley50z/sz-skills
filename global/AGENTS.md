@@ -8,6 +8,10 @@ For other browser verification and control tasks, prefer tools in this order:
 
 After finishing Chrome DevTools MCP work, close the entire DevTools-controlled browser/window only when it was launched by Chrome DevTools MCP with an owned isolated profile or unique `user-data-dir`. If MCP attached to an existing browser via `browser-url`, `ws-endpoint`, `autoConnect`, or a normal user profile, do not close the browser automatically; close only task tabs when appropriate.
 
+## Web Search
+
+When unsure about a fact involving real-world products, use web search before answering.
+
 ## Scripting Defaults
 
 When asked to write a script and no language is specified, use Python by default. Keep cross-platform compatibility in mind, especially for paths, shell invocation, filesystem behavior, and environment assumptions.

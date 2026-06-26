@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""sz-skills setup script — create links from coding harness skill directories into this repo.
+"""sz-skills setup script — install repo skills into coding harness directories.
 
 Run this after cloning on a new device:
     git clone https://github.com/stanley50z/sz-skills ~/.sz-skills
     cd ~/.sz-skills
     python setup.py
 
-On Windows: creates NTFS junctions (no admin / developer-mode required).
-On macOS / Linux: creates symlinks.
+On Windows: creates NTFS junctions for link targets (no admin / developer-mode
+required). On macOS / Linux: creates symlinks. Codex-readable roots are copied
+instead of linked so Codex does not namespace the resolved repo path.
 """
 
 import os
@@ -32,6 +33,16 @@ TARGET_ROOTS = [
     HOME / ".config" / "opencode" / "skills",  # Opencode
     HOME / ".agents" / "skills",     # Pi coding agent
 ]
+
+# Codex currently reads both ~/.codex/skills and ~/.agents/skills. Use
+# ~/.codex/skills as the canonical copied root, then mirror ~/.agents/skills to
+# that copy. This avoids both sz-skills:<skill> names and duplicate entries.
+COPY_TARGET_ROOTS = [
+    HOME / ".codex" / "skills",
+]
+MIRROR_TARGET_ROOTS = {
+    HOME / ".agents" / "skills": HOME / ".codex" / "skills",
+}
 
 # Global instruction files for harnesses that support user-level memory.
 GLOBAL_INSTRUCTION_LINKS = [
@@ -82,8 +93,7 @@ def _is_link_or_junction(path: Path) -> bool:
     return False
 
 
-def make_link(source: Path, target: Path):
-    """Create a directory junction (Windows) or symlink (Unix) at target -> source."""
+def _remove_existing_target(target: Path) -> None:
     if target.exists() or target.is_symlink() or _is_link_or_junction(target):
         if target.is_symlink():
             target.unlink()
@@ -95,6 +105,11 @@ def make_link(source: Path, target: Path):
         else:
             target.unlink()
 
+
+def make_link(source: Path, target: Path):
+    """Create a directory junction (Windows) or symlink (Unix) at target -> source."""
+    _remove_existing_target(target)
+
     if platform.system() == "Windows":
         # NTFS junction — no admin required
         subprocess.run(
@@ -105,21 +120,23 @@ def make_link(source: Path, target: Path):
         target.symlink_to(source)
 
 
+def make_copy(source: Path, target: Path):
+    """Copy a skill directory to target, replacing any existing target first."""
+    _remove_existing_target(target)
+    shutil.copytree(
+        source,
+        target,
+        ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+    )
+
+
 def make_file_link(source: Path, target: Path):
     """Create a file symlink at target -> source, falling back to a hard link on Windows."""
     if not source.is_file():
         raise FileNotFoundError(source)
 
     target.parent.mkdir(parents=True, exist_ok=True)
-    if target.exists() or target.is_symlink() or _is_link_or_junction(target):
-        if target.is_symlink():
-            target.unlink()
-        elif _is_link_or_junction(target):
-            os.rmdir(target)
-        elif target.is_dir():
-            shutil.rmtree(target)
-        else:
-            target.unlink()
+    _remove_existing_target(target)
 
     if platform.system() == "Windows":
         try:
@@ -136,6 +153,10 @@ def _toml_literal(value: str) -> str:
         escaped = value.replace("\\", "\\\\").replace('"', '\\"')
         return f'"{escaped}"'
     return f"'{value}'"
+
+
+def _path_key(path: Path) -> str:
+    return os.path.normcase(str(path.resolve(strict=False)))
 
 
 def _replace_or_append_toml_table(text: str, header: str, body_lines: list[str]) -> str:
@@ -319,18 +340,48 @@ def install_skills(
     *,
     skills_dir: Path = SKILLS_DIR,
     target_roots: list[Path] = TARGET_ROOTS,
+    copy_target_roots: list[Path] | None = None,
+    mirror_target_roots: dict[Path, Path] | None = None,
 ) -> int:
-    """Link selected skills into each coding harness root and return success count."""
+    """Install selected skills into each coding harness root and return success count."""
     installed = 0
+    copy_roots = {
+        _path_key(root)
+        for root in (COPY_TARGET_ROOTS if copy_target_roots is None else copy_target_roots)
+    }
+    mirror_roots = {
+        _path_key(target_root): mirror_root
+        for target_root, mirror_root in (
+            MIRROR_TARGET_ROOTS if mirror_target_roots is None else mirror_target_roots
+        ).items()
+    }
     for root in target_roots:
         root.mkdir(parents=True, exist_ok=True)
+        root_key = _path_key(root)
+        copy_root = root_key in copy_roots
+        mirror_root = mirror_roots.get(root_key)
         for skill in skills:
             source = skills_dir / skill
             target = root / skill
             try:
-                make_link(source, target)
+                if mirror_root is not None:
+                    mirror_source = mirror_root / skill
+                    if not mirror_source.exists():
+                        mirror_source.parent.mkdir(parents=True, exist_ok=True)
+                        make_copy(source, mirror_source)
+                    make_link(mirror_source, target)
+                    relation = "->"
+                    printed_source = mirror_source
+                elif copy_root:
+                    make_copy(source, target)
+                    relation = "<="
+                    printed_source = source
+                else:
+                    make_link(source, target)
+                    relation = "->"
+                    printed_source = source
                 installed += 1
-                print(f"  {_green(f'{target} -> {source}')}")
+                print(f"  {_green(f'{target} {relation} {printed_source}')}")
             except Exception as e:
                 print(f"  {_red(f'FAILED: {target} — {e}')}")
     return installed
@@ -360,7 +411,7 @@ def main():
         print(_red("No skills found."))
         sys.exit(1)
 
-    print(_cyan(f"Creating links for: {', '.join(skills)}"))
+    print(_cyan(f"Installing skills for: {', '.join(skills)}"))
 
     install_skills(skills)
 
@@ -370,7 +421,7 @@ def main():
     print(f"\n{_cyan('Enabling plugin hooks')}")
     install_plugin_hooks()
 
-    print(f"\n{_cyan('Done. Skills, global instructions, and plugin hooks are linked.')}")
+    print(f"\n{_cyan('Done. Skills, global instructions, and plugin hooks are installed.')}")
 
 
 if __name__ == "__main__":

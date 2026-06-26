@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -39,6 +40,40 @@ class PluginHookSetupTests(unittest.TestCase):
             or payload.get("additional_context")
             or ""
         )
+
+    def _run_stop_hook(self, payload):
+        repo_root = Path(setup.REPO_ROOT)
+        hook_script = repo_root / "hooks" / "stop-cdp-session-reminder.py"
+        result = subprocess.run(
+            [sys.executable, str(hook_script)],
+            input=json.dumps(payload),
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        return json.loads(result.stdout or "{}")
+
+    def _write_transcript(self, path, entries):
+        path.write_text(
+            "\n".join(json.dumps(entry) for entry in entries) + "\n",
+            encoding="utf-8",
+        )
+
+    def _function_call_entry(self, name, turn_id):
+        return {
+            "timestamp": "2026-06-26T00:00:00Z",
+            "type": "response_item",
+            "payload": {
+                "type": "function_call",
+                "name": name,
+                "arguments": "{}",
+                "call_id": "call_test",
+                "internal_chat_message_metadata_passthrough": {
+                    "turn_id": turn_id,
+                },
+            },
+        }
 
     def test_registers_codex_local_plugin_in_config(self):
         with tempfile.TemporaryDirectory() as repo_tmp, tempfile.TemporaryDirectory() as home_tmp:
@@ -113,6 +148,8 @@ class PluginHookSetupTests(unittest.TestCase):
         self.assertTrue((codex_plugin_root / ".codex-plugin" / "plugin.json").is_file())
         self.assertTrue((codex_plugin_root / "hooks" / "hooks-codex.json").is_file())
         self.assertTrue((codex_plugin_root / "hooks" / "session-start-codex").is_file())
+        self.assertTrue((codex_plugin_root / "hooks" / "stop-cdp-session-reminder").is_file())
+        self.assertTrue((codex_plugin_root / "hooks" / "stop-cdp-session-reminder.py").is_file())
         self.assertTrue((codex_plugin_root / "hooks" / "run-hook.cmd").is_file())
         self.assertFalse((codex_plugin_root / "skills").exists())
         hook_marketplace = json.loads((codex_plugin_root / ".agents" / "plugins" / "marketplace.json").read_text(encoding="utf-8"))
@@ -126,19 +163,34 @@ class PluginHookSetupTests(unittest.TestCase):
         self.assertTrue((repo_root / "hooks" / "hooks.json").is_file())
         self.assertTrue((repo_root / "hooks" / "session-start-codex").is_file())
         self.assertTrue((repo_root / "hooks" / "session-start").is_file())
+        self.assertTrue((repo_root / "hooks" / "stop-cdp-session-reminder").is_file())
+        self.assertTrue((repo_root / "hooks" / "stop-cdp-session-reminder.py").is_file())
         self.assertTrue((repo_root / "hooks" / "run-hook.cmd").is_file())
 
-    def test_hook_definitions_are_session_start_context_only(self):
+    def test_claude_hook_definition_remains_session_start_context_only(self):
+        repo_root = Path(setup.REPO_ROOT)
+        hooks = json.loads((repo_root / "hooks" / "hooks.json").read_text(encoding="utf-8"))["hooks"]
+
+        self.assertEqual(set(hooks), {"SessionStart"})
+        rendered = json.dumps(hooks)
+        self.assertNotIn("Stop", rendered)
+        self.assertNotIn("cleanup", rendered.lower())
+        self.assertNotIn("chrome", rendered.lower())
+
+    def test_codex_hook_definition_adds_stop_without_tool_loop_hooks(self):
         repo_root = Path(setup.REPO_ROOT)
 
-        for hook_file in ["hooks-codex.json", "hooks.json"]:
-            hooks = json.loads((repo_root / "hooks" / hook_file).read_text(encoding="utf-8"))["hooks"]
+        for hook_file in [
+            repo_root / "hooks" / "hooks-codex.json",
+            repo_root / setup.CODEX_HOOK_PLUGIN_DIR / "hooks" / "hooks-codex.json",
+        ]:
+            hooks = json.loads(hook_file.read_text(encoding="utf-8"))["hooks"]
 
-            self.assertEqual(set(hooks), {"SessionStart"})
+            self.assertEqual(set(hooks), {"SessionStart", "Stop"})
             rendered = json.dumps(hooks)
-            self.assertNotIn("Stop", rendered)
-            self.assertNotIn("cleanup", rendered.lower())
-            self.assertNotIn("chrome", rendered.lower())
+            self.assertNotIn("PreToolUse", rendered)
+            self.assertNotIn("PostToolUse", rendered)
+            self.assertIn("stop-cdp-session-reminder", rendered)
 
     def test_session_start_hooks_inject_chrome_devtools_context_only_guidance(self):
         repo_root = Path(setup.REPO_ROOT)
@@ -155,6 +207,111 @@ class PluginHookSetupTests(unittest.TestCase):
             self.assertIn("context-only guidance", context)
             self.assertIn("Do not add or run cleanup scripts from hooks", context)
             self.assertIn("browser-url, ws-endpoint, autoConnect", context)
+
+    def test_stop_hook_allows_turns_without_chrome_devtools_tool_calls(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            transcript_path = Path(tmp) / "transcript.jsonl"
+            self._write_transcript(
+                transcript_path,
+                [self._function_call_entry("shell_command", "turn-current")],
+            )
+
+            payload = {
+                "transcript_path": str(transcript_path),
+                "turn_id": "turn-current",
+                "last_assistant_message": "Done.",
+            }
+
+            result = self._run_stop_hook(payload)
+
+            self.assertTrue(result["continue"])
+            self.assertNotIn("decision", result)
+
+    def test_stop_hook_blocks_after_current_turn_chrome_devtools_usage_without_cleanup_decision(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            transcript_path = Path(tmp) / "transcript.jsonl"
+            self._write_transcript(
+                transcript_path,
+                [self._function_call_entry("mcp__chrome_devtools__take_screenshot", "turn-current")],
+            )
+
+            payload = {
+                "transcript_path": str(transcript_path),
+                "turn_id": "turn-current",
+                "last_assistant_message": "Verification is complete.",
+            }
+
+            result = self._run_stop_hook(payload)
+
+            self.assertEqual(result["decision"], "block")
+            self.assertIn("Chrome DevTools MCP", result["reason"])
+            self.assertIn("owned isolated profile", result["reason"])
+            self.assertIn("do not close", result["reason"])
+
+    def test_stop_hook_allows_when_cleanup_decision_is_already_in_final_message(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            transcript_path = Path(tmp) / "transcript.jsonl"
+            self._write_transcript(
+                transcript_path,
+                [self._function_call_entry("mcp__chrome_devtools__click", "turn-current")],
+            )
+
+            payload = {
+                "transcript_path": str(transcript_path),
+                "turn_id": "turn-current",
+                "last_assistant_message": (
+                    "I checked Chrome DevTools MCP browser ownership: this was "
+                    "attached via browser-url, so I left the browser open and "
+                    "closed only the task tab."
+                ),
+            }
+
+            result = self._run_stop_hook(payload)
+
+            self.assertTrue(result["continue"])
+            self.assertNotIn("decision", result)
+
+    def test_stop_hook_ignores_chrome_devtools_usage_from_other_turns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            transcript_path = Path(tmp) / "transcript.jsonl"
+            self._write_transcript(
+                transcript_path,
+                [
+                    self._function_call_entry("mcp__chrome_devtools__evaluate_script", "turn-old"),
+                    self._function_call_entry("shell_command", "turn-current"),
+                ],
+            )
+
+            payload = {
+                "transcript_path": str(transcript_path),
+                "turn_id": "turn-current",
+                "last_assistant_message": "Done.",
+            }
+
+            result = self._run_stop_hook(payload)
+
+            self.assertTrue(result["continue"])
+            self.assertNotIn("decision", result)
+
+    def test_stop_hook_allows_active_stop_hook_continuation_to_avoid_loops(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            transcript_path = Path(tmp) / "transcript.jsonl"
+            self._write_transcript(
+                transcript_path,
+                [self._function_call_entry("mcp__chrome_devtools__click", "turn-current")],
+            )
+
+            payload = {
+                "transcript_path": str(transcript_path),
+                "turn_id": "turn-current",
+                "stop_hook_active": True,
+                "last_assistant_message": "Done.",
+            }
+
+            result = self._run_stop_hook(payload)
+
+            self.assertTrue(result["continue"])
+            self.assertNotIn("decision", result)
 
 
 if __name__ == "__main__":

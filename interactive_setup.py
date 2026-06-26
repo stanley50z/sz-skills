@@ -110,7 +110,7 @@ def main() -> int:
         return 1
 
     selected = prompt_for_skills(skills)
-    print(_cyan(f"Creating links for: {', '.join(selected)}"))
+    print(_cyan(f"Installing skills for: {', '.join(selected)}"))
     installed_skills = install_selected_skills(selected)
 
     print(f"\n{_cyan('Creating global instruction links')}")
@@ -122,10 +122,10 @@ def main() -> int:
     installed = installed_skills + installed_globals
     expected = len(selected) * len(TARGET_ROOTS) + len(GLOBAL_INSTRUCTION_LINKS)
     if installed != expected:
-        print(_yellow(f"\nDone with warnings. Linked {installed} of {expected} targets."))
+        print(_yellow(f"\nDone with warnings. Installed {installed} of {expected} targets."))
         return 1
 
-    print(f"\n{_green('Done. Selected skills, global instructions, and plugin hooks are linked.')}")
+    print(f"\n{_green('Done. Selected skills, global instructions, and plugin hooks are installed.')}")
     return 0
 
 

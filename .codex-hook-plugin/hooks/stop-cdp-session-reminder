@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Stop hook wrapper for the Chrome DevTools MCP cleanup reminder.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+if command -v python >/dev/null 2>&1; then
+  exec python "${SCRIPT_DIR}/stop-cdp-session-reminder.py"
+fi
+
+if command -v python3 >/dev/null 2>&1; then
+  exec python3 "${SCRIPT_DIR}/stop-cdp-session-reminder.py"
+fi
+
+printf '{"continue": true}\n'
