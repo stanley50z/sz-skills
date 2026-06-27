@@ -31,11 +31,13 @@ is verifiable by CLI; run the command, read the output, and act on it.
    the staged diff includes the needed agent-file and docs updates, or you can
    explicitly explain why none are needed.
 
-4. Stage explicitly. Stage all non-secret modified and untracked files shown by
-   status, including files outside the current session, by exact path. Never use
-   `git add -A` or `git add .`. Do not stage `.env`, credentials, keys, tokens,
-   or private configs; inspect suspicious files before deciding. Verify staged
-   content with `git diff --cached --name-status` and the staged diff.
+4. Stage explicitly. The commit unit is every visible non-secret worktree
+   change, not just changes relevant to the current task or session. Stage all
+   modified and untracked files shown by status, including files outside the
+   current session, by exact path. Never use `git add -A` or `git add .`. Do not
+   stage `.env`, credentials, keys, tokens, or private configs; inspect
+   suspicious files before deciding. Verify staged content with
+   `git diff --cached --name-status` and the staged diff.
 
 5. Commit. Draft a human message from the staged diff. Write it to a temporary
    file without a UTF-8 BOM, run `git commit -F <file>`, then remove the temp
@@ -72,5 +74,9 @@ be per-file or per-file-group and include paths. No narrative paragraphs.
 - Do not claim completion until fresh CLI verification succeeds.
 - Do not treat a linked-worktree commit or push as complete; completion belongs
   to `finishing-a-development-branch`.
-- Stop before committing if the staged diff contains secrets, unrelated
-  generated junk, or changes you cannot explain.
+- Do not narrow the commit to "relevant" or current-session changes. When the
+  user asks to commit, include all visible non-secret modified and untracked
+  files in one commit unless a safety stop applies.
+- Stop before committing if the staged diff contains secrets, generated junk
+  that should never be versioned, or files whose contents you still cannot
+  explain after inspection.

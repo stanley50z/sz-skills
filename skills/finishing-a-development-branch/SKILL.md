@@ -59,7 +59,7 @@ If the current branch is empty/detached and this is not a linked worktree, stop 
 
 If the current branch is `main`, `master`, or `trunk`, stop and report that the working tree is not on a development branch. Do not commit.
 
-If you are on a development branch, use the `commit` skill to stage and commit the relevant files. If the branch is already clean because the implementation plan made task-level commits, continue.
+If you are on a development branch, use the `commit` skill to stage and commit all visible non-secret modified and untracked files, including files outside the current task or session. If the branch is already clean because the implementation plan made task-level commits, continue.
 
 Do not ask the user whether to commit once you have confirmed you are on a development branch.
 
