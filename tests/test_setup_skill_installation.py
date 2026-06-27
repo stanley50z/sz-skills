@@ -50,7 +50,7 @@ class SkillInstallationTests(unittest.TestCase):
                 Path(home_tmp) / ".agents" / "skills",
             ]
             for root in target_roots:
-                stale = root / "repo-visualizer"
+                stale = root / "old-skill"
                 stale.mkdir(parents=True)
                 (stale / "SKILL.md").write_text("# old visualizer\n", encoding="utf-8")
 
@@ -60,14 +60,14 @@ class SkillInstallationTests(unittest.TestCase):
 
             with redirect_stdout(StringIO()):
                 removed = setup.remove_retired_skills(
-                    ["repo-visualizer"],
+                    ["old-skill"],
                     target_roots=target_roots,
                     mirror_target_roots={target_roots[2]: target_roots[1]},
                 )
 
             self.assertEqual(removed, 3)
             for root in target_roots:
-                self.assertFalse((root / "repo-visualizer").exists())
+                self.assertFalse((root / "old-skill").exists())
             self.assertTrue(unrelated.exists())
 
 

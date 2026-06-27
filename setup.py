@@ -29,7 +29,6 @@ HOME = Path.home()
 # Repo-managed skill names that were intentionally retired. setup.py removes
 # these from managed target roots so stale copies do not keep triggering.
 RETIRED_SKILLS = [
-    "repo-visualizer",
 ]
 
 # Directories where coding harnesses look for skills
