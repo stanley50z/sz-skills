@@ -26,6 +26,12 @@ SKILLS_DIR = REPO_ROOT / "skills"
 GLOBAL_DIR = REPO_ROOT / "global"
 HOME = Path.home()
 
+# Repo-managed skill names that were intentionally retired. setup.py removes
+# these from managed target roots so stale copies do not keep triggering.
+RETIRED_SKILLS = [
+    "repo-visualizer",
+]
+
 # Directories where coding harnesses look for skills
 TARGET_ROOTS = [
     HOME / ".claude" / "skills",    # Claude Code
@@ -387,6 +393,48 @@ def install_skills(
     return installed
 
 
+def remove_retired_skills(
+    retired_skills: list[str] | None = None,
+    *,
+    target_roots: list[Path] = TARGET_ROOTS,
+    mirror_target_roots: dict[Path, Path] | None = None,
+) -> int:
+    """Remove retired repo-managed skill directories from install targets."""
+    retired_skills = RETIRED_SKILLS if retired_skills is None else retired_skills
+    mirror_target_roots = MIRROR_TARGET_ROOTS if mirror_target_roots is None else mirror_target_roots
+    removed = 0
+
+    for root in target_roots:
+        root.mkdir(parents=True, exist_ok=True)
+        for skill in retired_skills:
+            target = root / skill
+            try:
+                if target.exists() or target.is_symlink() or _is_link_or_junction(target):
+                    _remove_existing_target(target)
+                    removed += 1
+                    print(f"  {_yellow(f'Removed retired skill: {target}')}")
+            except Exception as e:
+                print(f"  {_red(f'FAILED: remove retired {target} — {e}')}")
+
+    # If a mirror source was not part of target_roots, remove retired copies from
+    # there too. The default roots already include the canonical Codex copy.
+    target_keys = {_path_key(root) for root in target_roots}
+    for mirror_root in mirror_target_roots.values():
+        if _path_key(mirror_root) in target_keys:
+            continue
+        for skill in retired_skills:
+            target = mirror_root / skill
+            try:
+                if target.exists() or target.is_symlink() or _is_link_or_junction(target):
+                    _remove_existing_target(target)
+                    removed += 1
+                    print(f"  {_yellow(f'Removed retired skill: {target}')}")
+            except Exception as e:
+                print(f"  {_red(f'FAILED: remove retired {target} — {e}')}")
+
+    return removed
+
+
 def install_global_instructions(
     links: list[tuple[Path, Path]] = GLOBAL_INSTRUCTION_LINKS,
 ) -> int:
@@ -412,6 +460,8 @@ def main():
         sys.exit(1)
 
     print(_cyan(f"Installing skills for: {', '.join(skills)}"))
+
+    remove_retired_skills()
 
     install_skills(skills)
 

@@ -24,6 +24,7 @@ from setup import (
     install_global_instructions,
     install_plugin_hooks,
     install_skills,
+    remove_retired_skills,
 )
 
 
@@ -111,6 +112,7 @@ def main() -> int:
 
     selected = prompt_for_skills(skills)
     print(_cyan(f"Installing skills for: {', '.join(selected)}"))
+    remove_retired_skills()
     installed_skills = install_selected_skills(selected)
 
     print(f"\n{_cyan('Creating global instruction links')}")

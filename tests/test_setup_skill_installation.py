@@ -42,6 +42,34 @@ class SkillInstallationTests(unittest.TestCase):
             self.assertEqual(mirrored_skill.resolve(), copied_skill.resolve())
             self.assertEqual((mirrored_skill / "SKILL.md").read_text(encoding="utf-8"), "# alpha\n")
 
+    def test_removes_retired_repo_managed_skills_from_target_roots(self):
+        with tempfile.TemporaryDirectory() as home_tmp:
+            target_roots = [
+                Path(home_tmp) / ".claude" / "skills",
+                Path(home_tmp) / ".codex" / "skills",
+                Path(home_tmp) / ".agents" / "skills",
+            ]
+            for root in target_roots:
+                stale = root / "repo-visualizer"
+                stale.mkdir(parents=True)
+                (stale / "SKILL.md").write_text("# old visualizer\n", encoding="utf-8")
+
+            unrelated = target_roots[0] / "unrelated"
+            unrelated.mkdir()
+            (unrelated / "SKILL.md").write_text("# keep me\n", encoding="utf-8")
+
+            with redirect_stdout(StringIO()):
+                removed = setup.remove_retired_skills(
+                    ["repo-visualizer"],
+                    target_roots=target_roots,
+                    mirror_target_roots={target_roots[2]: target_roots[1]},
+                )
+
+            self.assertEqual(removed, 3)
+            for root in target_roots:
+                self.assertFalse((root / "repo-visualizer").exists())
+            self.assertTrue(unrelated.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

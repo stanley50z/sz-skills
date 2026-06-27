@@ -8,7 +8,7 @@ My personal collection of AI agent skills, synced across devices.
 |---|---|
 | [download-online-video](skills/download-online-video/) | Download YouTube and Bilibili videos, audio, and subtitles with a cross-platform `yt-dlp` helper |
 | [global-project-preferences](skills/global-project-preferences/) | Default tech stack preferences for new projects, extensions, scripts, and other greenfield work |
-| [repo-visualizer](skills/repo-visualizer/) | Generate an interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
+| [graphify](skills/graphify/) | Use the Graphify CLI (`graphifyy`) to build repository knowledge graphs, query architecture, and generate call-flow HTML |
 | [restart-stale-docker](skills/restart-stale-docker/) | Check whether Docker Desktop is stale and restart the Windows/WSL2 engine safely |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
 
@@ -89,7 +89,7 @@ Both setup scripts install skills into these coding harness skill directories:
 
 The Claude Code and Opencode targets use junctions (Windows) or symlinks (macOS/Linux) into this repo. The Codex target uses real copied directories because Codex scans both `~/.codex/skills` and `~/.agents/skills`; when either target is a junction into this repo, Codex exposes those entries as `sz-skills:<skill>`. The Agents target points to the copied Codex skill directories so Codex-compatible scanners see one canonical plain skill source instead of duplicate entries.
 
-The script creates those directories if they do not exist yet. For each skill in this repo, it adds the skill if missing and replaces the target only when a skill with the same name already exists. Unrelated skills in those directories are left alone.
+The script creates those directories if they do not exist yet. For each skill in this repo, it adds the skill if missing and replaces the target only when a skill with the same name already exists. Retired repo-managed skill names are removed; unrelated skills in those directories are left alone.
 
 `setup.py` also links:
 
