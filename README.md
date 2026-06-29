@@ -8,7 +8,7 @@ My personal collection of AI agent skills, synced across devices.
 |---|---|
 | [download-online-video](skills/download-online-video/) | Download YouTube and Bilibili videos, audio, and subtitles with a cross-platform `yt-dlp` helper |
 | [global-project-preferences](skills/global-project-preferences/) | Default tech stack preferences for new projects, extensions, scripts, and other greenfield work |
-| [graphify](skills/graphify/) | Use the Graphify CLI (`graphifyy`) to build and query repository knowledge graphs |
+| [graphify](skills/graphify/) | Query existing Graphify knowledge graphs first for codebase, architecture, relationship, dependency, data-flow, and project-content questions |
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
 | [restart-stale-docker](skills/restart-stale-docker/) | Check whether Docker Desktop is stale and restart the Windows/WSL2 engine safely |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |

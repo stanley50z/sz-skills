@@ -32,6 +32,23 @@ class GraphifySkillTests(unittest.TestCase):
         self.assertIn("graphify hook install", source)
         self.assertIn("git hooks", source.lower())
 
+    def test_existing_graph_routes_codebase_questions_to_graphify_first(self):
+        source = SKILL.read_text(encoding="utf-8")
+        lower = source.lower()
+
+        self.assertIn("any question about a codebase", lower)
+        self.assertIn("architecture", lower)
+        self.assertIn("file relationship", lower)
+        self.assertIn("dependency", lower)
+        self.assertIn("data-flow", lower)
+        self.assertIn("project content", lower)
+        self.assertIn("graphify-out/graph.json exists", lower)
+        self.assertIn("first run `graphify query", lower)
+        self.assertIn("before broad `rg`, `grep`, or multi-file reads", lower)
+        self.assertIn("graphify path", source)
+        self.assertIn("graphify explain", source)
+        self.assertIn("stale or incorrect graph output", lower)
+
     def test_repo_visualizer_is_cataloged_as_separate_human_report_skill(self):
         readme = README.read_text(encoding="utf-8")
         repo_visualizer = REPO_ROOT / "skills" / "repo-visualizer" / "SKILL.md"

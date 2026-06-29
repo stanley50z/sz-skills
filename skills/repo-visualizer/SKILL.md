@@ -28,6 +28,23 @@ This skill is for human comprehension. Do not replace it with a raw node graph w
 6. Generate `docs/repo_structure.html`, creating `docs/` if needed. Regenerate from source when updating; do not patch stale facts by hand.
 7. Open the local HTML page and verify Mermaid renders, file clicks change the details panel, text is readable, and there are no script errors. For `file://` pages, prefer Chrome DevTools MCP when available.
 
+## Optional Graphify Input
+
+If `graphify-out/graph.json` exists, read it after repo orientation and before manual source inventory.
+
+Use Graphify output to:
+- identify likely entry points, central modules, dependency clusters, and important edges
+- prioritize which files to inspect first
+- cross-check manually discovered imports, calls, and config relationships
+
+Do not use Graphify output as the source of truth. Source code remains authoritative.
+If an edge appears only in Graphify output, either verify it in source or label it as
+`Graphify-reported`. Preserve uncertainty from Graphify, including `INFERRED`,
+`AMBIGUOUS`, or similar labels.
+
+Do not run `graphify .` automatically unless the user explicitly asks to use,
+refresh, or build Graphify output.
+
 ## File Details
 
 For every included code file, capture:

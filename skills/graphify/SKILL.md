@@ -1,6 +1,6 @@
 ---
 name: graphify
-description: Use when asked to run Graphify, build or query graphify-out knowledge graphs, inspect architecture from graph.json, or answer codebase relationship questions with the Graphify CLI.
+description: Use when answering any question about a codebase, architecture, file relationships, dependency links, data-flow, or project content, especially when graphify-out/graph.json exists, or when asked to build, refresh, query, explain, path, init, or initialize Graphify.
 ---
 
 # Graphify
@@ -16,9 +16,16 @@ This is a local wrapper skill, not Graphify's full platform-specific skill. Pref
 - The user explicitly asks for Graphify.
 - The user asks to "init graphify" or "initialize Graphify" in a project.
 - The user asks to build or refresh a `graphify-out` knowledge graph.
-- The user asks questions that can be answered from an existing `graphify-out/graph.json`.
+- The user asks any question about a codebase, architecture, file relationship, dependency, data-flow, or project content and `graphify-out/graph.json` exists.
+- The user asks questions that can be answered from an existing `graphify-out/graph.json`, `GRAPH_REPORT.md`, or Graphify wiki.
 
-Do not use Graphify for ordinary code edits where direct source inspection is faster, unless an existing `graphify-out/graph.json` can orient the work first. Do not treat Graphify's node graph as a replacement for a human-readable architecture document.
+Do not use Graphify when the task is about stale or incorrect graph output, or when the user explicitly says not to use it. For ordinary code edits, use Graphify only when an existing `graphify-out/graph.json` can orient the work first. Do not treat Graphify's node graph as a replacement for a human-readable architecture document.
+
+## Fast Path for Existing Graphs
+
+If `graphify-out/graph.json` exists and the user asks a natural-language question about codebase structure, architecture, file relationships, dependencies, data flow, call paths, ownership, or project content, first run `graphify query "<question>"` before broad `rg`, `grep`, or multi-file reads.
+
+Use `graphify path "<A>" "<B>"` when the question asks how two concepts connect. Use `graphify explain "<concept>"` when the question asks what a specific component, module, file, or concept does. Use source files afterward to verify details before editing code.
 
 ## Workflow
 
@@ -60,7 +67,7 @@ graphify-out/GRAPH_REPORT.md
 graphify-out/graph.json
 ```
 
-5. For questions against an existing graph, query the graph before reading many source files:
+5. For questions against an existing graph, query the graph before broad source inspection:
 
 ```sh
 graphify query "how does authentication reach the database?"
@@ -77,7 +84,7 @@ Use source files afterward to verify details before editing code.
   - `graphify claude install` and `graphify codex install` add project-level always-on instructions and tool hooks.
   - `graphify hook install` adds git hooks for graph refresh.
 - Do not run `graphify claude install`, `graphify codex install`, or `graphify hook install` unless the user explicitly asks for always-on project integration, git hooks, or to "init graphify" / "initialize Graphify". This repo manages its own skills and hooks through `setup.py`.
-- Do not vendor Graphify's platform-specific `SKILL.md` variants into this wrapper.
+- Do not vendor Graphify's platform-specific `SKILL.md` variants into this wrapper. Keep this skill compact and wrapper-focused.
 - Do not invent graph edges or architecture facts. If Graphify marks an edge `INFERRED` or `AMBIGUOUS`, preserve that uncertainty.
 - For large repos, use Graphify's narrowing suggestions instead of forcing a whole-repo run.
 - For `file://` HTML verification, follow the project browser-tool preference and inspect the generated page visually.
