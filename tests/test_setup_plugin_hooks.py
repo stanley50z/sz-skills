@@ -54,6 +54,20 @@ class PluginHookSetupTests(unittest.TestCase):
         )
         return json.loads(result.stdout or "{}")
 
+    def _run_graphify_codex_hook(self, payload, cwd):
+        repo_root = Path(setup.REPO_ROOT)
+        hook_script = repo_root / "hooks" / "graphify-codex-pretooluse.py"
+        result = subprocess.run(
+            [sys.executable, str(hook_script)],
+            input=json.dumps(payload),
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=cwd,
+        )
+        return json.loads(result.stdout or "{}")
+
     def _write_transcript(self, path, entries):
         path.write_text(
             "\n".join(json.dumps(entry) for entry in entries) + "\n",
@@ -141,6 +155,99 @@ class PluginHookSetupTests(unittest.TestCase):
 
             self.assertFalse(second_changed)
 
+    def test_claude_plugin_config_preserves_settings_and_owns_graphify_hooks(self):
+        with tempfile.TemporaryDirectory() as repo_tmp, tempfile.TemporaryDirectory() as home_tmp:
+            repo_root = Path(repo_tmp)
+            settings_path = Path(home_tmp) / ".claude" / "settings.json"
+            settings_path.parent.mkdir(parents=True)
+            settings_path.write_text(
+                json.dumps(
+                    {
+                        "permissions": {"defaultMode": "auto"},
+                        "hooks": {
+                            "PreToolUse": [
+                                {
+                                    "matcher": "Bash",
+                                    "hooks": [{"type": "command", "command": "echo existing"}],
+                                },
+                                {
+                                    "matcher": "Bash",
+                                    "hooks": [{"type": "command", "command": "graphify old-hook"}],
+                                },
+                            ],
+                            "Stop": [{"hooks": [{"type": "command", "command": "echo stop"}]}],
+                        },
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            changed = setup.install_claude_plugin_config(
+                settings_path=settings_path,
+                installed_plugins_path=Path(home_tmp) / ".claude" / "plugins" / "installed_plugins.json",
+                known_marketplaces_path=Path(home_tmp) / ".claude" / "plugins" / "known_marketplaces.json",
+                repo_root=repo_root,
+                now_iso="2026-06-24T00:00:00Z",
+                git_commit_sha="abc123",
+            )
+
+            self.assertTrue(changed)
+            settings = json.loads(settings_path.read_text(encoding="utf-8"))
+            self.assertEqual(settings["permissions"]["defaultMode"], "auto")
+            self.assertEqual(settings["hooks"]["Stop"][0]["hooks"][0]["command"], "echo stop")
+            rendered_pre_tool = json.dumps(settings["hooks"]["PreToolUse"])
+            self.assertIn("echo existing", rendered_pre_tool)
+            self.assertNotIn("graphify old-hook", rendered_pre_tool)
+            self.assertIn("graphify-out/graph.json exists", rendered_pre_tool)
+            self.assertIn("Read|Glob", rendered_pre_tool)
+            self.assertIn("*rg", rendered_pre_tool)
+
+    def test_registers_codex_graphify_hook_file_without_plugin_tool_loop_hooks(self):
+        with tempfile.TemporaryDirectory() as repo_tmp, tempfile.TemporaryDirectory() as home_tmp:
+            repo_root = Path(repo_tmp)
+            hooks_dir = repo_root / "hooks"
+            hooks_dir.mkdir(parents=True)
+            (hooks_dir / "graphify-codex-pretooluse.py").write_text("print('{}')\n", encoding="utf-8")
+            hooks_path = Path(home_tmp) / ".codex" / "hooks.json"
+            hooks_path.parent.mkdir(parents=True)
+            hooks_path.write_text(
+                json.dumps(
+                    {
+                        "hooks": {
+                            "PreToolUse": [
+                                {
+                                    "matcher": "Bash",
+                                    "hooks": [{"type": "command", "command": "echo existing"}],
+                                },
+                                {
+                                    "matcher": "Bash",
+                                    "hooks": [{"type": "command", "command": "graphify hook-check"}],
+                                },
+                            ],
+                            "Stop": [{"hooks": [{"type": "command", "command": "echo stop"}]}],
+                        }
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            changed = setup.install_codex_graphify_hook_config(
+                hooks_path=hooks_path,
+                repo_root=repo_root,
+            )
+
+            self.assertTrue(changed)
+            hooks = json.loads(hooks_path.read_text(encoding="utf-8"))["hooks"]
+            rendered_pre_tool = json.dumps(hooks["PreToolUse"])
+            self.assertIn("echo existing", rendered_pre_tool)
+            self.assertNotIn("graphify hook-check", rendered_pre_tool)
+            self.assertIn("graphify-codex-pretooluse.py", rendered_pre_tool)
+            self.assertEqual(hooks["Stop"][0]["hooks"][0]["command"], "echo stop")
+
     def test_repo_contains_plugin_hook_entrypoints(self):
         repo_root = Path(setup.REPO_ROOT)
         codex_plugin_root = repo_root / setup.CODEX_HOOK_PLUGIN_DIR
@@ -163,6 +270,7 @@ class PluginHookSetupTests(unittest.TestCase):
         self.assertTrue((repo_root / "hooks" / "hooks.json").is_file())
         self.assertTrue((repo_root / "hooks" / "session-start-codex").is_file())
         self.assertTrue((repo_root / "hooks" / "session-start").is_file())
+        self.assertTrue((repo_root / "hooks" / "graphify-codex-pretooluse.py").is_file())
         self.assertTrue((repo_root / "hooks" / "stop-cdp-session-reminder").is_file())
         self.assertTrue((repo_root / "hooks" / "stop-cdp-session-reminder.py").is_file())
         self.assertTrue((repo_root / "hooks" / "run-hook.cmd").is_file())
@@ -207,6 +315,39 @@ class PluginHookSetupTests(unittest.TestCase):
             self.assertIn("context-only guidance", context)
             self.assertIn("Do not add or run cleanup scripts from hooks", context)
             self.assertIn("browser-url, ws-endpoint, autoConnect", context)
+
+    def test_graphify_codex_hook_emits_context_for_search_when_graph_exists(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "graphify-out").mkdir()
+            (root / "graphify-out" / "graph.json").write_text("{}", encoding="utf-8")
+
+            result = self._run_graphify_codex_hook(
+                {
+                    "hook_event_name": "PreToolUse",
+                    "tool_name": "Bash",
+                    "tool_input": {"command": "rg AuthService"},
+                },
+                cwd=root,
+            )
+
+            output = result["hookSpecificOutput"]
+            self.assertEqual(output["hookEventName"], "PreToolUse")
+            self.assertIn("graphify query", output["additionalContext"])
+            self.assertIn("graphify-out/graph.json exists", output["additionalContext"])
+
+    def test_graphify_codex_hook_is_silent_without_existing_graph(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result = self._run_graphify_codex_hook(
+                {
+                    "hook_event_name": "PreToolUse",
+                    "tool_name": "Bash",
+                    "tool_input": {"command": "rg AuthService"},
+                },
+                cwd=Path(tmp),
+            )
+
+            self.assertEqual(result, {})
 
     def test_stop_hook_allows_turns_without_chrome_devtools_tool_calls(self):
         with tempfile.TemporaryDirectory() as tmp:

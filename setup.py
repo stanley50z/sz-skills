@@ -62,9 +62,11 @@ PLUGIN_ID = f"{PLUGIN_NAME}@{PLUGIN_NAME}"
 PLUGIN_VERSION = "1.0.0"
 CODEX_HOOK_PLUGIN_DIR = ".codex-hook-plugin"
 CODEX_CONFIG_PATH = HOME / ".codex" / "config.toml"
+CODEX_HOOKS_PATH = HOME / ".codex" / "hooks.json"
 CLAUDE_SETTINGS_PATH = HOME / ".claude" / "settings.json"
 CLAUDE_INSTALLED_PLUGINS_PATH = HOME / ".claude" / "plugins" / "installed_plugins.json"
 CLAUDE_KNOWN_MARKETPLACES_PATH = HOME / ".claude" / "plugins" / "known_marketplaces.json"
+GRAPHIFY_CODEX_HOOK_SCRIPT = "graphify-codex-pretooluse.py"
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────
 
@@ -243,6 +245,119 @@ def _write_json_if_changed(path: Path, data) -> bool:
     return True
 
 
+def _hook_entry_mentions(entry, needle: str) -> bool:
+    return needle.lower() in json.dumps(entry, ensure_ascii=False).lower()
+
+
+def _without_graphify_hooks(groups):
+    filtered = []
+    for group in groups:
+        if not isinstance(group, dict):
+            filtered.append(group)
+            continue
+
+        hooks = group.get("hooks")
+        if not isinstance(hooks, list):
+            if not _hook_entry_mentions(group, "graphify"):
+                filtered.append(group)
+            continue
+
+        kept_hooks = [hook for hook in hooks if not _hook_entry_mentions(hook, "graphify")]
+        if kept_hooks:
+            kept_group = dict(group)
+            kept_group["hooks"] = kept_hooks
+            filtered.append(kept_group)
+    return filtered
+
+
+GRAPHIFY_CLAUDE_BASH_HOOK = {
+    "matcher": "Bash",
+    "hooks": [
+        {
+            "type": "command",
+            "command": (
+                "CMD=$(python3 -c \""
+                "import json,sys; d=json.load(sys.stdin); "
+                "print(d.get('tool_input',d).get('command',''))\" 2>/dev/null || true); "
+                "case \"$CMD\" in "
+                r"*grep*|*rg\ *|*ripgrep*|*find\ *|*fd\ *|*ack\ *|*ag\ *) "
+                "[ -f graphify-out/graph.json ] && "
+                r"""echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","additionalContext":"MANDATORY: graphify-out/graph.json exists. You MUST run `graphify query \"<question>\"` before grepping raw files. Only grep after graphify has oriented you, or to modify/debug specific lines."}}' """
+                "|| true ;; "
+                "esac"
+            ),
+        }
+    ],
+}
+
+
+GRAPHIFY_CLAUDE_READ_HOOK = {
+    "matcher": "Read|Glob",
+    "hooks": [
+        {
+            "type": "command",
+            "command": (
+                "HIT=$(python3 -c \""
+                "import json,sys;"
+                "d=json.load(sys.stdin);"
+                "t=d.get('tool_input',d);"
+                "s=(str(t.get('file_path') or '')+' '+str(t.get('pattern') or '')+' '+str(t.get('path') or '')).lower().replace(chr(92),'/');"
+                "exts=('.py','.js','.ts','.tsx','.jsx','.go','.rs','.java','.rb','.c','.h','.cpp','.hpp','.cc','.cs','.kt','.swift','.php','.scala','.lua','.sh','.md','.rst','.txt','.mdx');"
+                "sys.stdout.write('1' if 'graphify-out/' not in s and any(e in s for e in exts) else '')\" 2>/dev/null || true); "
+                "if [ \"$HIT\" = 1 ] && [ -f graphify-out/graph.json ]; then "
+                r"""echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","additionalContext":"MANDATORY: graphify-out/graph.json exists. You MUST run graphify before reading source files. Use: `graphify query \"<question>\"` (scoped subgraph), `graphify explain \"<concept>\"`, or `graphify path \"<A>\" \"<B>\"`. Only read raw files after graphify has oriented you, or to modify/debug specific lines. This rule applies to subagents too - include it in every subagent prompt involving code exploration."}}'; """
+                "fi || true"
+            ),
+        }
+    ],
+}
+
+
+def _install_graphify_claude_hooks(settings: dict) -> None:
+    hooks = settings.setdefault("hooks", {})
+    pre_tool = hooks.setdefault("PreToolUse", [])
+    hooks["PreToolUse"] = [
+        *_without_graphify_hooks(pre_tool),
+        GRAPHIFY_CLAUDE_BASH_HOOK,
+        GRAPHIFY_CLAUDE_READ_HOOK,
+    ]
+
+
+def _quote_command_arg(value: str | Path) -> str:
+    text = str(value)
+    return '"' + text.replace('"', '\\"') + '"'
+
+
+def _codex_graphify_hook_command(repo_root: Path) -> str:
+    script = repo_root.resolve() / "hooks" / GRAPHIFY_CODEX_HOOK_SCRIPT
+    return f"{_quote_command_arg(sys.executable)} {_quote_command_arg(script)}"
+
+
+def install_codex_graphify_hook_config(
+    *,
+    hooks_path: Path = CODEX_HOOKS_PATH,
+    repo_root: Path = REPO_ROOT,
+) -> bool:
+    """Install the sz-skills-owned Graphify PreToolUse hook for Codex."""
+    existing = _load_json_file(hooks_path, {})
+    hooks = existing.setdefault("hooks", {})
+    pre_tool = hooks.setdefault("PreToolUse", [])
+    hooks["PreToolUse"] = [
+        *_without_graphify_hooks(pre_tool),
+        {
+            "matcher": "Bash",
+            "hooks": [
+                {
+                    "type": "command",
+                    "command": _codex_graphify_hook_command(repo_root),
+                    "statusMessage": "Checking Graphify graph",
+                }
+            ],
+        },
+    ]
+    return _write_json_if_changed(hooks_path, existing)
+
+
 def _current_git_commit(repo_root: Path = REPO_ROOT) -> str | None:
     try:
         result = subprocess.run(
@@ -278,6 +393,7 @@ def install_claude_plugin_config(
     if enabled_plugins.get(PLUGIN_ID) is not True:
         enabled_plugins[PLUGIN_ID] = True
         changed = True
+    _install_graphify_claude_hooks(settings)
     changed = _write_json_if_changed(settings_path, settings) or changed
 
     installed = _load_json_file(installed_plugins_path, {"version": 2, "plugins": {}})
@@ -330,6 +446,13 @@ def install_plugin_hooks() -> int:
         print(f"  {_green(f'Codex plugin enabled: {PLUGIN_ID}')}")
     except Exception as e:
         print(f"  {_red(f'FAILED: Codex plugin config — {e}')}")
+
+    try:
+        if install_codex_graphify_hook_config():
+            installed += 1
+        print(f"  {_green('Codex Graphify hook enabled')}")
+    except Exception as e:
+        print(f"  {_red(f'FAILED: Codex Graphify hook config — {e}')}")
 
     try:
         if install_claude_plugin_config():

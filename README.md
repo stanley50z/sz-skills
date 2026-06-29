@@ -104,6 +104,13 @@ It also registers local `sz-skills` plugin hooks:
 
 The Codex plugin package is context-only and does not contain a `skills/` directory, so Codex should load these skills through the copied/mirrored skill directories above instead of as plugin-bundled skills. The SessionStart hook injects `using-superpowers` and Chrome DevTools MCP ownership guidance so rules are available before the model chooses which skill or browser cleanup behavior applies. A Codex Stop hook also checks the current turn's transcript for Chrome DevTools MCP tool calls and, only when needed, blocks finalization with a reminder to close only owned isolated DevTools browser sessions. It does not run cleanup scripts.
 
+`setup.py` also owns Graphify hook settings without running Graphify's own installers:
+
+- Codex: manages the Graphify `PreToolUse` entry in `~/.codex/hooks.json`, preserving unrelated hooks and replacing old Graphify hook entries with the repo-owned `hooks/graphify-codex-pretooluse.py` script.
+- Claude Code: manages Graphify `PreToolUse` entries in `~/.claude/settings.json` for Bash search and `Read|Glob`, preserving unrelated settings and hooks while replacing old Graphify hook entries.
+
+The Codex Graphify hook emits model-visible guidance through `hookSpecificOutput.additionalContext` when `graphify-out/graph.json` exists and the agent is about to run a broad search command. Because Codex loads matching hooks from every active hook source, Graphify is intentionally not duplicated inside the `.codex-hook-plugin` hook file.
+
 ## Updating Vendor Skills
 
 Always pull the latest repo state before updating vendor skills. In this repo, "update skills" means:
