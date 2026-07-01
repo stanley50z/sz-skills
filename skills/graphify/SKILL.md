@@ -67,6 +67,8 @@ graphify-out/GRAPH_REPORT.md
 graphify-out/graph.json
 ```
 
+In a repo, treat `graphify-out/` as generated local output and add it to `.gitignore` unless the user explicitly asks to version graph snapshots.
+
 5. For questions against an existing graph, query the graph before broad source inspection:
 
 ```sh
