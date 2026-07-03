@@ -17,6 +17,9 @@ styling, responsive behavior, visual hierarchy, or interaction states.
 Project instructions may name a more specific browser tool for a target. Follow
 those instructions when they are more specific than this default order.
 
+When opening a browser for visual inspection, use full-screen unless the user,
+project, or target viewport specifies otherwise.
+
 ## Visual RED/GREEN
 
 For UI work, the TDD cycle becomes:
