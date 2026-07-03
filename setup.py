@@ -59,7 +59,7 @@ GLOBAL_INSTRUCTION_LINKS = [
 # still installed through TARGET_ROOTS to avoid duplicated plugin skill names.
 PLUGIN_NAME = "sz-skills"
 PLUGIN_ID = f"{PLUGIN_NAME}@{PLUGIN_NAME}"
-PLUGIN_VERSION = "1.0.0"
+PLUGIN_VERSION = "1.0.2"
 CODEX_HOOK_PLUGIN_DIR = ".codex-hook-plugin"
 CODEX_CONFIG_PATH = HOME / ".codex" / "config.toml"
 CODEX_HOOKS_PATH = HOME / ".codex" / "hooks.json"

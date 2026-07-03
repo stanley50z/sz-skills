@@ -102,7 +102,7 @@ It also registers local `sz-skills` plugin hooks:
 - Codex: adds the hook-only `.codex-hook-plugin` package as the `sz-skills` local marketplace and enables `sz-skills@sz-skills` in `~/.codex/config.toml`.
 - Claude Code: enables `sz-skills@sz-skills` in `~/.claude/settings.json` and records the repo path in Claude's plugin install state.
 
-The Codex plugin package is context-only and does not contain a `skills/` directory, so Codex should load these skills through the copied/mirrored skill directories above instead of as plugin-bundled skills. The SessionStart hook injects `using-superpowers` and Chrome DevTools MCP ownership guidance so rules are available before the model chooses which skill or browser cleanup behavior applies. A Codex Stop hook also checks the current turn's transcript for Chrome DevTools MCP tool calls and, only when needed, blocks finalization with a reminder to close only owned isolated DevTools browser sessions. It does not run cleanup scripts.
+The Codex plugin package is context-only and does not contain a `skills/` directory, so Codex should load these skills through the copied/mirrored skill directories above instead of as plugin-bundled skills. The SessionStart hook injects `using-superpowers` and Chrome DevTools MCP ownership guidance so rules are available before the model chooses which skill or browser cleanup behavior applies. A Codex PostToolUse hook records Chrome DevTools MCP usage for the active turn, and the Stop hook checks that marker plus transcript evidence. Only when needed, it blocks finalization with a reminder to close only owned isolated DevTools browser sessions. It does not run cleanup scripts.
 
 `setup.py` also owns Graphify hook settings without running Graphify's own installers:
 

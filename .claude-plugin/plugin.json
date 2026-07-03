@@ -1,6 +1,6 @@
 {
   "name": "sz-skills",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Local skill collection context hooks for Claude Code.",
   "author": {
     "name": "stanley50z"

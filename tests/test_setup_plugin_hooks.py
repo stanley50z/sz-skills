@@ -11,7 +11,7 @@ import setup
 
 
 class PluginHookSetupTests(unittest.TestCase):
-    def _run_hook_script(self, script_name, hooks_dir=None):
+    def _run_hook_script(self, script_name, hooks_dir=None, env_overrides=None):
         bash_candidates = [
             Path("C:/Program Files/Git/bin/bash.exe"),
             Path("C:/Program Files (x86)/Git/bin/bash.exe"),
@@ -25,6 +25,8 @@ class PluginHookSetupTests(unittest.TestCase):
         hooks_dir = hooks_dir or (repo_root / "hooks")
         env = os.environ.copy()
         env["PLUGIN_ROOT"] = str(repo_root)
+        if env_overrides:
+            env.update({key: str(value) for key, value in env_overrides.items()})
         result = subprocess.run(
             [bash, str(hooks_dir / script_name)],
             check=True,
@@ -41,9 +43,12 @@ class PluginHookSetupTests(unittest.TestCase):
             or ""
         )
 
-    def _run_stop_hook(self, payload):
+    def _run_stop_hook(self, payload, env_overrides=None):
         repo_root = Path(setup.REPO_ROOT)
         hook_script = repo_root / "hooks" / "stop-cdp-session-reminder.py"
+        env = os.environ.copy()
+        if env_overrides:
+            env.update({key: str(value) for key, value in env_overrides.items()})
         result = subprocess.run(
             [sys.executable, str(hook_script)],
             input=json.dumps(payload),
@@ -51,6 +56,24 @@ class PluginHookSetupTests(unittest.TestCase):
             capture_output=True,
             text=True,
             timeout=30,
+            env=env,
+        )
+        return json.loads(result.stdout or "{}")
+
+    def _run_marker_hook(self, payload, env_overrides=None):
+        repo_root = Path(setup.REPO_ROOT)
+        hook_script = repo_root / "hooks" / "mark-cdp-tool-use.py"
+        env = os.environ.copy()
+        if env_overrides:
+            env.update({key: str(value) for key, value in env_overrides.items()})
+        result = subprocess.run(
+            [sys.executable, str(hook_script)],
+            input=json.dumps(payload),
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            env=env,
         )
         return json.loads(result.stdout or "{}")
 
@@ -255,6 +278,8 @@ class PluginHookSetupTests(unittest.TestCase):
         self.assertTrue((codex_plugin_root / ".codex-plugin" / "plugin.json").is_file())
         self.assertTrue((codex_plugin_root / "hooks" / "hooks-codex.json").is_file())
         self.assertTrue((codex_plugin_root / "hooks" / "session-start-codex").is_file())
+        self.assertTrue((codex_plugin_root / "hooks" / "mark-cdp-tool-use").is_file())
+        self.assertTrue((codex_plugin_root / "hooks" / "mark-cdp-tool-use.py").is_file())
         self.assertTrue((codex_plugin_root / "hooks" / "stop-cdp-session-reminder").is_file())
         self.assertTrue((codex_plugin_root / "hooks" / "stop-cdp-session-reminder.py").is_file())
         self.assertTrue((codex_plugin_root / "hooks" / "run-hook.cmd").is_file())
@@ -271,6 +296,8 @@ class PluginHookSetupTests(unittest.TestCase):
         self.assertTrue((repo_root / "hooks" / "session-start-codex").is_file())
         self.assertTrue((repo_root / "hooks" / "session-start").is_file())
         self.assertTrue((repo_root / "hooks" / "graphify-codex-pretooluse.py").is_file())
+        self.assertTrue((repo_root / "hooks" / "mark-cdp-tool-use").is_file())
+        self.assertTrue((repo_root / "hooks" / "mark-cdp-tool-use.py").is_file())
         self.assertTrue((repo_root / "hooks" / "stop-cdp-session-reminder").is_file())
         self.assertTrue((repo_root / "hooks" / "stop-cdp-session-reminder.py").is_file())
         self.assertTrue((repo_root / "hooks" / "run-hook.cmd").is_file())
@@ -285,7 +312,7 @@ class PluginHookSetupTests(unittest.TestCase):
         self.assertNotIn("cleanup", rendered.lower())
         self.assertNotIn("chrome", rendered.lower())
 
-    def test_codex_hook_definition_adds_stop_without_tool_loop_hooks(self):
+    def test_codex_hook_definition_adds_stop_and_devtools_marker_hook(self):
         repo_root = Path(setup.REPO_ROOT)
 
         for hook_file in [
@@ -294,10 +321,11 @@ class PluginHookSetupTests(unittest.TestCase):
         ]:
             hooks = json.loads(hook_file.read_text(encoding="utf-8"))["hooks"]
 
-            self.assertEqual(set(hooks), {"SessionStart", "Stop"})
+            self.assertEqual(set(hooks), {"SessionStart", "PostToolUse", "Stop"})
             rendered = json.dumps(hooks)
             self.assertNotIn("PreToolUse", rendered)
-            self.assertNotIn("PostToolUse", rendered)
+            self.assertIn("mcp__chrome[_-]devtools__", rendered)
+            self.assertIn("mark-cdp-tool-use", rendered)
             self.assertIn("stop-cdp-session-reminder", rendered)
 
     def test_session_start_hooks_inject_chrome_devtools_context_only_guidance(self):
@@ -315,6 +343,30 @@ class PluginHookSetupTests(unittest.TestCase):
             self.assertIn("context-only guidance", context)
             self.assertIn("Do not add or run cleanup scripts from hooks", context)
             self.assertIn("browser-url, ws-endpoint, autoConnect", context)
+
+    def test_cached_codex_session_start_hook_uses_installed_codex_skill(self):
+        repo_root = Path(setup.REPO_ROOT)
+        with tempfile.TemporaryDirectory() as cache_tmp, tempfile.TemporaryDirectory() as home_tmp:
+            cached_plugin = Path(cache_tmp) / "sz-skills" / "sz-skills" / setup.PLUGIN_VERSION
+            hooks_dir = cached_plugin / "hooks"
+            shutil.copytree(repo_root / setup.CODEX_HOOK_PLUGIN_DIR / "hooks", hooks_dir)
+
+            skill_dir = Path(home_tmp) / ".codex" / "skills" / "using-superpowers"
+            skill_dir.mkdir(parents=True)
+            (skill_dir / "SKILL.md").write_text(
+                "---\nname: using-superpowers\n---\ninstalled codex skill sentinel\n",
+                encoding="utf-8",
+            )
+
+            context = self._run_hook_script(
+                "session-start-codex",
+                hooks_dir=hooks_dir,
+                env_overrides={"HOME": str(Path(home_tmp)).replace("\\", "/")},
+            )
+
+            self.assertIn("installed codex skill sentinel", context)
+            self.assertNotIn("Error reading using-superpowers skill", context)
+            self.assertNotIn("No such file or directory", context)
 
     def test_graphify_codex_hook_emits_context_for_search_when_graph_exists(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -388,6 +440,33 @@ class PluginHookSetupTests(unittest.TestCase):
             self.assertIn("Chrome DevTools MCP", result["reason"])
             self.assertIn("owned isolated profile", result["reason"])
             self.assertIn("do not close", result["reason"])
+
+    def test_stop_hook_blocks_after_marked_current_turn_without_transcript_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            env = {"SZ_SKILLS_CODEX_HOOK_STATE_DIR": Path(tmp) / "state"}
+
+            marker_result = self._run_marker_hook(
+                {
+                    "hook_event_name": "PostToolUse",
+                    "tool_name": "mcp__chrome_devtools__take_screenshot",
+                    "turn_id": "turn-current",
+                },
+                env_overrides=env,
+            )
+            self.assertEqual(marker_result, {})
+
+            result = self._run_stop_hook(
+                {
+                    "hook_event_name": "Stop",
+                    "turn_id": "turn-current",
+                    "last_assistant_message": "Verification is complete.",
+                },
+                env_overrides=env,
+            )
+
+            self.assertEqual(result["decision"], "block")
+            self.assertIn("Chrome DevTools MCP", result["reason"])
+            self.assertIn("owned isolated profile", result["reason"])
 
     def test_stop_hook_allows_when_cleanup_decision_is_already_in_final_message(self):
         with tempfile.TemporaryDirectory() as tmp:

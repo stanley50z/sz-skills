@@ -4,6 +4,9 @@
 from __future__ import annotations
 
 import json
+import os
+import hashlib
+import re
 import sys
 from pathlib import Path
 from typing import Any, Iterable
@@ -13,6 +16,7 @@ DEVTOOLS_TOOL_PREFIXES = (
     "mcp__chrome_devtools__",
     "mcp__chrome-devtools__",
 )
+STATE_ENV = "SZ_SKILLS_CODEX_HOOK_STATE_DIR"
 
 REMINDER = (
     "Before finishing, check whether this turn used a Chrome DevTools MCP "
@@ -34,6 +38,39 @@ def read_input() -> dict[str, Any]:
     if not raw.strip():
         return {}
     return json.loads(raw)
+
+
+def state_dir() -> Path:
+    explicit = os.environ.get(STATE_ENV)
+    if explicit:
+        return Path(explicit)
+
+    codex_home = os.environ.get("CODEX_HOME")
+    if codex_home:
+        return Path(codex_home) / "hook-state" / "sz-skills"
+
+    return Path.home() / ".codex" / "hook-state" / "sz-skills"
+
+
+def marker_path(turn_id: str) -> Path:
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", turn_id).strip("._-") or "turn"
+    digest = hashlib.sha256(turn_id.encode("utf-8")).hexdigest()[:16]
+    return state_dir() / "chrome-devtools-turns" / f"{safe[:80]}-{digest}.json"
+
+
+def turn_marked_chrome_devtools(turn_id: str | None) -> bool:
+    if not turn_id:
+        return False
+    return marker_path(turn_id).is_file()
+
+
+def clear_turn_marker(turn_id: str | None) -> None:
+    if not turn_id:
+        return
+    try:
+        marker_path(turn_id).unlink(missing_ok=True)
+    except OSError:
+        pass
 
 
 def get_turn_id(entry: dict[str, Any]) -> str | None:
@@ -126,21 +163,28 @@ def has_cleanup_decision(message: Any) -> bool:
 
 def main() -> int:
     hook_input = read_input()
+    turn_id = hook_input.get("turn_id") or hook_input.get("turnId")
+
     if hook_input.get("stop_hook_active") or hook_input.get("stopHookActive"):
+        clear_turn_marker(turn_id)
         emit({"continue": True})
         return 0
 
     transcript_path = hook_input.get("transcript_path") or hook_input.get("transcriptPath")
-    turn_id = hook_input.get("turn_id") or hook_input.get("turnId")
     last_assistant_message = (
         hook_input.get("last_assistant_message")
         or hook_input.get("lastAssistantMessage")
         or ""
     )
 
-    if used_chrome_devtools(transcript_path, turn_id) and not has_cleanup_decision(last_assistant_message):
+    chrome_devtools_used = used_chrome_devtools(transcript_path, turn_id) or turn_marked_chrome_devtools(turn_id)
+
+    if chrome_devtools_used and not has_cleanup_decision(last_assistant_message):
         emit({"decision": "block", "reason": REMINDER})
         return 0
+
+    if chrome_devtools_used:
+        clear_turn_marker(turn_id)
 
     emit({"continue": True})
     return 0

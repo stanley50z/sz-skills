@@ -5,9 +5,34 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-REPO_ROOT="$(cd "${PLUGIN_ROOT}/.." && pwd)"
 
-using_superpowers_content=$(cat "${REPO_ROOT}/skills/using-superpowers/SKILL.md" 2>&1 || echo "Error reading using-superpowers skill")
+skill_path_candidates=(
+    "${PLUGIN_ROOT}/skills/using-superpowers/SKILL.md"
+    "${PLUGIN_ROOT}/../skills/using-superpowers/SKILL.md"
+)
+
+if [ -n "${CODEX_HOME:-}" ]; then
+    skill_path_candidates+=("${CODEX_HOME}/skills/using-superpowers/SKILL.md")
+fi
+
+if [ -n "${HOME:-}" ]; then
+    skill_path_candidates+=(
+        "${HOME}/.codex/skills/using-superpowers/SKILL.md"
+        "${HOME}/.agents/skills/using-superpowers/SKILL.md"
+    )
+fi
+
+using_superpowers_content=""
+for skill_path in "${skill_path_candidates[@]}"; do
+    if [ -f "${skill_path}" ]; then
+        using_superpowers_content=$(cat "${skill_path}")
+        break
+    fi
+done
+
+if [ -z "${using_superpowers_content}" ]; then
+    using_superpowers_content="Error reading using-superpowers skill. Checked: ${skill_path_candidates[*]}"
+fi
 
 escape_for_json() {
     local s="$1"
