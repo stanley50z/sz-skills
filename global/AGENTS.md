@@ -6,7 +6,11 @@ For other browser verification and control tasks, prefer tools in this order:
 2. Chrome DevTools MCP connected to the existing user profile and session.
 3. Chrome DevTools MCP in a new session/window.
 
-After finishing Chrome DevTools MCP work, close the entire DevTools-controlled browser/window only when it was launched by Chrome DevTools MCP with an owned isolated profile or unique `user-data-dir`. If MCP attached to an existing browser via `browser-url`, `ws-endpoint`, `autoConnect`, or a normal user profile, do not close the browser automatically; close only task tabs when appropriate.
+After DevTools MCP work, close the browser only if MCP launched it with its own isolated profile or `user-data-dir`. If it attached to an existing browser (`browser-url`, `ws-endpoint`, `autoConnect`, or a normal profile), close only task tabs.
+
+## File Links
+
+When mentioning a file, link it T3Code-style: a markdown link to its absolute path, e.g. `[SKILL.md](C:\Users\13982\.sz-skills\skills\commit\SKILL.md)`.
 
 ## Web Search
 
@@ -14,11 +18,11 @@ When unsure about a fact involving real-world products, use web search before an
 
 ## Localhost Ports
 
-Before choosing or starting a localhost dev-server port, read `C:\Users\13982\LOCALHOST_PORTS.md`; if it does not exist, create it first. Avoid ports already assigned there unless you are intentionally working on that project or have verified that reusing the port is safe. When adding a new fixed localhost port for any project, update that registry in the same change.
+Before picking a localhost port, read `C:\Users\13982\LOCALHOST_PORTS.md` (create it if missing). Don't reuse ports assigned to other projects unless verified safe. Register any new fixed port there in the same change.
 
 ## Scripting Defaults
 
-When asked to write a script and no language is specified, use Python by default. Keep cross-platform compatibility in mind, especially for paths, shell invocation, filesystem behavior, and environment assumptions.
+Scripts default to Python unless a language is specified. Write cross-platform code (paths, shell invocation, filesystem behavior, environment).
 
 ## Shell Commands on Windows
 
@@ -28,8 +32,8 @@ Commands execute via `powershell.exe -Command "<string>"` (Windows PowerShell 5.
 - Never use PowerShell here-strings (`@'...'@`) inside a `-Command` string — the outer quoting layer breaks them.
 - For multiline Python or scripts: write the code to a temp file with the file-write tool, run `python tempfile.py`, then delete it. Do NOT pipe multiline code via stdin.
 - For one-liners: `python -c "..."` with double quotes outside and single quotes inside.
-- If a command fails with a parse or quoting error, switch to the temp-file approach immediately. Do not retry the same idiom with different quoting.
+- On a parse or quoting error, switch to the temp-file approach immediately — don't retry with different quoting.
 
 ## Encoding on Windows
 
-When reading, writing, or verifying files/command output that may contain Chinese or other non-ASCII text in PowerShell, use UTF-8 explicitly.
+In PowerShell, use explicit UTF-8 when reading, writing, or verifying anything that may contain non-ASCII (e.g. Chinese) text.
