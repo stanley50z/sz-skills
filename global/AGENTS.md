@@ -12,6 +12,10 @@ After finishing Chrome DevTools MCP work, close the entire DevTools-controlled b
 
 When unsure about a fact involving real-world products, use web search before answering.
 
+## Localhost Ports
+
+Before choosing or starting a localhost dev-server port, read `C:\Users\13982\LOCALHOST_PORTS.md`; if it does not exist, create it first. Avoid ports already assigned there unless you are intentionally working on that project or have verified that reusing the port is safe. When adding a new fixed localhost port for any project, update that registry in the same change.
+
 ## Scripting Defaults
 
 When asked to write a script and no language is specified, use Python by default. Keep cross-platform compatibility in mind, especially for paths, shell invocation, filesystem behavior, and environment assumptions.
