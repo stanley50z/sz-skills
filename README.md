@@ -8,7 +8,6 @@ My personal collection of AI agent skills, synced across devices.
 |---|---|
 | [download-online-video](skills/download-online-video/) | Download YouTube and Bilibili videos, audio, and subtitles with a cross-platform `yt-dlp` helper |
 | [global-project-preferences](skills/global-project-preferences/) | Default tech stack preferences for new projects, extensions, scripts, and other greenfield work |
-| [graphify](skills/graphify/) | Query existing Graphify knowledge graphs first for codebase, architecture, relationship, dependency, data-flow, and project-content questions |
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
 | [restart-stale-docker](skills/restart-stale-docker/) | Check whether Docker Desktop is stale and restart the Windows/WSL2 engine safely |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
@@ -103,13 +102,6 @@ It also registers local `sz-skills` plugin hooks:
 - Claude Code: enables `sz-skills@sz-skills` in `~/.claude/settings.json` and records the repo path in Claude's plugin install state.
 
 The Codex plugin package is context-only and does not contain a `skills/` directory, so Codex should load these skills through the copied/mirrored skill directories above instead of as plugin-bundled skills. The SessionStart hook injects `using-superpowers` and Chrome DevTools MCP ownership guidance so rules are available before the model chooses which skill or browser cleanup behavior applies. A Codex PostToolUse hook records Chrome DevTools MCP usage for the active turn, and the Stop hook checks that marker plus transcript evidence. Only when needed, it blocks finalization with a reminder to close only owned isolated DevTools browser sessions. It does not run cleanup scripts.
-
-`setup.py` also owns Graphify hook settings without running Graphify's own installers:
-
-- Codex: manages the Graphify `PreToolUse` entry in `~/.codex/hooks.json`, preserving unrelated hooks and replacing old Graphify hook entries with the repo-owned `hooks/graphify-codex-pretooluse.py` script.
-- Claude Code: manages Graphify `PreToolUse` entries in `~/.claude/settings.json` for Bash search and `Read|Glob`, preserving unrelated settings and hooks while replacing old Graphify hook entries.
-
-The Codex Graphify hook emits model-visible guidance through `hookSpecificOutput.additionalContext` when `graphify-out/graph.json` exists and the agent is about to run a broad search command. Because Codex loads matching hooks from every active hook source, Graphify is intentionally not duplicated inside the `.codex-hook-plugin` hook file.
 
 ## Updating Vendor Skills
 
