@@ -6,10 +6,11 @@ description: Use when implementing any feature or bugfix, before writing impleme
 # Test-Driven Development
 
 This skill is based on Matt Pocock's `tdd` skill, kept under the
-Superpowers-compatible `test-driven-development` name. It retains the local
-requirements for command timeouts, user-requirement test priority, explicit
-failure over fallback behavior, stale v1/v2 test cleanup, and visual-only UI
-testing.
+Superpowers-compatible `test-driven-development` name. It keeps the v1.1
+emphasis on agreed test seams and independent expected values, while retaining
+the local requirements for command timeouts, user-requirement test priority,
+explicit failure over fallback behavior, stale v1/v2 test cleanup, and
+visual-only UI testing.
 
 ## Philosophy
 
@@ -34,6 +35,19 @@ guidelines.
 
 For UI work, see [visual-tests.md](visual-tests.md). UI tests are visual
 checks, not code tests.
+
+## Seams: Where Tests Go
+
+A **seam** is the public boundary you test at: the interface where behavior is
+observable without reaching inside the implementation.
+
+Test only at pre-agreed seams. Before writing the first test, identify the
+public interface under test and confirm it with the user unless the existing
+spec already pins it down. No test should be written against an unconfirmed
+internal helper just because it is convenient.
+
+Ask: "What public interface are we testing, and which behavior should prove it
+works?"
 
 ## Timeout Rule
 
@@ -159,6 +173,26 @@ RIGHT (vertical):
   ...
 ```
 
+## Anti-Pattern: Tautological Tests
+
+Expected values must come from an independent source of truth: a spec example,
+a known literal, a fixture, or a worked scenario. A test is tautological when
+the assertion recomputes the expected value the same way the implementation
+does, so it passes by construction.
+
+Bad:
+
+```typescript
+const expected = items.reduce((sum, item) => sum + item.price, 0);
+expect(calculateTotal(items)).toBe(expected);
+```
+
+Good:
+
+```typescript
+expect(calculateTotal([{ price: 10 }, { price: 5 }])).toBe(15);
+```
+
 ## Workflow
 
 ### 1. Planning
@@ -172,6 +206,7 @@ Before writing any code:
 - [ ] Confirm with user what interface changes are needed
 - [ ] Confirm with user which user-facing behaviors to test first
 - [ ] For UI changes, define the visual states and viewports to inspect
+- [ ] Identify and confirm the public seam under test
 - [ ] Identify opportunities for [deep modules](deep-modules.md)
 - [ ] Design interfaces for [testability](interface-design.md)
 - [ ] List the behaviors to test, not implementation steps
@@ -212,6 +247,7 @@ Rules:
 - Only enough code to pass the current test
 - Don't anticipate future tests
 - Keep tests focused on observable behavior
+- Keep each test at the confirmed seam
 - Run every RED and GREEN check with a timeout
 - For UI, use visual inspection instead of code tests
 
@@ -268,9 +304,14 @@ new version (v2):
 - If v2 can't be implemented as described, surface the problem. Don't silently
   preserve v1.
 
-### 6. Refactor
+### 6. Review-Driven Refactor
 
-After all tests pass, look for [refactor candidates](refactoring.md):
+Refactoring is not part of the RED/GREEN implementation loop. Get the behavior
+green first, then review the diff and refactor deliberately.
+
+For non-trivial diffs, run or request `code-review` before refactoring. Use the
+Standards findings and [refactor candidates](refactoring.md) to decide what to
+clean up:
 
 - [ ] Extract duplication
 - [ ] Deepen modules by moving complexity behind simple interfaces
@@ -286,6 +327,8 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 [ ] Test is driven by a user requirement, edge case, or justified internal complexity
 [ ] Test describes behavior, not implementation
 [ ] Test uses public interface only
+[ ] Public seam under test was confirmed or already pinned by the spec
+[ ] Expected values come from an independent source of truth
 [ ] Test would survive internal refactor
 [ ] RED run failed for the expected reason
 [ ] RED and GREEN commands used command-level timeouts

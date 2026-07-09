@@ -1,6 +1,6 @@
 ---
 name: grill-with-docs
-description: Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates documentation (CONTEXT.md, ADRs) inline as decisions crystallise. Use when user wants to stress-test a plan against their project's language and documented decisions.
+description: Use when user wants to stress-test a plan against the project's language, existing docs, and durable decisions before implementation.
 ---
 
 <what-to-do>
@@ -9,7 +9,12 @@ Interview me relentlessly about every aspect of this plan until we reach a share
 
 Ask the questions one at a time, waiting for feedback on each question before continuing.
 
-If a question can be answered by exploring the codebase, explore the codebase instead.
+Separate facts from decisions:
+
+- Facts are discoverable from the repo, docs, tests, or other available sources. Explore and answer those yourself before asking me.
+- Decisions belong to the human. Recommend an answer, but wait for my answer before treating it as resolved.
+
+Do not enact the plan, write the implementation, or create tickets during this skill. Stop when shared understanding has been reached and ask me to confirm before any downstream skill or implementation begins.
 
 </what-to-do>
 
@@ -52,6 +57,10 @@ If a `CONTEXT-MAP.md` exists at the root, the repo has multiple contexts. The ma
 Create files lazily — only when you have something to write. If no `CONTEXT.md` exists, create one when the first term is resolved. If no `docs/adr/` exists, create it when the first ADR is needed.
 
 ## During the session
+
+### Confirmation gate
+
+The skill is complete only when I explicitly confirm the shared understanding. Until then, keep grilling or summarize the remaining unresolved branches. Do not continue into planning, ticketing, implementation, or refactoring without that confirmation.
 
 ### Challenge against the glossary
 

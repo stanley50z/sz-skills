@@ -38,6 +38,9 @@ UPSTREAM = {
     "docker-expert": [
         {"repo": "sickn33/antigravity-awesome-skills", "path": "skills/docker-expert"},
     ],
+    "code-review": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/code-review"},
+    ],
     "grill-with-docs": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/grill-with-docs"},
     ],
@@ -103,6 +106,8 @@ for _s in _SUPERPOWERS:
 # Skills with local customizations — skip during auto-update
 PATCHED = {
     "find-skills",
+    "grill-with-docs",
+    "improve-codebase-architecture",
     "slides",
     "banner-design",
     "brand",
