@@ -41,6 +41,9 @@ UPSTREAM = {
     "grill-with-docs": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/grill-with-docs"},
     ],
+    "handoff": [
+        {"repo": "mattpocock/skills", "path": "skills/productivity/handoff"},
+    ],
     "improve-codebase-architecture": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/improve-codebase-architecture"},
     ],
