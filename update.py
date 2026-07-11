@@ -107,6 +107,7 @@ for _s in _SUPERPOWERS:
 PATCHED = {
     "find-skills",
     "grill-with-docs",
+    "handoff",
     "improve-codebase-architecture",
     "slides",
     "banner-design",

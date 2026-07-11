@@ -62,6 +62,7 @@ PLUGIN_NAME = "sz-skills"
 PLUGIN_ID = f"{PLUGIN_NAME}@{PLUGIN_NAME}"
 PLUGIN_VERSION = "1.0.2"
 CODEX_HOOK_PLUGIN_DIR = ".codex-hook-plugin"
+GIT_HOOKS_DIR_NAME = "githooks"
 CODEX_CONFIG_PATH = HOME / ".codex" / "config.toml"
 CLAUDE_SETTINGS_PATH = HOME / ".claude" / "settings.json"
 CLAUDE_INSTALLED_PLUGINS_PATH = HOME / ".claude" / "plugins" / "installed_plugins.json"
@@ -450,6 +451,26 @@ def install_global_instructions(
     return installed
 
 
+def install_git_hooks(
+    repo_root: Path = REPO_ROOT,
+    hooks_dir_name: str = GIT_HOOKS_DIR_NAME,
+) -> bool:
+    """Point core.hooksPath at the repo-managed githooks directory."""
+    hooks_dir = repo_root / hooks_dir_name
+    if not (repo_root / ".git").exists() or not hooks_dir.is_dir():
+        return False
+    subprocess.run(
+        ["git", "-C", str(repo_root), "config", "core.hooksPath", hooks_dir_name],
+        check=True,
+    )
+    if platform.system() != "Windows":
+        # Clones made without core.fileMode may lose the executable bit.
+        for hook in hooks_dir.iterdir():
+            if hook.is_file():
+                hook.chmod(hook.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+    return True
+
+
 # ── Main ─────────────────────────────────────────────────────────────────
 
 def main():
@@ -470,6 +491,15 @@ def main():
 
     print(f"\n{_cyan('Enabling plugin hooks')}")
     install_plugin_hooks()
+
+    print(f"\n{_cyan('Registering git hooks')}")
+    try:
+        if install_git_hooks():
+            print(f"  {_green(f'core.hooksPath -> {GIT_HOOKS_DIR_NAME}')}")
+        else:
+            print(f"  {_yellow('Skipped: not a git repo or no githooks directory')}")
+    except Exception as e:
+        print(f"  {_red(f'FAILED: git hooks — {e}')}")
 
     print(f"\n{_cyan('Done. Skills, global instructions, and plugin hooks are installed.')}")
 

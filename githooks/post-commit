@@ -1,0 +1,8 @@
+#!/bin/sh
+# Re-sync installed skill copies (notably the ~/.codex/skills copies, which
+# unlike the Claude junctions do not track the repo) after commits that touch
+# skill or global-instruction sources.
+if git diff-tree --no-commit-id --name-only -r HEAD | grep -qE '^(skills/|global/)'; then
+    echo "post-commit: skills/global changed, running setup.py to re-sync installed copies"
+    cd "$(git rev-parse --show-toplevel)" && python setup.py
+fi
