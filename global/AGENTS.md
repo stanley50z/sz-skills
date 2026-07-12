@@ -37,3 +37,15 @@ Commands execute via `powershell.exe -Command "<string>"` (Windows PowerShell 5.
 ## Encoding on Windows
 
 In PowerShell, use explicit UTF-8 when reading, writing, or verifying anything that may contain non-ASCII (e.g. Chinese) text.
+
+## Notes and Memory
+
+Record durable facts and decisions directly in the project's relevant doc files and/or agent files (AGENTS.md / CLAUDE.md), DO NOT USE memory.
+
+## Incidental Fixes
+
+When you notice a small issue or flaw while working on the main task, fix it in passing — don't ask whether to fix it, just do it.
+
+## Installing Dependencies
+
+When you need a library or tool (e.g. openpyxl), just install it with whatever tool you know best — don't take detours.
