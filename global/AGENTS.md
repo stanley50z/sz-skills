@@ -10,7 +10,7 @@ After DevTools MCP work, close the browser only if MCP launched it with its own 
 
 ## File Links
 
-When mentioning a file, link it T3Code-style: a markdown link to its absolute path, e.g. `[SKILL.md](C:\Users\13982\.sz-skills\skills\commit\SKILL.md)`.
+When operating inside T3 Code and referencing local files, use T3 Code-compatible Markdown links formatted as `[label](/C:/absolute/path/to/file.ext:line)` (line number optional); use forward slashes and never `file://` URLs or backticks.
 
 ## Web Search
 
