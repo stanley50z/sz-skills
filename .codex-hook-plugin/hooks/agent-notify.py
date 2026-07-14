@@ -16,15 +16,30 @@ import os
 import platform
 import subprocess
 import sys
+import threading
 from xml.sax.saxutils import escape
 
 
-def read_stdin_json():
+def read_stdin_json(timeout=2.0):
     try:
         if sys.stdin is None or sys.stdin.isatty():
             return {}
-        data = sys.stdin.read()
-        return json.loads(data) if data.strip() else {}
+        # Read in a daemon thread so a harness that leaves stdin open
+        # without sending EOF can't hang the hook until its timeout.
+        result = {}
+
+        def _read():
+            try:
+                data = sys.stdin.read()
+                if data.strip():
+                    result.update(json.loads(data))
+            except Exception:
+                pass
+
+        t = threading.Thread(target=_read, daemon=True)
+        t.start()
+        t.join(timeout)
+        return result
     except Exception:
         return {}
 
