@@ -47,6 +47,10 @@ UPSTREAM = {
     "handoff": [
         {"repo": "mattpocock/skills", "path": "skills/productivity/handoff"},
     ],
+    # Replaces the superpowers `writing-skills` skill.
+    "writing-great-skills": [
+        {"repo": "mattpocock/skills", "path": "skills/productivity/writing-great-skills"},
+    ],
     "improve-codebase-architecture": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/improve-codebase-architecture"},
     ],
@@ -98,7 +102,6 @@ _SUPERPOWERS = [
     "requesting-code-review", "subagent-driven-development",
     "systematic-debugging", "using-git-worktrees",
     "using-superpowers", "verification-before-completion", "writing-plans",
-    "writing-skills",
 ]
 for _s in _SUPERPOWERS:
     UPSTREAM[_s] = [{"repo": "obra/superpowers", "path": f"skills/{_s}"}]

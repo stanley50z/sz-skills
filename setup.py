@@ -30,6 +30,7 @@ HOME = Path.home()
 # these from managed target roots so stale copies do not keep triggering.
 RETIRED_SKILLS = [
     "graphify",
+    "writing-skills",  # replaced by vendored writing-great-skills (mattpocock/skills)
 ]
 
 # Directories where coding harnesses look for skills

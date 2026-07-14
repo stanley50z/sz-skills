@@ -42,7 +42,6 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | [using-superpowers](skills/using-superpowers/) | Establish skill discovery and usage conventions | ↳ `skills/using-superpowers` |
 | [verification-before-completion](skills/verification-before-completion/) | Run verification before claiming work is complete | ↳ `skills/verification-before-completion` |
 | [writing-plans](skills/writing-plans/) | Write implementation plans before touching code | ↳ `skills/writing-plans` |
-| [writing-skills](skills/writing-skills/) | Create, edit, and verify agent skills | ↳ `skills/writing-skills` |
 
 ## Vendor Skills
 
@@ -58,6 +57,7 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | [supabase-postgres-best-practices](skills/supabase-postgres-best-practices/) | Postgres best practices for Supabase projects, including schema design, RLS, migrations, and query performance | [supabase/agent-skills](https://github.com/supabase/agent-skills/tree/main/skills/supabase-postgres-best-practices) |
 | [remotion-best-practices](skills/remotion-best-practices/) | Best practices for Remotion-based video creation in React, including preview and render workflows | [remotion-dev/skills](https://github.com/remotion-dev/skills/tree/main/skills/remotion) |
 | [revealjs](skills/revealjs/) | Create polished reveal.js presentations, decks, and slideshows with HTML and CSS | [ryanbbrown/revealjs-skill](https://github.com/ryanbbrown/revealjs-skill/tree/main/skills/revealjs) |
+| [writing-great-skills](skills/writing-great-skills/) | Reference for writing and editing skills — vocabulary and principles for predictable skills (replaces superpowers `writing-skills`) | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/writing-great-skills) |
 | **ui-ux-pro-max suite** | | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) |
 | [ui-ux-pro-max](skills/ui-ux-pro-max/) | UI/UX design intelligence — styles, palettes, font pairings, chart types across 10+ stacks | ↳ `.claude/skills/ui-ux-pro-max` + `src/ui-ux-pro-max` |
 
