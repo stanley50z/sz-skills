@@ -1,6 +1,6 @@
 ---
 name: repo-visualizer
-description: Use when asked to create or update a human-readable repository structure report, architecture snapshot, source map, file dependency document, code walkthrough, or docs/repo_structure.html.
+description: Use when asked for an architecture snapshot of a repository, a human-readable structure report, or to create or update docs/repo_structure.html.
 ---
 
 # Repo Visualizer
@@ -13,7 +13,6 @@ This skill is for human comprehension. Do not replace it with a raw node graph w
 
 ## When to Use
 
-- User says "update docs", "visualize codebase", "show repo structure", "map codebase", "document how files connect", "code walkthrough", or asks for `docs/repo_structure.html`.
 - Use for source-code repositories where file relationships, script internals, and maintainer-readable summaries matter.
 - Do not use for test-only reviews, generated/vendor code, or broad architecture refactoring recommendations.
 
@@ -23,7 +22,7 @@ This skill is for human comprehension. Do not replace it with a raw node graph w
 2. Inventory non-test source code. Exclude `test`, `tests`, `__tests__`, `spec`, `e2e`, fixtures, snapshots, coverage, build/dist, vendored dependencies, caches, and generated output unless they are the product being documented.
 3. Read the code files, prioritizing entry points, config, scripts, and modules imported by other files. Do not infer details from filenames alone.
 4. Build a file graph from imports/requires/includes, CLI or config entry references, and obvious runtime calls. Label uncertain or dynamic edges as `dynamic/indirect` instead of inventing certainty.
-5. For each included code file, identify purpose, inputs, outputs, key functions/classes, and key module-level variables/constants/state.
+5. For each included code file, capture every field in the File Details table below.
 6. Generate `docs/repo_structure.html`, creating `docs/` if needed. Regenerate from source when updating; do not patch stale facts by hand.
 7. Open the local HTML page and verify Mermaid renders, file clicks change the details panel, text is readable, and there are no script errors. For `file://` pages, prefer Chrome DevTools MCP when available.
 

@@ -1,6 +1,6 @@
 ---
 name: download-online-video
-description: Use when downloading YouTube or Bilibili videos, audio, or subtitles with yt-dlp in sz-video, especially when the same command needs to run locally across Windows, macOS, Linux, and Docker.
+description: Use when downloading YouTube or Bilibili videos, audio, or subtitles with yt-dlp, especially in the sz-video project.
 ---
 
 # Download Online Video
@@ -9,10 +9,10 @@ Use one `yt-dlp` shape for YouTube and Bilibili downloads so local checks match 
 
 ## Quick Start
 
-From the repo root, download video plus sidecar subtitles locally:
+`<skill-dir>` below is this skill's base directory (the folder containing this SKILL.md, as reported at invocation). Download video plus sidecar subtitles locally:
 
 ```bash
-python .agents/skills/download-online-video/scripts/download_video_with_subtitles.py \
+python "<skill-dir>/scripts/download_video_with_subtitles.py" \
   --url "https://www.youtube.com/watch?v=VIDEO_ID" \
   --target-path "$HOME/Movies/sz-video-downloads"
 ```
@@ -20,14 +20,14 @@ python .agents/skills/download-online-video/scripts/download_video_with_subtitle
 For Bilibili:
 
 ```bash
-python .agents/skills/download-online-video/scripts/download_video_with_subtitles.py \
+python "<skill-dir>/scripts/download_video_with_subtitles.py" \
   --url "https://www.bilibili.com/video/BV..." \
   --target-path "$HOME/Movies/sz-video-downloads"
 ```
 
 On Windows PowerShell, use the same Python script with backticks instead of backslashes if you split lines.
 
-The helper defaults to `~/Documents/youtube_cookie.txt` for YouTube and `~/Documents/bilibili_cookie.txt` for Bilibili. Override with `--cookies-path`, or pass `--no-cookies` only for public videos that do not need cookies.
+The helper defaults to `~/Documents/youtube_cookie.txt` for YouTube and `~/Documents/bilibili_cookie.txt` for Bilibili — these local paths, not the Docker cookie paths. Override with `--cookies-path`, or pass `--no-cookies` only for public videos that do not need cookies.
 
 For Bilibili runs, the helper checks the cookie file against Bilibili's login API before invoking `yt-dlp`. If it says the cookies are logged out, refresh `~/Documents/bilibili_cookie.txt` from a logged-in browser session before testing subtitles again.
 
@@ -46,7 +46,7 @@ Keep these flags aligned with `apps/server/src/routes.ts`:
 | Premiere-friendly subtitle sidecars | `--convert-subs srt` |
 | Local merge/subtitle conversion | `--ffmpeg-location <ffmpeg>` when `ffmpeg` is not on `PATH` |
 
-Bilibili AI subtitles are exposed as ordinary subtitle tracks with `ai-*` language codes, so `--write-subs` and the `ai-en,ai-zh` language selector are required.
+Bilibili AI subtitles are exposed as ordinary subtitle tracks with `ai-*` language codes, so capturing them requires `--write-subs` and the `ai-en,ai-zh` language selector; `--write-auto-subs` alone misses them.
 
 ## Local Prerequisites
 
@@ -96,10 +96,3 @@ python .agents/skills/download-online-video/scripts/download_video_with_subtitle
 `BV15v411g7VP` is a known `yt-dlp` Bilibili subtitle fixture from upstream issue `yt-dlp/yt-dlp#6357`. A logged-out cookie file fails before download; valid cookies let `yt-dlp` request `ai-zh`/`ai-en` sidecars.
 
 Omit `--skip-download` for the full video plus subtitles path.
-
-## Common Mistakes
-
-- Do not drop `--write-subs`; Bilibili AI captions are not covered by `--write-auto-subs` alone.
-- Do not drop `ai-en,ai-zh`; those language selectors are what capture Bilibili AI subtitle tracks.
-- Do not use the Docker cookie paths locally. Use `~/Documents/*_cookie.txt` or pass `--cookies-path`.
-- Do not remove `--print "after_move:filepath"` from the server route; downstream path tracking depends on it.

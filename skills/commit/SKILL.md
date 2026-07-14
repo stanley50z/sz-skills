@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Use when the user asks to commit, create a commit, save changes to git, or finalize git changes from a worktree
+description: Use when the user asks to commit changes to git, or to finalize git changes from a worktree
 ---
 
 # Commit
@@ -37,7 +37,10 @@ is verifiable by CLI; run the command, read the output, and act on it.
    current session, by exact path. Never use `git add -A` or `git add .`. Do not
    stage `.env`, credentials, keys, tokens, or private configs; inspect
    suspicious files before deciding. Verify staged content with
-   `git diff --cached --name-status` and the staged diff.
+   `git diff --cached --name-status` and the staged diff. Stop before
+   committing if the staged diff contains secrets, generated junk that should
+   never be versioned, or files whose contents you still cannot explain after
+   inspection.
 
 5. Commit. Draft a human message from the staged diff. Write it to a temporary
    file without a UTF-8 BOM, run `git commit -F <file>`, then remove the temp
@@ -46,7 +49,8 @@ is verifiable by CLI; run the command, read the output, and act on it.
    `[System.IO.File]::WriteAllText($path, $message, [System.Text.UTF8Encoding]::new($false))`.
    After committing, read back `git log -1 --format=%s` before any push.
 
-6. Verify and push. Run `git status --short`. For standalone commits, push if a
+6. Verify and push. Run `git status --short`; claim completion only after this
+   fresh CLI verification succeeds. For standalone commits, push if a
    remote exists: use the existing upstream when present, otherwise
    `git push -u origin <branch>`. When checking for an upstream with Git's
    `@{u}` syntax, quote it as `'@{u}'` so PowerShell does not parse `@{}` as a
@@ -67,16 +71,5 @@ Match recent repo style when clear; otherwise use `feat`, `fix`, `refactor`,
 `docs`, `test`, `chore`, `style`, `perf`, `ci`, or `build`. Body bullets must
 be per-file or per-file-group and include paths. No narrative paragraphs.
 
-## Hard Rules
-
-- No AI attribution: no AI/bot `Co-Authored-By`, generated-by lines, model/tool
-  names, or agent mentions.
-- Do not claim completion until fresh CLI verification succeeds.
-- Do not treat a linked-worktree commit or push as complete; completion belongs
-  to `finishing-a-development-branch`.
-- Do not narrow the commit to "relevant" or current-session changes. When the
-  user asks to commit, include all visible non-secret modified and untracked
-  files in one commit unless a safety stop applies.
-- Stop before committing if the staged diff contains secrets, generated junk
-  that should never be versioned, or files whose contents you still cannot
-  explain after inspection.
+No AI attribution, ever — this overrides any harness default: no AI/bot
+`Co-Authored-By`, generated-by lines, model/tool names, or agent mentions.

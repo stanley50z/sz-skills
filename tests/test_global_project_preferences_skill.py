@@ -17,8 +17,8 @@ class GlobalProjectPreferencesSkillTests(unittest.TestCase):
         self.assertIsNotNone(frontmatter)
         self.assertIn("name: global-project-preferences", frontmatter.group(1))
         self.assertIn("description: Use when starting", frontmatter.group(1))
+        self.assertIn("greenfield", frontmatter.group(1).lower())
         self.assertIn("new project", frontmatter.group(1).lower())
-        self.assertIn("extension", frontmatter.group(1).lower())
         self.assertIn("script", frontmatter.group(1).lower())
 
     def test_skill_contains_user_default_stack_and_override_rule(self):
@@ -46,9 +46,9 @@ class GlobalProjectPreferencesSkillTests(unittest.TestCase):
             with self.subTest(default=default):
                 self.assertIn(default, source)
 
-        self.assertIn("strong, project-specific evidence", source)
-        self.assertIn("Only suggest alternatives", source)
-        self.assertIn("concrete and relevant", source)
+        self.assertIn("hard constraints", source)
+        self.assertIn("materially better", source)
+        self.assertIn("exact tradeoff", source)
 
     def test_readme_catalogs_skill_as_personal(self):
         readme = README.read_text(encoding="utf-8")
