@@ -31,6 +31,11 @@
             "type": "command",
             "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" stop-cdp-session-reminder",
             "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/hooks/run-hook.cmd\" agent-notify Codex",
+            "timeout": 30
           }
         ]
       }

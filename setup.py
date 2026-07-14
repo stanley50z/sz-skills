@@ -61,8 +61,13 @@ GLOBAL_INSTRUCTION_LINKS = [
 # still installed through TARGET_ROOTS to avoid duplicated plugin skill names.
 PLUGIN_NAME = "sz-skills"
 PLUGIN_ID = f"{PLUGIN_NAME}@{PLUGIN_NAME}"
-PLUGIN_VERSION = "1.0.2"
+PLUGIN_VERSION = "1.0.3"
 CODEX_HOOK_PLUGIN_DIR = ".codex-hook-plugin"
+HOOKS_DIR = REPO_ROOT / "hooks"
+
+# Hook files that only apply to Claude Code and must not be copied into the
+# Codex hook plugin package.
+CLAUDE_ONLY_HOOK_FILES = {"hooks.json", "session-start"}
 GIT_HOOKS_DIR_NAME = "githooks"
 CODEX_CONFIG_PATH = HOME / ".codex" / "config.toml"
 CLAUDE_SETTINGS_PATH = HOME / ".claude" / "settings.json"
@@ -324,6 +329,43 @@ def install_claude_plugin_config(
     return changed
 
 
+def sync_codex_hook_plugin_hooks(
+    *,
+    hooks_dir: Path = HOOKS_DIR,
+    repo_root: Path = REPO_ROOT,
+    claude_only_files: set[str] = CLAUDE_ONLY_HOOK_FILES,
+) -> int:
+    """Mirror Codex-relevant hook files from hooks/ into the Codex plugin package.
+
+    hooks/ is the source of truth for every hook. The Codex plugin package keeps
+    its own copy of the Codex-relevant files so the plugin stays self-contained;
+    this sync (run from setup.py) is what keeps that copy up to date.
+    """
+    target_dir = repo_root / CODEX_HOOK_PLUGIN_DIR / "hooks"
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    wanted = {
+        entry.name: entry
+        for entry in hooks_dir.iterdir()
+        if entry.is_file() and entry.name not in claude_only_files
+    }
+
+    synced = 0
+    for name, source in sorted(wanted.items()):
+        target = target_dir / name
+        if target.is_file() and target.read_bytes() == source.read_bytes():
+            continue
+        shutil.copy2(source, target)
+        synced += 1
+        print(f"  {_green(f'{target} <= {source}')}")
+    for stale in target_dir.iterdir():
+        if stale.is_file() and stale.name not in wanted:
+            stale.unlink()
+            synced += 1
+            print(f"  {_yellow(f'Removed stale hook file: {stale}')}")
+    return synced
+
+
 def install_plugin_hooks() -> int:
     """Enable the local hook plugin for Codex and Claude Code."""
     installed = 0
@@ -489,6 +531,13 @@ def main():
 
     print(f"\n{_cyan('Creating global instruction links')}")
     install_global_instructions()
+
+    print(f"\n{_cyan('Syncing Codex hook plugin files')}")
+    try:
+        if sync_codex_hook_plugin_hooks() == 0:
+            print(f"  {_green('Already in sync')}")
+    except Exception as e:
+        print(f"  {_red(f'FAILED: Codex hook plugin sync — {e}')}")
 
     print(f"\n{_cyan('Enabling plugin hooks')}")
     install_plugin_hooks()

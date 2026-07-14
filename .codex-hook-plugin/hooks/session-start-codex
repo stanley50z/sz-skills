@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Codex SessionStart hook for the local sz-skills hook-only plugin.
+# Codex SessionStart hook for the local sz-skills plugin.
 
 set -euo pipefail
 

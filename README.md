@@ -103,9 +103,13 @@ It also registers local `sz-skills` plugin hooks:
 - Codex: adds the hook-only `.codex-hook-plugin` package as the `sz-skills` local marketplace and enables `sz-skills@sz-skills` in `~/.codex/config.toml`.
 - Claude Code: enables `sz-skills@sz-skills` in `~/.claude/settings.json` and records the repo path in Claude's plugin install state.
 
+`hooks/` is the source of truth for every hook file. `setup.py` mirrors the Codex-relevant files (everything except the Claude-only `hooks.json` and `session-start`) into `.codex-hook-plugin/hooks/`, adding new files and deleting stale ones, so edit hooks only under `hooks/` and re-run `python setup.py`.
+
 `setup.py` also points `core.hooksPath` at the repo-managed `githooks/` directory. The `githooks/post-commit` hook re-runs `setup.py` after any commit that touches `skills/` or `global/`, while `githooks/post-merge` runs it after successful merge-based pulls. Together they keep the installed skill copies in sync with the repo.
 
 The Codex plugin package is context-only and does not contain a `skills/` directory, so Codex should load these skills through the copied/mirrored skill directories above instead of as plugin-bundled skills. The SessionStart hook injects `using-superpowers` and Chrome DevTools MCP ownership guidance so rules are available before the model chooses which skill or browser cleanup behavior applies. A Codex PostToolUse hook records Chrome DevTools MCP usage for the active turn, and the Stop hook checks that marker plus transcript evidence. Only when needed, it blocks finalization with a reminder to close only owned isolated DevTools browser sessions. It does not run cleanup scripts.
+
+Both plugins also register an `agent-notify` Stop hook that fires a desktop notification (Windows toast / macOS / Linux) when the agent finishes a turn, titled "Claude Code" or "Codex" plus the working directory. The script (`hooks/agent-notify.py`) spawns the notifier detached and exits immediately, so it never delays turn end. This covers Claude Code and Codex wherever they run — including inside T3 Code, which loads user-level Claude settings and spawns `codex app-server` with the user's `CODEX_HOME`. Codex prompts once to trust the new hook after it changes.
 
 ## Updating Vendor Skills
 
