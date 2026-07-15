@@ -30,7 +30,7 @@ You MUST create a task for each of these items and complete them in order:
 7. **Write design doc** — save to `docs/specs/<artifact-id>-design.md` without committing
 8. **Spec review loop** — dispatch spec-document-reviewer subagent with precisely crafted review context (never your session history); fix issues and re-dispatch until approved (max 3 iterations, then surface to human)
 9. **User reviews written spec and chooses escalation** - ask user to review the spec file and, in the same prompt, decide whether to invoke `grill-with-docs` for a deeper pass against project language and documented decisions
-10. **Transition to implementation** - invoke writing-plans skill to create implementation plan using the same artifact ID
+10. **Transition to implementation** - invoke to-tickets skill to break the approved spec into tracer-bullet tickets using the same artifact ID
 
 ## Process Flow
 
@@ -50,7 +50,7 @@ digraph brainstorming {
     "User reviews spec and wants grill-with-docs?" [shape=diamond];
     "Run grill-with-docs?" [shape=diamond];
     "Invoke grill-with-docs skill" [shape=box];
-    "Invoke writing-plans skill" [shape=doublecircle];
+    "Invoke to-tickets skill" [shape=doublecircle];
 
     "Choose artifact ID" -> "Explore project context";
     "Explore project context" -> "Visual questions ahead?";
@@ -69,18 +69,18 @@ digraph brainstorming {
     "User reviews spec and wants grill-with-docs?" -> "Write design doc" [label="changes requested"];
     "User reviews spec and wants grill-with-docs?" -> "Run grill-with-docs?" [label="approved"];
     "Run grill-with-docs?" -> "Invoke grill-with-docs skill" [label="yes"];
-    "Invoke grill-with-docs skill" -> "Invoke writing-plans skill" [label="complete"];
-    "Run grill-with-docs?" -> "Invoke writing-plans skill" [label="no"];
+    "Invoke grill-with-docs skill" -> "Invoke to-tickets skill" [label="complete"];
+    "Run grill-with-docs?" -> "Invoke to-tickets skill" [label="no"];
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The only optional skill between brainstorming and writing-plans is `grill-with-docs`, and only when the user explicitly chooses that escalation.
+**The terminal state is invoking to-tickets.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The only optional skill between brainstorming and to-tickets is `grill-with-docs`, and only when the user explicitly chooses that escalation.
 
 ## The Process
 
 **Understanding the idea:**
 
-- At the start of the workflow, choose one artifact ID: `YYYY-MM-DD-<topic-slug>` using the current date and a concise lowercase slug. Use the same ID for `docs/brainstorm/<artifact-id>/`, `docs/specs/<artifact-id>-design.md`, and the later implementation plan `docs/plans/<artifact-id>.md`.
+- At the start of the workflow, choose one artifact ID: `YYYY-MM-DD-<topic-slug>` using the current date and a concise lowercase slug. Use the same ID for `docs/brainstorm/<artifact-id>/`, `docs/specs/<artifact-id>-design.md`, and the later ticket files `docs/plans/<artifact-id>/<NN>-<slug>.md`.
 - Check out the current project state next (files, docs, recent commits)
 - Before asking detailed questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't spend questions refining details of a project that needs to be decomposed first.
 - If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then brainstorm the first sub-project through the normal design flow. Each sub-project gets its own spec → plan → implementation cycle.
@@ -175,12 +175,13 @@ After the spec review loop passes, ask the user to review the written spec and c
 > "Spec written to `<path>` and left uncommitted for your review. Please review it and let me know if you want to make any changes. Also, do you want to run `grill-with-docs` for a deeper pass against the project language, existing docs, and ADR-level decisions before we write the implementation plan?"
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
-If they approve the spec and say yes to `grill-with-docs`, invoke `grill-with-docs` and follow it before continuing. If they approve the spec and say no, proceed directly to writing-plans.
+If they approve the spec and say yes to `grill-with-docs`, invoke `grill-with-docs` and follow it before continuing. If they approve the spec and say no, proceed directly to to-tickets.
 
 **Implementation:**
 
-- Invoke the writing-plans skill to create a detailed implementation plan
-- Do NOT invoke any other skill except the optional `grill-with-docs` escalation above. writing-plans is the next step after that choice is resolved.
+- Invoke the to-tickets skill to break the approved spec into tracer-bullet tickets under `docs/plans/<artifact-id>/`
+- Do NOT invoke any other skill except the optional `grill-with-docs` escalation above. to-tickets is the next step after that choice is resolved.
+- Each ticket is then implemented with the implement skill, one ticket per fresh session.
 
 ## Key Principles
 

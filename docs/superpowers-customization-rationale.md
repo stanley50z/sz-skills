@@ -124,6 +124,27 @@ A mid-execution change from the user has the same authority as an initial requir
 
 **Files changed:** `brainstorming/SKILL.md`, `writing-plans/SKILL.md`
 
+## Migration (2026-07): Execution Half Replaced by mattpocock/skills
+
+The Superpowers execution pipeline (`writing-plans`, `executing-plans`, `subagent-driven-development`, `requesting-code-review`, `receiving-code-review`, `verification-before-completion`) was retired in favor of [mattpocock/skills](https://github.com/mattpocock/skills) v1.1 `to-tickets` + `implement` (vendored as customized vendor skills).
+
+**Why:** The working split is Claude for brainstorming/spec, GPT (Codex) for implementation. The Superpowers execution skills assume cheap Claude Code subagent dispatch for their spec-reviewer, plan-reviewer, per-task implementer/reviewer, and verification loops; on Codex these serialize into slow single-threaded ceremony around micro-steps. Matt Pocock's v1.1 flow (spec → tracer-bullet tickets → implement one ticket per fresh session → one code review at close-out) is model-agnostic and matches the intended split.
+
+**The pipeline is now:** `brainstorming` (customized, Claude side) → spec in `docs/specs/` → optional `grill-with-docs` → `to-tickets` → tickets in `docs/plans/<artifact-id>/` → `implement` per ticket (drives `test-driven-development`, closes with `code-review` + `commit`) → `finishing-a-development-branch` (user testing gate).
+
+**Where the customizations above moved:**
+
+| Customization | Old home | New home |
+|---|---|---|
+| #1 User Requirements vs Agent Design Decisions | writing-plans, executing-plans, subagent-driven-development | `to-tickets` (`[USER-REQ]`/`[AGENT-DECISION]` ticket tags, spec traceability), `implement` (USER-REQ stop-and-ask rule) |
+| #2 Simplified doc paths | writing-plans | `to-tickets` (tickets under `docs/plans/<artifact-id>/`) |
+| #4 No fallbacks, no silent failure | executing-plans, subagent-driven-development | `implement` (hard gate, suggest-don't-auto-apply, version-upgrade rules); TDD-level rules remain in `test-driven-development` |
+| #5 Visual-only UI testing | writing-plans, executing-plans, subagent prompts | `to-tickets` (visual acceptance criteria), `implement` (visual RED/GREEN); reference remains in `test-driven-development/visual-tests.md` |
+| #7 Cross-phase user change propagation | writing-plans, executing-plans, subagent-driven-development | `to-tickets` and `implement` (both propagate changes back to spec/tickets/tests/code) |
+| #9 HTML plan companion | writing-plans | `to-tickets` (`docs/plans/<artifact-id>/plan.html`) |
+
+Customizations #3 (requirement-driven testing, in `test-driven-development`), #6 (finishing workflow), and #8 (grill-with-docs escalation, in `brainstorming`) were unaffected. `brainstorming`'s terminal state changed from invoking `writing-plans` to invoking `to-tickets`. Upstream review-ceremony pieces intentionally not ported: plan/spec reviewer subagent loops around tickets, per-task subagent code review, and the exact-file-paths/complete-code-in-plan style — tickets describe end-to-end behaviour and stay path-light per upstream guidance. The non-patched `code-review` vendor skill was verified against v1.1 in the same migration (its content, including the Martin Fowler code-smell vocabulary, was already current; only the upstream `agents/openai.yaml` was new).
+
 ## Structural Change: Flattened Layout
 
 The upstream repo organizes all 14 skills under a `skills/` subdirectory. Initially these were kept nested under `superpowers/` in this repo, but OpenCode requires each skill to have its own `SKILL.md` at the directory root to discover them. All 14 skills were flattened into the repo's `skills/` directory as independent sibling directories, matching the same flat structure as the ui-ux-pro-max suite.

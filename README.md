@@ -23,25 +23,21 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | [improve-codebase-architecture](skills/improve-codebase-architecture/) | Find architecture improvements, refactoring opportunities, and deeper module boundaries | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture) | Keeps architecture vocabulary local instead of depending on the upstream `codebase-design`, `domain-modeling`, and `grilling` skills |
 | [slides](skills/slides/) | Slide creation — copywriting formulas, layout patterns, strategies | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/main/.claude/skills/slides) | Renames invalid upstream skill name `ckm:slides` to `slides` for harness compatibility |
 | [test-driven-development](skills/test-driven-development/) | Test-driven development with seam-based red-green loops | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd) | Keeps Superpowers-compatible skill name and reapplies local rules: command timeouts, user-requirement hierarchy, visual-only UI checks, no silent fallbacks, stale v1/v2 test cleanup, and review-stage refactoring |
+| [to-tickets](skills/to-tickets/) | Break a spec into tracer-bullet tickets with blocking edges | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-tickets) | Replaces superpowers `writing-plans`: `[USER-REQ]`/`[AGENT-DECISION]` source tags, local ticket files under `docs/plans/<artifact-id>/` by default (no tracker setup required), visual-only UI acceptance criteria, cross-phase change propagation, HTML plan companion |
+| [implement](skills/implement/) | Implement one ticket at a time with TDD, code review, and commit | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/implement) | Replaces superpowers `executing-plans`/`subagent-driven-development`: no-fallback hard gate, suggest-don't-auto-apply, USER-REQ hierarchy, version-upgrade test cleanup, visual-only UI checks, cross-phase change propagation, local skill names |
 | **ui-ux-pro-max suite** | | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | Harness-compatible plain skill names |
 | [banner-design](skills/banner-design/) | Banner design with sizes, styles, and layout references | ↳ `.claude/skills/banner-design` | Renames invalid upstream skill name `ckm:banner-design` to `banner-design` |
 | [brand](skills/brand/) | Brand identity system — guidelines, voice, typography, color, logo rules | ↳ `.claude/skills/brand` | Renames invalid upstream skill name `ckm:brand` to `brand` |
 | [design](skills/design/) | Design routing — logos, icons, CIP, slides, social photos | ↳ `.claude/skills/design` | Renames invalid upstream skill name `ckm:design` to `design` |
 | [design-system](skills/design-system/) | Design tokens, component specs, slide generation | ↳ `.claude/skills/design-system` | Renames invalid upstream skill name `ckm:design-system` to `design-system` |
 | [ui-styling](skills/ui-styling/) | UI styling — Tailwind, shadcn/ui, canvas design system, bundled fonts | ↳ `.claude/skills/ui-styling` | Renames invalid upstream skill name `ckm:ui-styling` to `ui-styling` |
-| **superpowers suite** | | [obra/superpowers](https://github.com/obra/superpowers) | [Tailored workflow](docs/superpowers-customization-rationale.md) |
-| [brainstorming](skills/brainstorming/) | Explore intent, requirements, and design before creative work | ↳ `skills/brainstorming` |
+| **superpowers suite** | | [obra/superpowers](https://github.com/obra/superpowers) | [Tailored workflow](docs/superpowers-customization-rationale.md); the execution half (`writing-plans`, `executing-plans`, `subagent-driven-development`, `requesting-code-review`, `receiving-code-review`, `verification-before-completion`) was retired in favor of the customized `to-tickets` + `implement` above |
+| [brainstorming](skills/brainstorming/) | Explore intent, requirements, and design before creative work; hands off to `to-tickets` | ↳ `skills/brainstorming` |
 | [dispatching-parallel-agents](skills/dispatching-parallel-agents/) | Dispatch 2+ independent tasks to parallel agents | ↳ `skills/dispatching-parallel-agents` |
-| [executing-plans](skills/executing-plans/) | Execute implementation plans with review checkpoints | ↳ `skills/executing-plans` |
-| [finishing-a-development-branch](skills/finishing-a-development-branch/) | Guide branch completion — merge, PR, or cleanup | ↳ `skills/finishing-a-development-branch` |
-| [receiving-code-review](skills/receiving-code-review/) | Receive code review with technical rigor | ↳ `skills/receiving-code-review` |
-| [requesting-code-review](skills/requesting-code-review/) | Request code review before merging | ↳ `skills/requesting-code-review` |
-| [subagent-driven-development](skills/subagent-driven-development/) | Execute plans with independent sub-agents | ↳ `skills/subagent-driven-development` |
+| [finishing-a-development-branch](skills/finishing-a-development-branch/) | Guide branch completion — user testing gate, then commit | ↳ `skills/finishing-a-development-branch` |
 | [systematic-debugging](skills/systematic-debugging/) | Debug bugs and test failures systematically | ↳ `skills/systematic-debugging` |
 | [using-git-worktrees](skills/using-git-worktrees/) | Create isolated git worktrees for feature work | ↳ `skills/using-git-worktrees` |
 | [using-superpowers](skills/using-superpowers/) | Establish skill discovery and usage conventions | ↳ `skills/using-superpowers` |
-| [verification-before-completion](skills/verification-before-completion/) | Run verification before claiming work is complete | ↳ `skills/verification-before-completion` |
-| [writing-plans](skills/writing-plans/) | Write implementation plans before touching code | ↳ `skills/writing-plans` |
 
 ## Vendor Skills
 

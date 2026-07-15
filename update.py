@@ -54,6 +54,17 @@ UPSTREAM = {
     "improve-codebase-architecture": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/improve-codebase-architecture"},
     ],
+    # Replaces the superpowers `writing-plans` skill (customized: requirement
+    # source tags, docs/plans/ file default, HTML plan companion).
+    "to-tickets": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/to-tickets"},
+    ],
+    # Replaces the superpowers `executing-plans` / `subagent-driven-development`
+    # execution loop (customized: no-fallback gates, USER-REQ hierarchy,
+    # visual-only UI checks, cross-phase change propagation).
+    "implement": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/implement"},
+    ],
     # Superpowers-compatible fork of Matt Pocock's `tdd` skill. The local
     # directory/name stays `test-driven-development` because other Superpowers
     # skills reference `superpowers:test-driven-development`.
@@ -96,12 +107,14 @@ UPSTREAM = {
 }
 
 # ── superpowers skills (obra/superpowers, each at skills/<name>) ─────────
+# The execution half (writing-plans, executing-plans, subagent-driven-development,
+# requesting-code-review, receiving-code-review, verification-before-completion)
+# was retired in favor of mattpocock/skills to-tickets + implement.
 _SUPERPOWERS = [
-    "brainstorming", "dispatching-parallel-agents", "executing-plans",
-    "finishing-a-development-branch", "receiving-code-review",
-    "requesting-code-review", "subagent-driven-development",
+    "brainstorming", "dispatching-parallel-agents",
+    "finishing-a-development-branch",
     "systematic-debugging", "using-git-worktrees",
-    "using-superpowers", "verification-before-completion", "writing-plans",
+    "using-superpowers",
 ]
 for _s in _SUPERPOWERS:
     UPSTREAM[_s] = [{"repo": "obra/superpowers", "path": f"skills/{_s}"}]
@@ -118,6 +131,8 @@ PATCHED = {
     "design",
     "design-system",
     "test-driven-development",
+    "to-tickets",
+    "implement",
     "ui-styling",
 } | set(_SUPERPOWERS)
 
