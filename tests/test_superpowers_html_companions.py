@@ -3,17 +3,17 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-BRAINSTORMING = REPO_ROOT / "skills" / "brainstorming" / "SKILL.md"
+TO_SPEC = REPO_ROOT / "skills" / "to-spec" / "SKILL.md"
 TO_TICKETS = REPO_ROOT / "skills" / "to-tickets" / "SKILL.md"
 RATIONALE = REPO_ROOT / "docs" / "superpowers-customization-rationale.md"
 
 
-class SuperpowersHtmlCompanionGuidanceTests(unittest.TestCase):
-    def test_brainstorming_identifies_structured_html_companion_uses(self):
-        source = BRAINSTORMING.read_text(encoding="utf-8")
+class HtmlCompanionGuidanceTests(unittest.TestCase):
+    def test_to_spec_identifies_structured_html_companion_uses(self):
+        source = TO_SPEC.read_text(encoding="utf-8")
 
         self.assertIn("Structured HTML Companion", source)
-        self.assertIn("HTML companion is a review aid, not the canonical spec", source)
+        self.assertIn("review aid, not the canonical spec", source)
         expected_uses = [
             "option comparison cards",
             "decision matrices",
@@ -46,11 +46,11 @@ class SuperpowersHtmlCompanionGuidanceTests(unittest.TestCase):
         source = RATIONALE.read_text(encoding="utf-8")
 
         self.assertIn("Structured HTML Companions", source)
-        self.assertIn("brainstorming", source)
+        self.assertIn("to-spec", source)
         self.assertIn("to-tickets", source)
 
 
-class ExecutionHalfMigrationTests(unittest.TestCase):
+class MattpocockMigrationTests(unittest.TestCase):
     RETIRED = [
         "writing-plans",
         "executing-plans",
@@ -58,34 +58,74 @@ class ExecutionHalfMigrationTests(unittest.TestCase):
         "requesting-code-review",
         "receiving-code-review",
         "verification-before-completion",
+        "brainstorming",
+        "systematic-debugging",
+        "test-driven-development",
     ]
+    SUITE = [
+        "ask-matt", "code-review", "codebase-design", "diagnosing-bugs",
+        "domain-modeling", "grill-me", "grill-with-docs", "grilling",
+        "implement", "improve-codebase-architecture", "prototype", "research",
+        "resolving-merge-conflicts", "setup-matt-pocock-skills", "tdd",
+        "to-spec", "to-tickets", "triage", "wayfinder",
+    ]
+    PATCHED_SUITE = ["implement", "setup-matt-pocock-skills", "tdd", "to-spec", "to-tickets"]
 
-    def test_retired_execution_skills_are_gone_from_repo(self):
+    def test_retired_skills_are_gone_from_repo(self):
         for skill in self.RETIRED:
             with self.subTest(skill=skill):
                 self.assertFalse((REPO_ROOT / "skills" / skill).exists())
 
-    def test_retired_execution_skills_are_listed_for_removal(self):
+    def test_retired_skills_are_listed_for_removal(self):
         import setup
 
         for skill in self.RETIRED:
             with self.subTest(skill=skill):
                 self.assertIn(skill, setup.RETIRED_SKILLS)
 
-    def test_replacement_skills_are_patched_vendor_skills(self):
+    def test_mattpocock_suite_is_vendored(self):
         import update
 
-        for skill in ("to-tickets", "implement"):
+        for skill in self.SUITE:
             with self.subTest(skill=skill):
                 self.assertTrue((REPO_ROOT / "skills" / skill / "SKILL.md").exists())
                 self.assertIn(skill, update.UPSTREAM)
+
+    def test_customized_suite_skills_are_patched(self):
+        import update
+
+        for skill in self.PATCHED_SUITE:
+            with self.subTest(skill=skill):
                 self.assertIn(skill, update.PATCHED)
 
-    def test_brainstorming_hands_off_to_to_tickets(self):
-        source = BRAINSTORMING.read_text(encoding="utf-8")
+    def test_restored_upstream_skills_are_not_patched(self):
+        import update
 
-        self.assertIn("to-tickets", source)
-        self.assertNotIn("writing-plans", source)
+        for skill in ("grill-with-docs", "improve-codebase-architecture"):
+            with self.subTest(skill=skill):
+                self.assertNotIn(skill, update.PATCHED)
+
+    def test_to_spec_separates_requirement_sources(self):
+        source = TO_SPEC.read_text(encoding="utf-8")
+
+        self.assertIn("## User Requirements", source)
+        self.assertIn("## Agent Design Decisions", source)
+        self.assertIn("blanket approval does not promote agent decisions", source)
+
+    def test_local_tracker_uses_repo_doc_conventions(self):
+        tracker = (
+            REPO_ROOT / "skills" / "setup-matt-pocock-skills" / "issue-tracker-local.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("docs/specs/<artifact-id>-design.md", tracker)
+        self.assertIn("docs/plans/<artifact-id>/<NN>-<slug>.md", tracker)
+        self.assertIn("docs/plans/<artifact-id>/map.md", tracker)
+        self.assertNotIn(".scratch/", tracker)
+
+    def test_tdd_uses_upstream_name(self):
+        source = (REPO_ROOT / "skills" / "tdd" / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn("name: tdd", source)
 
 
 if __name__ == "__main__":

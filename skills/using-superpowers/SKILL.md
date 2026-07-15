@@ -47,8 +47,8 @@ Skills use Claude Code tool names. Non-CC platforms: see `references/codex-tools
 digraph skill_flow {
     "User message received" [shape=doublecircle];
     "About to EnterPlanMode?" [shape=doublecircle];
-    "Already brainstormed?" [shape=diamond];
-    "Invoke brainstorming skill" [shape=box];
+    "Already grilled the idea?" [shape=diamond];
+    "Invoke grill-with-docs (or wayfinder if too big for one session)" [shape=box];
     "Might any skill apply?" [shape=diamond];
     "Invoke Skill tool" [shape=box];
     "Announce: 'Using [skill] to [purpose]'" [shape=box];
@@ -57,10 +57,10 @@ digraph skill_flow {
     "Follow skill exactly" [shape=box];
     "Respond (including clarifications)" [shape=doublecircle];
 
-    "About to EnterPlanMode?" -> "Already brainstormed?";
-    "Already brainstormed?" -> "Invoke brainstorming skill" [label="no"];
-    "Already brainstormed?" -> "Might any skill apply?" [label="yes"];
-    "Invoke brainstorming skill" -> "Might any skill apply?";
+    "About to EnterPlanMode?" -> "Already grilled the idea?";
+    "Already grilled the idea?" -> "Invoke grill-with-docs (or wayfinder if too big for one session)" [label="no"];
+    "Already grilled the idea?" -> "Might any skill apply?" [label="yes"];
+    "Invoke grill-with-docs (or wayfinder if too big for one session)" -> "Might any skill apply?";
 
     "User message received" -> "Might any skill apply?";
     "Might any skill apply?" -> "Invoke Skill tool" [label="yes, even 1%"];
@@ -72,6 +72,18 @@ digraph skill_flow {
     "Create TodoWrite todo per item" -> "Follow skill exactly";
 }
 ```
+
+## The Development Cycle
+
+For feature work, the skills compose into one cycle; enter it at the stage that matches the request:
+
+1. **grill-with-docs** (or **wayfinder** when the idea is too big for one session) — align on the idea, build shared language
+2. **to-spec** — synthesize the discussion into a published spec
+3. **to-tickets** — break the spec into tracer-bullet tickets with blocking edges
+4. **implement** — one ticket per fresh session; drives **tdd**, closes with **code-review** and a commit
+5. **finishing-a-development-branch** — user testing gate and branch wrap-up
+
+**diagnosing-bugs** handles bugs and test failures; **research** and **prototype** support any stage.
 
 ## Red Flags
 
@@ -96,11 +108,11 @@ These thoughts mean STOP—you're rationalizing:
 
 When multiple skills could apply, use this order:
 
-1. **Process skills first** (brainstorming, debugging) - these determine HOW to approach the task
+1. **Process skills first** (grill-with-docs, wayfinder, diagnosing-bugs) - these determine HOW to approach the task
 2. **Implementation skills second** (frontend-design, mcp-builder) - these guide execution
 
-"Let's build X" → brainstorming first, then implementation skills.
-"Fix this bug" → debugging first, then domain-specific skills.
+"Let's build X" → grill-with-docs first, then the development cycle.
+"Fix this bug" → diagnosing-bugs first, then domain-specific skills.
 
 ## Skill Types
 

@@ -145,6 +145,24 @@ The Superpowers execution pipeline (`writing-plans`, `executing-plans`, `subagen
 
 Customizations #3 (requirement-driven testing, in `test-driven-development`), #6 (finishing workflow), and #8 (grill-with-docs escalation, in `brainstorming`) were unaffected. `brainstorming`'s terminal state changed from invoking `writing-plans` to invoking `to-tickets`. Upstream review-ceremony pieces intentionally not ported: plan/spec reviewer subagent loops around tickets, per-task subagent code review, and the exact-file-paths/complete-code-in-plan style — tickets describe end-to-end behaviour and stay path-light per upstream guidance. The non-patched `code-review` vendor skill was verified against v1.1 in the same migration (its content, including the Martin Fowler code-smell vocabulary, was already current; only the upstream `agents/openai.yaml` was new).
 
+## Migration (2026-07, part 2): Full Adoption of mattpocock/skills v1.1
+
+The first migration replaced only the execution half. This second step adopts the full v1.1 development cycle as shown in Matt Pocock's v1.1 announcement, retiring the remaining Superpowers development-cycle skills. Only Superpowers harness glue remains (`using-superpowers`, `dispatching-parallel-agents`, `using-git-worktrees`, `finishing-a-development-branch`).
+
+**The cycle:** `grill-with-docs` (or `wayfinder` for work too big for one session) → `to-spec` → `to-tickets` → `implement` per ticket (drives `tdd`, closes with `code-review` + `commit`) → `finishing-a-development-branch`. `diagnosing-bugs` replaces `systematic-debugging`; `research` and `prototype` support any stage; `domain-modeling`/`codebase-design`/`grilling` are the shared reference skills; `triage`, `ask-matt`, `resolving-merge-conflicts`, `grill-me`, and `setup-matt-pocock-skills` round out the suite.
+
+**Changes:**
+
+- **Retired** `brainstorming` (role split across `grill-with-docs`/`wayfinder` + `to-spec`) and `systematic-debugging` (replaced by `diagnosing-bugs`).
+- **`to-spec` customized**: carries forward customization #1 — the spec template gains User Requirements vs Agent Design Decisions sections with the classification rules and priority hierarchy — plus the `docs/specs/<artifact-id>-design.md` local default (#2) and the Structured HTML Companion (#9).
+- **`setup-matt-pocock-skills` customized**: the local-markdown tracker doc maps to this repo's committed `docs/specs/` + `docs/plans/<artifact-id>/` conventions (#2) instead of upstream `.scratch/`, so `to-spec`, `to-tickets`, and `wayfinder` all follow the same paths without per-skill edits.
+- **`grill-with-docs` and `improve-codebase-architecture` restored to pure upstream** and made auto-updatable: their customizations existed only to stay standalone while `grilling`, `domain-modeling`, and `codebase-design` were not vendored — those dependencies are now vendored, and upstream v1.1 `grilling` natively includes the confirmation gates and facts-vs-decisions rules that had been cherry-picked locally.
+- **`test-driven-development` renamed to upstream `tdd`** (customizations kept): the Superpowers-compatible name existed only for `superpowers:test-driven-development` references in skills that are now retired.
+- **`using-superpowers` updated**: the pre-plan gate routes to `grill-with-docs`/`wayfinder` instead of `brainstorming`, and the skill now documents the development cycle.
+- **Intentionally not vendored:** `teach` (course-teaching workflow, unrelated to the development cycle).
+
+**What was consciously dropped with `brainstorming`:** the spec-document-reviewer subagent loop and the one-question-at-a-time interview checklist. The grilling skills cover the interview; spec quality control is now the user review plus `code-review`'s spec axis at implementation time. The requirement-source tracking (#1), path conventions (#2), and HTML companions (#9) all live on in the customized `to-spec`/`to-tickets`/`implement`.
+
 ## Structural Change: Flattened Layout
 
 The upstream repo organizes all 14 skills under a `skills/` subdirectory. Initially these were kept nested under `superpowers/` in this repo, but OpenCode requires each skill to have its own `SKILL.md` at the directory root to discover them. All 14 skills were flattened into the repo's `skills/` directory as independent sibling directories, matching the same flat structure as the ui-ux-pro-max suite.

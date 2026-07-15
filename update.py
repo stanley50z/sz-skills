@@ -47,6 +47,50 @@ UPSTREAM = {
     "handoff": [
         {"repo": "mattpocock/skills", "path": "skills/productivity/handoff"},
     ],
+    "ask-matt": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/ask-matt"},
+    ],
+    "codebase-design": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/codebase-design"},
+    ],
+    # Replaces the superpowers `systematic-debugging` skill.
+    "diagnosing-bugs": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/diagnosing-bugs"},
+    ],
+    "domain-modeling": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/domain-modeling"},
+    ],
+    "prototype": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/prototype"},
+    ],
+    "research": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/research"},
+    ],
+    "resolving-merge-conflicts": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/resolving-merge-conflicts"},
+    ],
+    # Customized: local tracker doc maps to docs/specs/ + docs/plans/ instead of .scratch/.
+    "setup-matt-pocock-skills": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/setup-matt-pocock-skills"},
+    ],
+    # Replaces the superpowers `brainstorming` spec output (customized: User
+    # Requirements vs Agent Design Decisions sections, docs/specs/ local default,
+    # structured HTML companion).
+    "to-spec": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/to-spec"},
+    ],
+    "triage": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/triage"},
+    ],
+    "wayfinder": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/wayfinder"},
+    ],
+    "grilling": [
+        {"repo": "mattpocock/skills", "path": "skills/productivity/grilling"},
+    ],
+    "grill-me": [
+        {"repo": "mattpocock/skills", "path": "skills/productivity/grill-me"},
+    ],
     # Replaces the superpowers `writing-skills` skill.
     "writing-great-skills": [
         {"repo": "mattpocock/skills", "path": "skills/productivity/writing-great-skills"},
@@ -65,10 +109,10 @@ UPSTREAM = {
     "implement": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/implement"},
     ],
-    # Superpowers-compatible fork of Matt Pocock's `tdd` skill. The local
-    # directory/name stays `test-driven-development` because other Superpowers
-    # skills reference `superpowers:test-driven-development`.
-    "test-driven-development": [
+    # Customized fork of Matt Pocock's `tdd` skill (command timeouts,
+    # user-requirement test priority, no fallbacks, stale v1/v2 test cleanup,
+    # visual-only UI testing).
+    "tdd": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/tdd"},
     ],
     "supabase-postgres-best-practices": [
@@ -107,13 +151,15 @@ UPSTREAM = {
 }
 
 # ── superpowers skills (obra/superpowers, each at skills/<name>) ─────────
-# The execution half (writing-plans, executing-plans, subagent-driven-development,
-# requesting-code-review, receiving-code-review, verification-before-completion)
-# was retired in favor of mattpocock/skills to-tickets + implement.
+# Only harness glue remains. The development cycle (brainstorming, writing-plans,
+# executing-plans, subagent-driven-development, requesting/receiving-code-review,
+# verification-before-completion, systematic-debugging) was retired in favor of
+# the mattpocock/skills v1.1 suite (grill-with-docs/wayfinder → to-spec →
+# to-tickets → implement, with diagnosing-bugs for debugging).
 _SUPERPOWERS = [
-    "brainstorming", "dispatching-parallel-agents",
+    "dispatching-parallel-agents",
     "finishing-a-development-branch",
-    "systematic-debugging", "using-git-worktrees",
+    "using-git-worktrees",
     "using-superpowers",
 ]
 for _s in _SUPERPOWERS:
@@ -122,15 +168,15 @@ for _s in _SUPERPOWERS:
 # Skills with local customizations — skip during auto-update
 PATCHED = {
     "find-skills",
-    "grill-with-docs",
     "handoff",
-    "improve-codebase-architecture",
+    "setup-matt-pocock-skills",
+    "to-spec",
     "slides",
     "banner-design",
     "brand",
     "design",
     "design-system",
-    "test-driven-development",
+    "tdd",
     "to-tickets",
     "implement",
     "ui-styling",

@@ -10,7 +10,7 @@ Implement the work described by the user in the spec or tickets.
 
 Work one ticket at a time from the frontier (tickets whose blockers are all done). Read the ticket's **Requirement** and its `[USER-REQ]` / `[AGENT-DECISION]` tag before coding.
 
-Use the test-driven-development skill (`/tdd`) where possible, at pre-agreed seams. For UI layout, styling, responsive behavior, visual hierarchy, and interaction states, use the visual RED/GREEN checks from test-driven-development — no component tests, DOM assertions, or snapshot tests.
+Use `/tdd` where possible, at pre-agreed seams. For UI layout, styling, responsive behavior, visual hierarchy, and interaction states, use the visual RED/GREEN checks from the tdd skill — no component tests, DOM assertions, or snapshot tests.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
 
@@ -30,7 +30,7 @@ Treat it as a new User Requirement and propagate it to every artifact, not just 
 3. **Tests** — remove/rewrite tests for old behavior, write tests for new
 4. **Implementation** — update the code
 
-A mid-implementation change has the same authority as an initial requirement stated during brainstorming.
+A mid-implementation change has the same authority as an initial requirement stated during grilling.
 
 ## Close Out
 

@@ -32,13 +32,16 @@ RETIRED_SKILLS = [
     "graphify",
     "restart-stale-docker",
     "writing-skills",  # replaced by vendored writing-great-skills (mattpocock/skills)
-    # Superpowers execution half, replaced by mattpocock/skills to-tickets + implement:
+    # Superpowers development cycle, replaced by the mattpocock/skills v1.1 suite:
     "writing-plans",
     "executing-plans",
     "subagent-driven-development",
     "requesting-code-review",
     "receiving-code-review",
     "verification-before-completion",
+    "brainstorming",           # replaced by grill-with-docs / wayfinder + to-spec
+    "systematic-debugging",    # replaced by diagnosing-bugs
+    "test-driven-development", # renamed to upstream `tdd`
 ]
 
 # Directories where coding harnesses look for skills

@@ -209,7 +209,6 @@ Ready to implement auth feature
 ## Integration
 
 **Called by:**
-- **brainstorming** (Phase 4) - REQUIRED when design is approved and implementation follows
 - **implement** - when a ticket needs an isolated workspace
 - Any skill needing isolated workspace
 
