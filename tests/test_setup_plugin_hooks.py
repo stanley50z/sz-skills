@@ -315,29 +315,19 @@ class PluginHookSetupTests(unittest.TestCase):
             self.assertIn("Do not add or run cleanup scripts from hooks", context)
             self.assertIn("browser-url, ws-endpoint, autoConnect", context)
 
-    def test_cached_codex_session_start_hook_uses_installed_codex_skill(self):
+    def test_session_start_hooks_do_not_inject_superpowers_skill_content(self):
         repo_root = Path(setup.REPO_ROOT)
-        with tempfile.TemporaryDirectory() as cache_tmp, tempfile.TemporaryDirectory() as home_tmp:
-            cached_plugin = Path(cache_tmp) / "sz-skills" / "sz-skills" / setup.PLUGIN_VERSION
-            hooks_dir = cached_plugin / "hooks"
-            shutil.copytree(repo_root / setup.CODEX_HOOK_PLUGIN_DIR / "hooks", hooks_dir)
+        codex_plugin_hooks_dir = repo_root / setup.CODEX_HOOK_PLUGIN_DIR / "hooks"
 
-            skill_dir = Path(home_tmp) / ".codex" / "skills" / "using-superpowers"
-            skill_dir.mkdir(parents=True)
-            (skill_dir / "SKILL.md").write_text(
-                "---\nname: using-superpowers\n---\ninstalled codex skill sentinel\n",
-                encoding="utf-8",
-            )
+        for script_name, hooks_dir in [
+            ("session-start-codex", repo_root / "hooks"),
+            ("session-start-codex", codex_plugin_hooks_dir),
+            ("session-start", repo_root / "hooks"),
+        ]:
+            context = self._run_hook_script(script_name, hooks_dir=hooks_dir)
 
-            context = self._run_hook_script(
-                "session-start-codex",
-                hooks_dir=hooks_dir,
-                env_overrides={"HOME": str(Path(home_tmp)).replace("\\", "/")},
-            )
-
-            self.assertIn("installed codex skill sentinel", context)
-            self.assertNotIn("Error reading using-superpowers skill", context)
-            self.assertNotIn("No such file or directory", context)
+            self.assertNotIn("superpowers", context.lower())
+            self.assertNotIn("EXTREMELY_IMPORTANT", context)
 
     def test_stop_hook_allows_turns_without_chrome_devtools_tool_calls(self):
         with tempfile.TemporaryDirectory() as tmp:

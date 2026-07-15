@@ -16,12 +16,10 @@ is verifiable by CLI; run the command, read the output, and act on it.
    `git status --porcelain=v1 -uall`, `git diff --no-ext-diff`,
    `git diff --cached --no-ext-diff`, and `git log --oneline -10`.
 
-2. Apply the linked-worktree gate. If this is a linked worktree and this skill
-   was not called by `finishing-a-development-branch`, create a `codex/<slug>`
-   branch first when detached, then stop and invoke
-   `finishing-a-development-branch`. That workflow owns verification, nested
-   commit, merge to `main`, post-merge verification, and cleanup. If this skill
-   was called by that workflow, continue here and return control after commit.
+2. Handle linked worktrees. If this is a linked worktree and HEAD is detached,
+   create a `codex/<slug>` branch before committing. Commit in the worktree as
+   normal; merging to `main` and worktree cleanup stay with the user unless
+   they explicitly ask for them.
 
 3. Update agent-facing files and docs. Before staging, check whether the
    changes require synchronized updates to agent instruction files or project
@@ -54,8 +52,7 @@ is verifiable by CLI; run the command, read the output, and act on it.
    remote exists: use the existing upstream when present, otherwise
    `git push -u origin <branch>`. When checking for an upstream with Git's
    `@{u}` syntax, quote it as `'@{u}'` so PowerShell does not parse `@{}` as a
-   hashtable. When called by
-   `finishing-a-development-branch`, do not push; return control.
+   hashtable. Do not push from a linked worktree unless the user asks.
 
 ## Message Rules
 

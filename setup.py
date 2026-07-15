@@ -42,6 +42,12 @@ RETIRED_SKILLS = [
     "brainstorming",           # replaced by grill-with-docs / wayfinder + to-spec
     "systematic-debugging",    # replaced by diagnosing-bugs
     "test-driven-development", # renamed to upstream `tdd`
+    # Superpowers harness glue, dropped without replacement (harness-native
+    # subagents/worktrees and the mattpocock cycle cover these roles):
+    "using-superpowers",
+    "dispatching-parallel-agents",
+    "using-git-worktrees",
+    "finishing-a-development-branch",
 ]
 
 # Directories where coding harnesses look for skills

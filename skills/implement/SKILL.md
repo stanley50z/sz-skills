@@ -34,4 +34,4 @@ A mid-implementation change has the same authority as an initial requirement sta
 
 ## Close Out
 
-Once done, use `/code-review` to review the work, address what it finds, then commit to the current branch with the commit skill. When the whole feature branch is complete, the finishing-a-development-branch skill handles the user-testing gate before final wrap-up.
+Once done, use `/code-review` to review the work, address what it finds, then commit to the current branch with the commit skill. When the whole feature branch is complete, ask the user to test the feature themselves before wrapping up — automated tests passing does not mean it works as they expected.

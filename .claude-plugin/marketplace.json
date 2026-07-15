@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "sz-skills",
-      "description": "Bootstrap local skills and Superpowers workflow rules.",
+      "description": "Bootstrap local skills and context hooks.",
       "author": {
         "name": "stanley50z"
       },

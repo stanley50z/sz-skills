@@ -61,6 +61,10 @@ class MattpocockMigrationTests(unittest.TestCase):
         "brainstorming",
         "systematic-debugging",
         "test-driven-development",
+        "using-superpowers",
+        "dispatching-parallel-agents",
+        "using-git-worktrees",
+        "finishing-a-development-branch",
     ]
     SUITE = [
         "ask-matt", "code-review", "codebase-design", "diagnosing-bugs",

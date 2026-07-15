@@ -163,6 +163,14 @@ The first migration replaced only the execution half. This second step adopts th
 
 **What was consciously dropped with `brainstorming`:** the spec-document-reviewer subagent loop and the one-question-at-a-time interview checklist. The grilling skills cover the interview; spec quality control is now the user review plus `code-review`'s spec axis at implementation time. The requirement-source tracking (#1), path conventions (#2), and HTML companions (#9) all live on in the customized `to-spec`/`to-tickets`/`implement`.
 
+## Migration (2026-07, part 3): Superpowers Fully Retired
+
+The last four Superpowers skills — `using-superpowers`, `dispatching-parallel-agents`, `using-git-worktrees`, `finishing-a-development-branch` — were dropped without vendored replacements. This document is the only Superpowers artifact that remains, kept as the historical record of the customizations and the migration.
+
+- **`using-superpowers`** was injected wholesale into every session by the SessionStart hooks and overrode harness behavior ("invoke a skill before ANY response"). That hijacking is gone: the hooks now inject only the Chrome DevTools MCP browser-ownership guidance, and skill selection is left to each harness's native skill discovery.
+- **`dispatching-parallel-agents`** and **`using-git-worktrees`**: harnesses now provide native subagent dispatch and worktree isolation; a process skill on top added ceremony, not capability.
+- **`finishing-a-development-branch`**: its customized user-testing gate (#6) moved into `implement`'s close-out ("ask the user to test the feature themselves before wrapping up"); merge/PR/cleanup decisions stay with the user. The `commit` skill's linked-worktree gate no longer routes through it — commits happen in place and worktree merge/cleanup stays with the user.
+
 ## Structural Change: Flattened Layout
 
 The upstream repo organizes all 14 skills under a `skills/` subdirectory. Initially these were kept nested under `superpowers/` in this repo, but OpenCode requires each skill to have its own `SKILL.md` at the directory root to discover them. All 14 skills were flattened into the repo's `skills/` directory as independent sibling directories, matching the same flat structure as the ui-ux-pro-max suite.

@@ -150,21 +150,6 @@ UPSTREAM = {
     ],
 }
 
-# ── superpowers skills (obra/superpowers, each at skills/<name>) ─────────
-# Only harness glue remains. The development cycle (brainstorming, writing-plans,
-# executing-plans, subagent-driven-development, requesting/receiving-code-review,
-# verification-before-completion, systematic-debugging) was retired in favor of
-# the mattpocock/skills v1.1 suite (grill-with-docs/wayfinder → to-spec →
-# to-tickets → implement, with diagnosing-bugs for debugging).
-_SUPERPOWERS = [
-    "dispatching-parallel-agents",
-    "finishing-a-development-branch",
-    "using-git-worktrees",
-    "using-superpowers",
-]
-for _s in _SUPERPOWERS:
-    UPSTREAM[_s] = [{"repo": "obra/superpowers", "path": f"skills/{_s}"}]
-
 # Skills with local customizations — skip during auto-update
 PATCHED = {
     "find-skills",
@@ -180,7 +165,7 @@ PATCHED = {
     "to-tickets",
     "implement",
     "ui-styling",
-} | set(_SUPERPOWERS)
+}
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────
 
