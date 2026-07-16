@@ -114,7 +114,7 @@ The end-to-end behaviour this ticket makes work, from the user's perspective —
 
 In either form, avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
 
-For UI behaviour, write acceptance criteria as visual checks (viewport, state, what must not clip, overflow, or misalign) per the tdd skill's visual tests — not component tests, DOM assertions, or snapshots.
+For UI work, write acceptance criteria along both tdd-skill axes — visual checks (viewport, state, what must not clip, overflow, or misalign) and end-to-end behavior walkthroughs (the workflow to click through in the browser and the result that must appear, on real data when available) — not component tests, DOM assertions, or snapshots.
 
 ## When the User Requests a Change During Ticketing
 

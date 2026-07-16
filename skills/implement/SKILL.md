@@ -10,9 +10,9 @@ Implement the work described by the user in the spec or tickets.
 
 Work one ticket at a time from the frontier (tickets whose blockers are all done). Read the ticket's **Requirement** before coding.
 
-Use `/tdd` where possible, at pre-agreed seams. For UI layout, styling, responsive behavior, visual hierarchy, and interaction states, use the visual RED/GREEN checks from the tdd skill — no component tests, DOM assertions, or snapshot tests.
+Use `/tdd` where possible, at pre-agreed seams. For UI layout, styling, responsive behavior, visual hierarchy, and interaction states, use the visual RED/GREEN checks from the tdd skill — no component tests, DOM assertions, or snapshot tests. UI behavior additionally gets the tdd skill's live browser walkthrough: click the actual buttons, enter input, and review the result.
 
-Run typechecking regularly, single test files regularly, and the full test suite once at the end.
+Run typechecking regularly, single test files regularly, and the full test suite once at the end. Before closing a ticket that changes user-facing behavior, run the tdd skill's end-to-end pass: a full run through the real entry point on real data when available, and for web apps the live browser walkthrough of the changed flow.
 
 ## Hard Rules
 

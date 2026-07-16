@@ -1,7 +1,9 @@
-# Visual UI Tests
+# Visual and End-to-End UI Tests
 
-All UI testing is visual testing. Do not write code tests for UI layout,
-styling, responsive behavior, visual hierarchy, or interaction states.
+UI look-and-feel is tested visually: do not write code tests for UI layout,
+styling, responsive behavior, visual hierarchy, or interaction-state
+appearance. UI behavior is additionally verified with a live end-to-end
+browser walkthrough (see below). Neither check replaces the other.
 
 ## Tool Priority
 
@@ -58,3 +60,24 @@ Inspect each relevant screen/state for:
 - Dense UIs should still scan cleanly; spacious UIs should not feel empty.
 - Primary actions and current state should be visually obvious.
 - Visual decisions should serve the product workflow, not decoration.
+
+## End-to-End Behavior Walkthrough
+
+Visual checks confirm the UI looks right; the walkthrough confirms it works.
+For every changed flow in a web app, drive the real UI in the browser using
+the same tool priority as above:
+
+- Perform the actual user workflow: navigate to the page, click the real
+  buttons and controls, type input into the real fields, submit.
+- Use real data when it is available (dev database, sample files, live dev
+  API) rather than only placeholder input.
+- Review the result the user would see: rendered data is correct, state
+  changes took effect, navigation and redirects land where expected, and
+  changes persist across a reload when relevant.
+- Exercise reachable error and edge flows, not just the happy path.
+- Capture evidence of the outcome — screenshots or observation notes of the
+  result state, not just the initial screen.
+
+Scripted e2e suites (Playwright, Cypress, etc.) are good additions where the
+project uses them, but they do not replace this live walkthrough of the
+changed flow.

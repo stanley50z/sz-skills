@@ -9,7 +9,8 @@ This skill is based on Matt Pocock's `tdd` skill under its upstream name. It
 keeps the v1.1 emphasis on agreed test seams and independent expected values,
 while retaining the local requirements for command timeouts, user-requirement
 test priority, explicit failure over fallback behavior, stale v1/v2 test
-cleanup, and visual-only UI testing.
+cleanup, end-to-end behavior coverage with real data when available, and
+visual UI testing plus browser-driven behavior walkthroughs for web apps.
 
 ## Philosophy
 
@@ -32,8 +33,9 @@ behavior.
 See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking
 guidelines.
 
-For UI work, see [visual-tests.md](visual-tests.md). UI tests are visual
-checks, not code tests.
+For UI work, see [visual-tests.md](visual-tests.md). UI look-and-feel is
+verified visually, and UI behavior is verified with a live browser
+walkthrough — neither uses component/DOM/snapshot code tests.
 
 ## Seams: Where Tests Go
 
@@ -97,11 +99,34 @@ The test for "login redirects to dashboard" is not
 `expect(afterLogin().currentPage).toBe('/dashboard')`. Test the feature, not
 the plumbing.
 
-## UI Tests Are Visual
+## End-to-End Tests Are Required
+
+Unit and integration tests drive the RED/GREEN loop, but they do not finish
+the job. Bias the suite toward end-to-end coverage:
+
+- Every user requirement gets at least one end-to-end test or verified run
+  that enters through the real entry point (CLI invocation, HTTP request,
+  browser workflow) and exercises the full stack with no mocked internals.
+- The feature gets a full end-to-end run on real data when real or
+  production-like data is available — sample files, fixture dumps, a dev
+  database, a live dev API. Minimal synthetic input is a fallback, not the
+  default; if only synthetic data exists, say so when reporting results.
+- For web apps, end-to-end means the real browser: open the app, click the
+  actual buttons, type real input, and review the result the user would see.
+  This behavior walkthrough is required on top of the visual checks, not
+  instead of them.
+- Scripted e2e suites (Playwright, Cypress, etc.) count as end-to-end tests
+  where the project has them, but they do not replace the live browser
+  walkthrough of the changed flow.
+
+## UI Tests: Visual Plus End-to-End Behavior
 
 <HARD-GATE>
-All UI testing is visual testing. Do not write code tests for UI layout,
-styling, responsive behavior, visual hierarchy, or interaction states.
+UI look-and-feel is tested visually: do not write code tests for UI layout,
+styling, responsive behavior, visual hierarchy, or interaction-state
+appearance. UI behavior is tested end-to-end in a real browser: click the
+actual buttons, submit real input, and review the result. Both are required;
+neither replaces the other.
 </HARD-GATE>
 
 For UI work, the RED/GREEN loop is still one behavior at a time, but the test
@@ -138,6 +163,16 @@ Visual checks must cover:
 - Responsive layouts work at realistic desktop and mobile viewports.
 - The inspection is based on screenshots or live browser observation, not DOM
   guesses or implementation details.
+
+Behavior walkthroughs must cover:
+
+- The full user workflow of the changed feature, performed live in the
+  browser: navigate, click the real controls, enter input, submit.
+- The result the user would see: correct data rendered, state changes applied,
+  navigation and redirects landing where expected, and persistence across a
+  reload when relevant.
+- Reachable error and edge flows, not just the happy path.
+- Real data when available, per the end-to-end rules above.
 
 ## Anti-Pattern: Horizontal Slices
 
@@ -203,7 +238,10 @@ Before writing any code:
 
 - [ ] Confirm with user what interface changes are needed
 - [ ] Confirm with user which user-facing behaviors to test first
-- [ ] For UI changes, define the visual states and viewports to inspect
+- [ ] Identify the end-to-end entry point and what real data is available for
+      the final full run
+- [ ] For UI changes, define the visual states and viewports to inspect and
+      the user workflows to walk through in the browser
 - [ ] Identify and confirm the public seam under test
 - [ ] Identify opportunities for [deep modules](deep-modules.md)
 - [ ] Design interfaces for [testability](interface-design.md)
@@ -247,7 +285,8 @@ Rules:
 - Keep tests focused on observable behavior
 - Keep each test at the confirmed seam
 - Run every RED and GREEN check with a timeout
-- For UI, use visual inspection instead of code tests
+- For UI, use visual inspection plus a browser behavior walkthrough instead of
+  code tests
 
 ### 4. No Fallbacks, No Silent Failure
 
@@ -319,6 +358,21 @@ clean up:
 
 **Never refactor while RED.** Get to GREEN first.
 
+### 7. End-to-End Pass
+
+Before calling the feature done:
+
+- [ ] Run the feature end-to-end through its real entry point, full stack, no
+      mocked internals
+- [ ] Use real data for this run when it is available; note explicitly when
+      only synthetic data existed
+- [ ] For web apps, walk the changed flow in a real browser: click the actual
+      buttons, enter input, and review the rendered result
+- [ ] Run the full test suite once, with a timeout
+
+If the end-to-end pass exposes a failure, return to the RED/GREEN loop — do
+not patch around it or declare partial success.
+
 ## Checklist Per Cycle
 
 ```text
@@ -330,8 +384,11 @@ clean up:
 [ ] Test would survive internal refactor
 [ ] RED run failed for the expected reason
 [ ] RED and GREEN commands used command-level timeouts
-[ ] UI changes were verified visually, not with code tests
+[ ] UI changes were verified visually and behaviorally in the browser, not with code tests
 [ ] Visual check covered clipping/overflow, alignment, visual balance, states, and responsive viewports
+[ ] Feature has at least one end-to-end test/run through the real entry point
+[ ] Final end-to-end run used real data when available (noted if only synthetic data existed)
+[ ] Web app flows were walked through live: buttons clicked, results reviewed
 [ ] Code is minimal for this test
 [ ] No speculative features added
 [ ] No fallback/default/silent failure added to make the test pass

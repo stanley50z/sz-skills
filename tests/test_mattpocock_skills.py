@@ -5,7 +5,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 TO_SPEC = REPO_ROOT / "skills" / "to-spec" / "SKILL.md"
 TO_TICKETS = REPO_ROOT / "skills" / "to-tickets" / "SKILL.md"
-RATIONALE = REPO_ROOT / "docs" / "superpowers-customization-rationale.md"
+RATIONALE = REPO_ROOT / "docs" / "mattpocock-customization-rationale.md"
 
 
 class HtmlCompanionGuidanceTests(unittest.TestCase):
