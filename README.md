@@ -19,19 +19,21 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | Skill | Description | Source | Customization |
 |---|---|---|---|
 | [find-skills](skills/find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
-| [handoff](skills/handoff/) | Compact the current conversation into a handoff document for another agent to pick up | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/handoff) | Saves the handoff doc to the workspace root instead of the OS temp dir, and stays model-invocable |
-| [slides](skills/slides/) | Slide creation — copywriting formulas, layout patterns, strategies | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/main/.claude/skills/slides) | Renames invalid upstream skill name `ckm:slides` to `slides` for harness compatibility |
-| [tdd](skills/tdd/) | Test-driven development with seam-based red-green loops | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd) | Reapplies local rules: command timeouts, user-requirement hierarchy, visual-only UI checks, no silent fallbacks, stale v1/v2 test cleanup, and review-stage refactoring (renamed from local `test-driven-development` to the upstream name) |
-| [to-spec](skills/to-spec/) | Synthesize the current conversation into a published spec | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-spec) | Adds User Requirements vs Agent Design Decisions sections with classification rules, `docs/specs/<artifact-id>-design.md` local default, and the Structured HTML Companion review aid |
-| [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time repo configuration — tracker, triage labels, docs layout | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/setup-matt-pocock-skills) | Local-markdown tracker doc maps to this repo's `docs/specs/` + `docs/plans/<artifact-id>/` conventions instead of `.scratch/` |
-| [to-tickets](skills/to-tickets/) | Break a spec into tracer-bullet tickets with blocking edges | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-tickets) | `[USER-REQ]`/`[AGENT-DECISION]` source tags, local ticket files under `docs/plans/<artifact-id>/` by default (no tracker setup required), visual-only UI acceptance criteria, cross-phase change propagation, HTML plan companion |
-| [implement](skills/implement/) | Implement one ticket at a time with TDD, code review, and commit | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/implement) | No-fallback hard gate, suggest-don't-auto-apply, USER-REQ hierarchy, version-upgrade test cleanup, visual-only UI checks, cross-phase change propagation, local skill names |
-| **ui-ux-pro-max suite** | | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | Harness-compatible plain skill names |
+| **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | | Locally adapted development-cycle skills |
+| [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time repo configuration — tracker, triage labels, docs layout | ↳ `skills/engineering/setup-matt-pocock-skills` | Local-markdown tracker doc maps to this repo's `docs/specs/` + `docs/plans/<artifact-id>/` conventions instead of `.scratch/` |
+| [to-spec](skills/to-spec/) | Synthesize the current conversation into a published spec | ↳ `skills/engineering/to-spec` | Adds User Requirements vs Agent Design Decisions sections with classification rules, `docs/specs/<artifact-id>-design.md` local default, and the Structured HTML Companion review aid |
+| [to-tickets](skills/to-tickets/) | Break a spec into tracer-bullet tickets with blocking edges | ↳ `skills/engineering/to-tickets` | `[USER-REQ]`/`[AGENT-DECISION]` source tags, local ticket files under `docs/plans/<artifact-id>/` by default (no tracker setup required), visual-only UI acceptance criteria, cross-phase change propagation, HTML plan companion |
+| [implement](skills/implement/) | Implement one ticket at a time with TDD, code review, and commit | ↳ `skills/engineering/implement` | No-fallback hard gate, suggest-don't-auto-apply, USER-REQ hierarchy, version-upgrade test cleanup, visual-only UI checks, cross-phase change propagation, local skill names |
+| [tdd](skills/tdd/) | Test-driven development with seam-based red-green loops | ↳ `skills/engineering/tdd` | Reapplies local rules: command timeouts, user-requirement hierarchy, visual-only UI checks, no silent fallbacks, stale v1/v2 test cleanup, and review-stage refactoring (renamed from local `test-driven-development` to the upstream name) |
+| [handoff](skills/handoff/) | Compact the current conversation into a handoff document for another agent to pick up | ↳ `skills/productivity/handoff` | Saves the handoff doc to the workspace root instead of the OS temp dir, and stays model-invocable |
+| **[ui-ux-pro-max suite](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** | | | Harness-compatible plain skill names |
+| [slides](skills/slides/) | Slide creation — copywriting formulas, layout patterns, strategies | ↳ `.claude/skills/slides` | Renames invalid upstream skill name `ckm:slides` to `slides` for harness compatibility |
 | [banner-design](skills/banner-design/) | Banner design with sizes, styles, and layout references | ↳ `.claude/skills/banner-design` | Renames invalid upstream skill name `ckm:banner-design` to `banner-design` |
 | [brand](skills/brand/) | Brand identity system — guidelines, voice, typography, color, logo rules | ↳ `.claude/skills/brand` | Renames invalid upstream skill name `ckm:brand` to `brand` |
 | [design](skills/design/) | Design routing — logos, icons, CIP, slides, social photos | ↳ `.claude/skills/design` | Renames invalid upstream skill name `ckm:design` to `design` |
 | [design-system](skills/design-system/) | Design tokens, component specs, slide generation | ↳ `.claude/skills/design-system` | Renames invalid upstream skill name `ckm:design-system` to `design-system` |
 | [ui-styling](skills/ui-styling/) | UI styling — Tailwind, shadcn/ui, canvas design system, bundled fonts | ↳ `.claude/skills/ui-styling` | Renames invalid upstream skill name `ckm:ui-styling` to `ui-styling` |
+
 > **History:** this repo previously vendored the [obra/superpowers](https://github.com/obra/superpowers) suite. It is fully retired in favor of the [mattpocock/skills](https://github.com/mattpocock/skills) v1.1 development cycle; the customization history and migration rationale are preserved in [docs/superpowers-customization-rationale.md](docs/superpowers-customization-rationale.md).
 
 ## Vendor Skills
@@ -42,26 +44,27 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 
 | Skill | Description | Source |
 |---|---|---|
-| [code-review](skills/code-review/) | Review diffs against repo standards and originating specs | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/code-review) |
-| [ask-matt](skills/ask-matt/) | Router for picking the right skill/workflow for a request | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/ask-matt) |
-| [codebase-design](skills/codebase-design/) | Shared vocabulary for designing deep modules at clean seams | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/codebase-design) |
-| [diagnosing-bugs](skills/diagnosing-bugs/) | Diagnosis loop for hard bugs and performance regressions | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/diagnosing-bugs) |
-| [domain-modeling](skills/domain-modeling/) | Build and sharpen a project's domain model, glossary, and ADRs | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/domain-modeling) |
-| [grill-with-docs](skills/grill-with-docs/) | Interview + domain modeling to build shared language before speccing | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/grill-with-docs) |
-| [grilling](skills/grilling/) | Shared interview loop used by the grill skills | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/grilling) |
-| [grill-me](skills/grill-me/) | Deep interview on any plan or design decision | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/grill-me) |
-| [improve-codebase-architecture](skills/improve-codebase-architecture/) | Find architecture improvements and deeper module boundaries | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture) |
-| [prototype](skills/prototype/) | Throwaway logic/UI prototypes to answer design questions | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/prototype) |
-| [research](skills/research/) | Investigate a question against primary sources, capture findings | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/research) |
-| [resolving-merge-conflicts](skills/resolving-merge-conflicts/) | Intent-traced merge/rebase conflict resolution | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/resolving-merge-conflicts) |
-| [triage](skills/triage/) | Move issues through the triage state machine | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/triage) |
-| [wayfinder](skills/wayfinder/) | Plan work too big for one session as a shared map of decision tickets | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/wayfinder) |
+| **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | |
+| [ask-matt](skills/ask-matt/) | Router for picking the right skill/workflow for a request | ↳ `skills/engineering/ask-matt` |
+| [code-review](skills/code-review/) | Review diffs against repo standards and originating specs | ↳ `skills/engineering/code-review` |
+| [codebase-design](skills/codebase-design/) | Shared vocabulary for designing deep modules at clean seams | ↳ `skills/engineering/codebase-design` |
+| [diagnosing-bugs](skills/diagnosing-bugs/) | Diagnosis loop for hard bugs and performance regressions | ↳ `skills/engineering/diagnosing-bugs` |
+| [domain-modeling](skills/domain-modeling/) | Build and sharpen a project's domain model, glossary, and ADRs | ↳ `skills/engineering/domain-modeling` |
+| [grill-with-docs](skills/grill-with-docs/) | Interview + domain modeling to build shared language before speccing | ↳ `skills/engineering/grill-with-docs` |
+| [improve-codebase-architecture](skills/improve-codebase-architecture/) | Find architecture improvements and deeper module boundaries | ↳ `skills/engineering/improve-codebase-architecture` |
+| [prototype](skills/prototype/) | Throwaway logic/UI prototypes to answer design questions | ↳ `skills/engineering/prototype` |
+| [research](skills/research/) | Investigate a question against primary sources, capture findings | ↳ `skills/engineering/research` |
+| [resolving-merge-conflicts](skills/resolving-merge-conflicts/) | Intent-traced merge/rebase conflict resolution | ↳ `skills/engineering/resolving-merge-conflicts` |
+| [triage](skills/triage/) | Move issues through the triage state machine | ↳ `skills/engineering/triage` |
+| [wayfinder](skills/wayfinder/) | Plan work too big for one session as a shared map of decision tickets | ↳ `skills/engineering/wayfinder` |
+| [grilling](skills/grilling/) | Shared interview loop used by the grill skills | ↳ `skills/productivity/grilling` |
+| [grill-me](skills/grill-me/) | Deep interview on any plan or design decision | ↳ `skills/productivity/grill-me` |
+| [writing-great-skills](skills/writing-great-skills/) | Reference for writing and editing skills — vocabulary and principles for predictable skills | ↳ `skills/productivity/writing-great-skills` |
 | [docker-expert](skills/docker-expert/) | Docker containerization expertise for optimization, hardening, multi-stage builds, Compose, and production deployment | [sickn33/antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills/tree/main/skills/docker-expert) |
 | [supabase-postgres-best-practices](skills/supabase-postgres-best-practices/) | Postgres best practices for Supabase projects, including schema design, RLS, migrations, and query performance | [supabase/agent-skills](https://github.com/supabase/agent-skills/tree/main/skills/supabase-postgres-best-practices) |
 | [remotion-best-practices](skills/remotion-best-practices/) | Best practices for Remotion-based video creation in React, including preview and render workflows | [remotion-dev/skills](https://github.com/remotion-dev/skills/tree/main/skills/remotion) |
 | [revealjs](skills/revealjs/) | Create polished reveal.js presentations, decks, and slideshows with HTML and CSS | [ryanbbrown/revealjs-skill](https://github.com/ryanbbrown/revealjs-skill/tree/main/skills/revealjs) |
-| [writing-great-skills](skills/writing-great-skills/) | Reference for writing and editing skills — vocabulary and principles for predictable skills | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/writing-great-skills) |
-| **ui-ux-pro-max suite** | | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) |
+| **[ui-ux-pro-max suite](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** | | |
 | [ui-ux-pro-max](skills/ui-ux-pro-max/) | UI/UX design intelligence — styles, palettes, font pairings, chart types across 10+ stacks | ↳ `.claude/skills/ui-ux-pro-max` + `src/ui-ux-pro-max` |
 
 > **Note:** `ui-styling` includes font license files (OFL) but binary `.ttf` files are skipped during
