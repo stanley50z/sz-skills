@@ -74,14 +74,13 @@ re-run the same hanging command without changing anything.
 
 Tests should be derived from user requirements, not implementation details.
 
-If the spec has "User Requirements" and "Agent Design Decisions" sections, the
-user requirements drive the primary test suite. Each user requirement should
-have at least one behavioral test that verifies the feature works as the user
-described it, from the outside.
+The requirements the user actually asked for drive the primary test suite. Each
+one should have at least one behavioral test that verifies the feature works as
+the user described it, from the outside.
 
-Agent design decisions get lighter testing. They're often covered implicitly by
-the user-requirement tests. Don't write separate tests for internal functions
-just because they exist.
+Supporting design decisions get lighter testing. They're often covered
+implicitly by the user-requirement tests. Don't write separate tests for
+internal functions just because they exist.
 
 Test hierarchy:
 

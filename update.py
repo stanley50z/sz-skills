@@ -76,9 +76,8 @@ UPSTREAM = {
     "setup-matt-pocock-skills": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/setup-matt-pocock-skills"},
     ],
-    # Replaces the superpowers `brainstorming` spec output (customized: User
-    # Requirements vs Agent Design Decisions sections, docs/specs/ local default,
-    # structured HTML companion).
+    # Replaces the superpowers `brainstorming` spec output (customized:
+    # structured HTML companion, handoff to to-tickets).
     "to-spec": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/to-spec"},
     ],
@@ -102,13 +101,13 @@ UPSTREAM = {
         {"repo": "mattpocock/skills", "path": "skills/engineering/improve-codebase-architecture"},
     ],
     # Replaces the superpowers `writing-plans` skill (customized: requirement
-    # source tags, docs/plans/ file default, HTML plan companion).
+    # trace field, visual UI criteria, change propagation, HTML plan companion).
     "to-tickets": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/to-tickets"},
     ],
     # Replaces the superpowers `executing-plans` / `subagent-driven-development`
-    # execution loop (customized: no-fallback gates, USER-REQ hierarchy,
-    # visual-only UI checks, cross-phase change propagation).
+    # execution loop (customized: no-fallback gates, visual-only UI checks,
+    # cross-phase change propagation).
     "implement": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/implement"},
     ],

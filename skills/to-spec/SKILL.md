@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 This skill takes the current conversation context and codebase understanding and produces a spec (you may know this document as a PRD). Do NOT interview the user — just synthesize what you already know.
 
-The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not. If no tracker has been provided, default to the local tracker: write the spec to `docs/specs/<artifact-id>-design.md`, where `<artifact-id>` is `YYYY-MM-DD-<feature-slug>` (reuse the effort's existing artifact ID if one was already chosen).
+The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
 
 ## Process
 
@@ -39,26 +39,6 @@ A LONG, numbered list of user stories. Each user story should be in the format o
 </user-story-example>
 
 This list of user stories should be extremely extensive and cover all aspects of the feature.
-
-## User Requirements
-
-Items the user explicitly stated, chose from options, or confirmed as their own intent during the conversation. Each item must be traceable to something the user actually said or selected.
-
-- [requirement]: [brief trace — e.g., "user's initial request", "chose from options", "confirmed when asked"]
-
-## Agent Design Decisions
-
-Everything the agent inferred, recommended, or filled in to complete the design. Each item notes which user requirement it serves.
-
-- [decision]: serves [which user requirement]. [rationale]
-
-Classification rules:
-
-- If the user said it, chose it, or explicitly confirmed it as their own intent → User Requirement
-- If the agent proposed it and the user said "looks good" or "yes" to a batch → Agent Design Decision (blanket approval does not promote agent decisions)
-- For mixed items (user said "authentication," agent picked OAuth2): split them — "authentication required" is a User Requirement; "OAuth2 with Google provider" is an Agent Design Decision serving it
-
-Priority hierarchy: User Requirements are non-negotiable downstream. Agent Design Decisions are flexible — they can be revised or dropped if they conflict with a User Requirement or if implementation reality demands it. This hierarchy carries into `/to-tickets` (ticket tags) and `/implement`.
 
 ## Implementation Decisions
 
@@ -96,7 +76,7 @@ Any further notes about the feature.
 
 ## Structured HTML Companion
 
-For a large or hard-to-review spec, create an optional Structured HTML Companion next to it (`docs/specs/<artifact-id>-design.html` on the local tracker, or linked from the issue). The HTML companion is a review aid, not the canonical spec — the published Markdown spec remains the source of truth.
+For a large or hard-to-review spec, create an optional Structured HTML Companion (linked from the issue on a real tracker, or saved next to the spec file on a local tracker). The HTML companion is a review aid, not the canonical spec — the published spec remains the source of truth.
 
 Use it when scanning beats prose:
 

@@ -109,12 +109,33 @@ class MattpocockMigrationTests(unittest.TestCase):
             with self.subTest(skill=skill):
                 self.assertNotIn(skill, update.PATCHED)
 
-    def test_to_spec_separates_requirement_sources(self):
+    def test_to_spec_omits_requirement_source_sections(self):
         source = TO_SPEC.read_text(encoding="utf-8")
 
-        self.assertIn("## User Requirements", source)
-        self.assertIn("## Agent Design Decisions", source)
-        self.assertIn("blanket approval does not promote agent decisions", source)
+        self.assertNotIn("## User Requirements", source)
+        self.assertNotIn("## Agent Design Decisions", source)
+        self.assertNotIn("USER-REQ", TO_TICKETS.read_text(encoding="utf-8"))
+
+    def test_spec_and_tickets_publish_to_configured_tracker(self):
+        to_spec = TO_SPEC.read_text(encoding="utf-8")
+        to_tickets = TO_TICKETS.read_text(encoding="utf-8")
+
+        self.assertIn("publish it to the project issue tracker", to_spec)
+        self.assertNotIn("docs/specs/<artifact-id>-design.md", to_spec)
+        self.assertIn("Publish the tickets to the configured tracker", to_tickets)
+        self.assertIn("ready-for-agent", to_tickets)
+        self.assertNotIn("Default medium is local ticket files", to_tickets)
+
+    def test_setup_skill_is_non_interactive_with_standing_defaults(self):
+        source = (
+            REPO_ROOT / "skills" / "setup-matt-pocock-skills" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("non-interactive", source.lower())
+        self.assertIn("Decide by standing defaults", source)
+        self.assertIn("If neither exists, create `AGENTS.md`", source)
+        self.assertNotIn("Present findings and ask", source)
+        self.assertNotIn("Let them edit before writing", source)
 
     def test_local_tracker_uses_repo_doc_conventions(self):
         tracker = (

@@ -171,6 +171,18 @@ The last four Superpowers skills — `using-superpowers`, `dispatching-parallel-
 - **`dispatching-parallel-agents`** and **`using-git-worktrees`**: harnesses now provide native subagent dispatch and worktree isolation; a process skill on top added ceremony, not capability.
 - **`finishing-a-development-branch`**: its customized user-testing gate (#6) moved into `implement`'s close-out ("ask the user to test the feature themselves before wrapping up"); merge/PR/cleanup decisions stay with the user. The `commit` skill's linked-worktree gate no longer routes through it — commits happen in place and worktree merge/cleanup stays with the user.
 
+## Removal (2026-07): User Requirements vs Agent Design Decisions Retired
+
+Customization #1 was removed from the mattpocock suite (`to-spec`, `to-tickets`, `implement`, `tdd`). The requirement-source split was designed around the Superpowers pipeline, where specs and plans passed through several agent hands and the distinction kept user intent from diluting. The Pocock cycle already front-loads user intent through the grilling interview and keeps the user in the loop at each stage (seam check, ticket quiz, close-out testing), so the section/tag machinery added ceremony without pulling its weight.
+
+What remains: cross-phase change propagation (#7) still applies — a user change at any stage updates spec, tickets, tests, and code — it just no longer routes through `[USER-REQ]` tags or a dedicated spec section. The tdd skill keeps the requirement-driven test hierarchy (#3), phrased against what the user asked for rather than the removed spec sections. Tickets keep their `Requirement:` trace back to the spec.
+
+## Removal (2026-07): Local-Path Defaults Narrowed to the Local Tracker Template
+
+Customization #2's remaining skill-level defaults were removed from `to-spec` and `to-tickets`. Both skills now follow upstream's tracker-first design: they publish specs and tickets to whatever tracker `/setup-matt-pocock-skills` configured in `docs/agents/issue-tracker.md` — on a GitHub repo that means real issues with the `ready-for-agent` triage label and native blocking links, which is how the suite is meant to attach to a repo. `implement`'s change-propagation targets became tracker-agnostic to match.
+
+The `docs/specs/<artifact-id>-design.md` + `docs/plans/<artifact-id>/` conventions survive in exactly one place: the customized `issue-tracker-local.md` template in `setup-matt-pocock-skills`, so repos that choose the local-markdown tracker still get committed `docs/` artifacts instead of upstream's `.scratch/`.
+
 ## Structural Change: Flattened Layout
 
 The upstream repo organizes all 14 skills under a `skills/` subdirectory. Initially these were kept nested under `superpowers/` in this repo, but OpenCode requires each skill to have its own `SKILL.md` at the directory root to discover them. All 14 skills were flattened into the repo's `skills/` directory as independent sibling directories, matching the same flat structure as the ui-ux-pro-max suite.
