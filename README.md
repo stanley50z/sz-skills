@@ -18,6 +18,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 
 | Skill | Description | Source | Customization |
 |---|---|---|---|
+| [ketch](skills/ketch/) | Route live research across web search, OSS code search, library docs, page scraping, and site crawling with bounded output and cited synthesis | [1broseidon/ketch](https://github.com/1broseidon/ketch/tree/main/skills/ketch) | Pi defaults to ketch; harnesses with native web tools retain their native search default unless ketch is explicitly requested or specifically better suited |
 | [find-skills](skills/find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
 | **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | | Locally adapted development-cycle skills |
 | [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time repo configuration — tracker, triage labels, docs layout | ↳ `skills/engineering/setup-matt-pocock-skills` | Local-markdown tracker doc maps to this repo's `docs/specs/` + `docs/plans/<artifact-id>/` conventions instead of `.scratch/` |

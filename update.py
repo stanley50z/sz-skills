@@ -32,6 +32,9 @@ BINARY_EXTS = frozenset([
 # (e.g. ui-ux-pro-max SKILL.md from .claude/skills vs data/scripts from src/).
 
 UPSTREAM = {
+    "ketch": [
+        {"repo": "1broseidon/ketch", "path": "skills/ketch"},
+    ],
     "find-skills": [
         {"repo": "vercel-labs/skills", "path": "skills/find-skills"},
     ],
@@ -152,6 +155,7 @@ UPSTREAM = {
 
 # Skills with local customizations — skip during auto-update
 PATCHED = {
+    "ketch",
     "find-skills",
     "handoff",
     "setup-matt-pocock-skills",
