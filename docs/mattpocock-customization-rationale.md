@@ -108,11 +108,11 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `to-spec/SKILL.md`
 
-## 10. Non-Interactive Setup with Standing Defaults
+## 10. Non-Interactive Setup with Standing Defaults, Model-Invocable
 
-**Problem:** Upstream `setup-matt-pocock-skills` interviews the user section by section and shows drafts for approval. The answers are always the same for this user, so the interview is pure ceremony.
+**Problem:** Upstream `setup-matt-pocock-skills` interviews the user section by section and shows drafts for approval. The answers are always the same for this user, so the interview is pure ceremony. It is also slash-command-only (`disable-model-invocation: true`), so no other skill can reach it.
 
-**Solution:** The skill is non-interactive — explore, decide by standing defaults, write, then report:
+**Solution:** The skill is model-invocable, so `setup-git-repo` can invoke it as part of repo bootstrap, and non-interactive — explore, decide by standing defaults, write, then report:
 
 - **Tracker auto-picked from the git remote**: GitHub remote → GitHub Issues, GitLab remote → GitLab Issues, no remote → local markdown. Other trackers only when the user names one.
 - **Triage labels are always the five canonical defaults** (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), created on the tracker when missing — and skipped entirely when the `triage` skill isn't installed.

@@ -11,6 +11,7 @@ My personal collection of AI agent skills, synced across devices.
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
 | [openwiki](skills/openwiki/) | Maintain OpenWiki repository docs locally on the ChatGPT-subscription login and publish them to the native GitHub Wiki |
+| [setup-git-repo](skills/setup-git-repo/) | Bootstrap a Git repository — `git init`, then the setup-matt-pocock-skills config and OpenWiki docs |
 
 ## Vendor Skills (customized)
 
@@ -21,7 +22,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | [ketch](skills/ketch/) | Route live research across web search, OSS code search, library docs, page scraping, and site crawling with bounded output and cited synthesis | [1broseidon/ketch](https://github.com/1broseidon/ketch/tree/main/skills/ketch) | Pi defaults to ketch; harnesses with native web tools retain their native search default unless ketch is explicitly requested or specifically better suited |
 | [find-skills](skills/find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
 | **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | | Locally adapted development-cycle skills |
-| [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time repo configuration — tracker, triage labels, docs layout | ↳ `skills/engineering/setup-matt-pocock-skills` | Non-interactive with standing defaults (tracker auto-picked from git remote, canonical triage labels, `AGENTS.md` when no agent file exists, write-then-report); local-markdown tracker maps to committed `docs/specs/` + `docs/plans/<artifact-id>/` instead of `.scratch/` |
+| [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time repo configuration — tracker, triage labels, docs layout | ↳ `skills/engineering/setup-matt-pocock-skills` | Non-interactive with standing defaults (tracker auto-picked from git remote, canonical triage labels, `AGENTS.md` when no agent file exists, write-then-report); model-invocable so `setup-git-repo` can invoke it; local-markdown tracker maps to committed `docs/specs/` + `docs/plans/<artifact-id>/` instead of `.scratch/` |
 | [to-spec](skills/to-spec/) | Synthesize the current conversation into a published spec | ↳ `skills/engineering/to-spec` | Structured HTML Companion review aid and explicit handoff to `/to-tickets` |
 | [to-tickets](skills/to-tickets/) | Break a spec into tracer-bullet tickets with blocking edges | ↳ `skills/engineering/to-tickets` | `Requirement:` spec-trace field, visual + behavior-walkthrough UI acceptance criteria, cross-phase change propagation, HTML plan companion |
 | [implement](skills/implement/) | Implement one ticket at a time with TDD, code review, and commit | ↳ `skills/engineering/implement` | No-fallback hard gate, suggest-don't-auto-apply, version-upgrade test cleanup, visual + end-to-end UI checks with close-out e2e pass, cross-phase change propagation, local skill names |
