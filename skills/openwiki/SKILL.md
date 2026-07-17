@@ -40,6 +40,12 @@ Done when every touched file is explained by the review and no OpenWiki CI workf
 
 The GitHub Wiki is a separate git repository, cloned as a **sibling** at `..\<repo>.wiki` (clone missing or wiki not yet created → [references/setup.md](references/setup.md)). The Wiki **flattens** all pages into one namespace, so publishing is copy + rename + link rewrite.
 
+Before a first publication, check whether the sibling clone exists. If it does not, check whether the `<repo>.wiki.git` remote is available. GitHub does not create that remote until someone enables Wikis and manually creates and saves the first page in the repository's Wiki tab. If the remote is unavailable, stop before copy/commit/push work and visibly tell the user:
+
+> Publishing is blocked because this repository's GitHub Wiki has not been initialized. Enable Wikis in the repository settings, then manually create and save the first page in the Wiki tab. Once that page exists, rerun this task so I can clone and publish the generated OpenWiki pages.
+
+Do not reduce this prerequisite to a generic clone or authentication error, and do not silently leave the generated docs unpublished. If the user confirms that the first page already exists, investigate Wiki enablement, repository access, and Git credentials as separate causes.
+
 Map each source page to a wiki file:
 
 - An existing wiki's pages are the mapping — match each source page to its established wiki page and keep names stable.
