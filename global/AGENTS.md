@@ -12,6 +12,13 @@ After DevTools MCP work, close the browser only if MCP launched it with its own 
 
 When operating inside T3 Code and referencing local files, use T3 Code-compatible Markdown links formatted as `[label](/C:/absolute/path/to/file.ext:line)` (line number optional); use forward slashes and never `file://` URLs or backticks.
 
+## Question Dialogs and Hidden Text
+
+Harnesses like T3 Code collapse assistant text that precedes a tool call into the Work Log, so the user never sees it. Never ask a question (via AskUserQuestion or any dialog tool) that refers to content living only in that hidden text — e.g. "does this summary match your understanding?" when the summary itself is invisible.
+
+- Make every question dialog self-contained: put the summary, plan, or recommendation being confirmed into the question text and option descriptions.
+- If the content is too long to fit in the dialog, don't use the dialog tool: end the turn with the content plus the question as plain visible text, and wait for the reply.
+
 ## Web Search
 
 When unsure about a fact involving real-world products, use web search before answering.
