@@ -11,7 +11,7 @@ My personal collection of AI agent skills, synced across devices.
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
 | [openwiki](skills/openwiki/) | Maintain OpenWiki repository docs locally on the ChatGPT-subscription login and publish them to the native GitHub Wiki |
-| [setup-git-repo](skills/setup-git-repo/) | Bootstrap a Git repository — `git init`, then the setup-matt-pocock-skills config and OpenWiki docs |
+| [setup-git-repo](skills/setup-git-repo/) | Bootstrap a local and remote GitHub repository, then add the setup-matt-pocock-skills config and OpenWiki docs |
 
 ## Vendor Skills (customized)
 
