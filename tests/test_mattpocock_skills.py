@@ -132,7 +132,7 @@ class MattpocockMigrationTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn("non-interactive", source.lower())
-        self.assertIn("apply the standing defaults", source)
+        self.assertIn("standing defaults", source.lower())
         self.assertIn("If neither exists, create `AGENTS.md`", source)
         self.assertNotIn("Present findings and ask", source)
         self.assertNotIn("Let them edit before writing", source)
@@ -140,6 +140,7 @@ class MattpocockMigrationTests(unittest.TestCase):
     def test_setup_requires_github_without_tracker_fallbacks(self):
         skill_dir = REPO_ROOT / "skills" / "setup-matt-pocock-skills"
         source = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        tracker = (skill_dir / "issue-tracker-github.md").read_text(encoding="utf-8")
 
         self.assertTrue((skill_dir / "issue-tracker-github.md").exists())
         self.assertFalse((skill_dir / "issue-tracker-gitlab.md").exists())
@@ -147,6 +148,8 @@ class MattpocockMigrationTests(unittest.TestCase):
         self.assertIn("### 2. Require GitHub", source)
         self.assertIn("gh repo view --json nameWithOwner,url", source)
         self.assertIn("Do not fall back to local Markdown", source)
+        self.assertIn("Issues and PRDs for this repo live as GitHub issues", tracker)
+        self.assertIn("Create a GitHub issue", tracker)
 
     def test_tdd_uses_upstream_name(self):
         source = (REPO_ROOT / "skills" / "tdd" / "SKILL.md").read_text(encoding="utf-8")

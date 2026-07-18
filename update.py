@@ -35,12 +35,6 @@ UPSTREAM = {
     "ketch": [
         {"repo": "1broseidon/ketch", "path": "skills/ketch"},
     ],
-    "find-skills": [
-        {"repo": "vercel-labs/skills", "path": "skills/find-skills"},
-    ],
-    "docker-expert": [
-        {"repo": "sickn33/antigravity-awesome-skills", "path": "skills/docker-expert"},
-    ],
     "code-review": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/code-review"},
     ],
@@ -117,9 +111,6 @@ UPSTREAM = {
     "tdd": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/tdd"},
     ],
-    "supabase-postgres-best-practices": [
-        {"repo": "supabase/agent-skills", "path": "skills/supabase-postgres-best-practices"},
-    ],
     "remotion-best-practices": [
         {"repo": "remotion-dev/skills", "path": "skills/remotion-best-practices"},
     ],
@@ -155,7 +146,6 @@ UPSTREAM = {
 # Skills with local customizations — skip during auto-update
 PATCHED = {
     "ketch",
-    "find-skills",
     "handoff",
     "setup-matt-pocock-skills",
     "to-spec",

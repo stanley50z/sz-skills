@@ -29,8 +29,11 @@ HOME = Path.home()
 # Repo-managed skill names that were intentionally retired. setup.py removes
 # these from managed target roots so stale copies do not keep triggering.
 RETIRED_SKILLS = [
+    "docker-expert",
+    "find-skills",
     "graphify",
     "restart-stale-docker",
+    "supabase-postgres-best-practices",
     "writing-skills",  # replaced by vendored writing-great-skills (mattpocock/skills)
     # Superpowers development cycle, replaced by the mattpocock/skills v1.1 suite:
     "writing-plans",

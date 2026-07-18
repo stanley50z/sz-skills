@@ -20,7 +20,6 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | Skill | Description | Source | Customization |
 |---|---|---|---|
 | [ketch](skills/ketch/) | Route live research across web search, OSS code search, library docs, page scraping, and site crawling with bounded output and cited synthesis | [1broseidon/ketch](https://github.com/1broseidon/ketch/tree/main/skills/ketch) | Pi defaults to ketch; harnesses with native web tools retain their native search default unless ketch is explicitly requested or specifically better suited |
-| [find-skills](skills/find-skills/) | Discover and install agent skills from the open ecosystem | [vercel-labs/skills](https://github.com/vercel-labs/skills/tree/main/skills/find-skills) | Prefers [VoltAgent/awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog |
 | **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | | Locally adapted development-cycle skills |
 | [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time GitHub repo configuration — GitHub Issues, triage labels, docs layout | ↳ `skills/engineering/setup-matt-pocock-skills` | Requires a reachable GitHub remote and stops before writing when one is missing; uses GitHub Issues exclusively; keeps canonical triage labels, `AGENTS.md` when no agent file exists, and write-then-report behavior; model-invocable so `setup-git-repo` can invoke it |
 | [to-spec](skills/to-spec/) | Synthesize the current conversation into a published spec | ↳ `skills/engineering/to-spec` | Structured HTML Companion review aid and explicit handoff to `/to-tickets` |
@@ -62,8 +61,6 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | [grilling](skills/grilling/) | Shared interview loop used by the grill skills | ↳ `skills/productivity/grilling` |
 | [grill-me](skills/grill-me/) | Deep interview on any plan or design decision | ↳ `skills/productivity/grill-me` |
 | [writing-great-skills](skills/writing-great-skills/) | Reference for writing and editing skills — vocabulary and principles for predictable skills | ↳ `skills/productivity/writing-great-skills` |
-| [docker-expert](skills/docker-expert/) | Docker containerization expertise for optimization, hardening, multi-stage builds, Compose, and production deployment | [sickn33/antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills/tree/main/skills/docker-expert) |
-| [supabase-postgres-best-practices](skills/supabase-postgres-best-practices/) | Postgres best practices for Supabase projects, including schema design, RLS, migrations, and query performance | [supabase/agent-skills](https://github.com/supabase/agent-skills/tree/main/skills/supabase-postgres-best-practices) |
 | [remotion-best-practices](skills/remotion-best-practices/) | Best practices for Remotion-based video creation in React, including preview and render workflows | [remotion-dev/skills](https://github.com/remotion-dev/skills/tree/main/skills/remotion-best-practices) |
 | [revealjs](skills/revealjs/) | Create polished reveal.js presentations, decks, and slideshows with HTML and CSS | [ryanbbrown/revealjs-skill](https://github.com/ryanbbrown/revealjs-skill/tree/main/skills/revealjs) |
 | **[ui-ux-pro-max suite](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** | | |
