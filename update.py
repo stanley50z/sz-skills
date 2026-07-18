@@ -121,7 +121,7 @@ UPSTREAM = {
         {"repo": "supabase/agent-skills", "path": "skills/supabase-postgres-best-practices"},
     ],
     "remotion-best-practices": [
-        {"repo": "remotion-dev/skills", "path": "skills/remotion"},
+        {"repo": "remotion-dev/skills", "path": "skills/remotion-best-practices"},
     ],
     "revealjs": [
         {"repo": "ryanbbrown/revealjs-skill", "path": "skills/revealjs"},

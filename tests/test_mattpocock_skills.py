@@ -132,20 +132,21 @@ class MattpocockMigrationTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn("non-interactive", source.lower())
-        self.assertIn("Decide by standing defaults", source)
+        self.assertIn("apply the standing defaults", source)
         self.assertIn("If neither exists, create `AGENTS.md`", source)
         self.assertNotIn("Present findings and ask", source)
         self.assertNotIn("Let them edit before writing", source)
 
-    def test_local_tracker_uses_repo_doc_conventions(self):
-        tracker = (
-            REPO_ROOT / "skills" / "setup-matt-pocock-skills" / "issue-tracker-local.md"
-        ).read_text(encoding="utf-8")
+    def test_setup_requires_github_without_tracker_fallbacks(self):
+        skill_dir = REPO_ROOT / "skills" / "setup-matt-pocock-skills"
+        source = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
 
-        self.assertIn("docs/specs/<artifact-id>-design.md", tracker)
-        self.assertIn("docs/plans/<artifact-id>/<NN>-<slug>.md", tracker)
-        self.assertIn("docs/plans/<artifact-id>/map.md", tracker)
-        self.assertNotIn(".scratch/", tracker)
+        self.assertTrue((skill_dir / "issue-tracker-github.md").exists())
+        self.assertFalse((skill_dir / "issue-tracker-gitlab.md").exists())
+        self.assertFalse((skill_dir / "issue-tracker-local.md").exists())
+        self.assertIn("### 2. Require GitHub", source)
+        self.assertIn("gh repo view --json nameWithOwner,url", source)
+        self.assertIn("Do not fall back to local Markdown", source)
 
     def test_tdd_uses_upstream_name(self):
         source = (REPO_ROOT / "skills" / "tdd" / "SKILL.md").read_text(encoding="utf-8")

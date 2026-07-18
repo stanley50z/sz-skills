@@ -112,7 +112,7 @@ class PluginHookSetupTests(unittest.TestCase):
             config = config_path.read_text(encoding="utf-8")
             self.assertIn("[marketplaces.sz-skills]", config)
             self.assertIn('source_type = "local"', config)
-            self.assertIn(f"source = '{codex_plugin_root}'", config)
+            self.assertIn(f"source = '{codex_plugin_root.resolve()}'", config)
             self.assertNotIn(f"source = '{repo_root}'", config)
             self.assertIn('[plugins."sz-skills@sz-skills"]', config)
             self.assertIn("enabled = true", config)
@@ -124,6 +124,7 @@ class PluginHookSetupTests(unittest.TestCase):
     def test_registers_claude_local_plugin_state(self):
         with tempfile.TemporaryDirectory() as repo_tmp, tempfile.TemporaryDirectory() as home_tmp:
             repo_root = Path(repo_tmp)
+            resolved_repo_root = str(repo_root.resolve())
             claude_root = Path(home_tmp) / ".claude"
             settings_path = claude_root / "settings.json"
             installed_path = claude_root / "plugins" / "installed_plugins.json"
@@ -145,13 +146,14 @@ class PluginHookSetupTests(unittest.TestCase):
             installed = json.loads(installed_path.read_text(encoding="utf-8"))
             install_record = installed["plugins"]["sz-skills@sz-skills"][0]
             self.assertEqual(install_record["scope"], "user")
-            self.assertEqual(install_record["installPath"], str(repo_root))
+            self.assertEqual(install_record["installPath"], resolved_repo_root)
             self.assertEqual(install_record["version"], setup.PLUGIN_VERSION)
             self.assertEqual(install_record["gitCommitSha"], "abc123")
 
             known = json.loads(known_path.read_text(encoding="utf-8"))
             self.assertEqual(known["sz-skills"]["source"]["source"], "local")
-            self.assertEqual(known["sz-skills"]["source"]["path"], str(repo_root))
+            self.assertEqual(known["sz-skills"]["source"]["path"], resolved_repo_root)
+            self.assertEqual(known["sz-skills"]["installLocation"], resolved_repo_root)
 
             second_changed = setup.install_claude_plugin_config(
                 settings_path=settings_path,

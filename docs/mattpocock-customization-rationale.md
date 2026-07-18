@@ -108,29 +108,20 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `to-spec/SKILL.md`
 
-## 10. Non-Interactive Setup with Standing Defaults, Model-Invocable
+## 10. GitHub-Required Non-Interactive Setup, Model-Invocable
 
 **Problem:** Upstream `setup-matt-pocock-skills` interviews the user section by section and shows drafts for approval. The answers are always the same for this user, so the interview is pure ceremony. It is also slash-command-only (`disable-model-invocation: true`), so no other skill can reach it.
 
-**Solution:** The skill is model-invocable, so `setup-git-repo` can invoke it as part of repo bootstrap, and non-interactive — explore, decide by standing defaults, write, then report:
+**Solution:** The skill is model-invocable, so `setup-git-repo` can invoke it as part of repo bootstrap. It requires a configured, reachable GitHub remote before writing anything; once that prerequisite passes, setup is non-interactive — explore, apply the standing defaults, write, then report:
 
-- **Tracker auto-picked from the git remote**: GitHub remote → GitHub Issues, GitLab remote → GitLab Issues, no remote → local markdown. Other trackers only when the user names one.
+- **Issue tracker is always GitHub Issues**. Missing, unreachable, and non-GitHub remotes stop setup instead of falling back to local Markdown or another tracker.
 - **Triage labels are always the five canonical defaults** (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), created on the tracker when missing — and skipped entirely when the `triage` skill isn't installed.
 - **Agent instructions file**: edit `CLAUDE.md` if present, else `AGENTS.md`; create `AGENTS.md` only when neither exists. Never create a second agent file.
 - **Domain docs**: single-context by default; multi-context only on real monorepo signals.
-- Deviating from a default requires the user saying so when invoking the skill.
 
 **Files changed:** `setup-matt-pocock-skills/SKILL.md`
 
-## 11. Local-Markdown Tracker Uses Committed docs/ Paths
-
-**Problem:** Upstream's local-markdown tracker template puts specs and tickets under `.scratch/`, which is uncommitted and invisible to the rest of the repo's tooling and history.
-
-**Solution:** The `issue-tracker-local.md` seed template maps the local tracker to committed conventions: specs at `docs/specs/<artifact-id>-design.md`, tickets at `docs/plans/<artifact-id>/<NN>-<slug>.md` with a `docs/plans/<artifact-id>/map.md` index. This is the only place the path conventions live — `to-spec`, `to-tickets`, and `wayfinder` stay tracker-first and simply follow whatever `docs/agents/issue-tracker.md` says.
-
-**Files changed:** `setup-matt-pocock-skills/issue-tracker-local.md`
-
-## 12. Close-Out User Testing Gate
+## 11. Close-Out User Testing Gate
 
 **Problem:** Skills proceed to finishing as soon as automated tests pass, without the user ever trying the feature. Automated tests passing does not mean the feature works as the user expected.
 
@@ -138,7 +129,7 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `implement/SKILL.md`
 
-## 13. Handoff Saved to the Workspace, Model-Invocable
+## 12. Handoff Saved to the Workspace, Model-Invocable
 
 **Problem:** Upstream `handoff` writes the handoff document to the OS temp directory, where it is invisible to the next session and never committed, and it is slash-command-only.
 
@@ -146,7 +137,7 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `handoff/SKILL.md`
 
-## 14. Naming and Suite Wiring
+## 13. Naming and Suite Wiring
 
 - **`tdd` uses the upstream name.** The local skill was previously named `test-driven-development` for superpowers compatibility; those references are retired, so the skill was renamed to match upstream while keeping the local customizations.
 - **`implement` references local skill names** (`/tdd`, `/code-review`, the `commit` skill) so its handoffs resolve in this repo's flattened skill layout.
