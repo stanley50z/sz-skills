@@ -157,6 +157,7 @@ PATCHED = {
     "tdd",
     "to-tickets",
     "implement",
+    "prototype",
     "ui-styling",
 }
 

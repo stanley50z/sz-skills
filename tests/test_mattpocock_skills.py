@@ -73,7 +73,7 @@ class MattpocockMigrationTests(unittest.TestCase):
         "resolving-merge-conflicts", "setup-matt-pocock-skills", "tdd",
         "to-spec", "to-tickets", "triage", "wayfinder",
     ]
-    PATCHED_SUITE = ["implement", "setup-matt-pocock-skills", "tdd", "to-spec", "to-tickets"]
+    PATCHED_SUITE = ["implement", "prototype", "setup-matt-pocock-skills", "tdd", "to-spec", "to-tickets"]
 
     def test_retired_skills_are_gone_from_repo(self):
         for skill in self.RETIRED:

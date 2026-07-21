@@ -2,7 +2,7 @@
 
 This document explains why and how the [mattpocock/skills](https://github.com/mattpocock/skills) v1.1 suite was customized for this repo. The suite is this repo's development cycle: `grill-with-docs` (or `wayfinder`) → `to-spec` → `to-tickets` → `implement` per ticket (drives `tdd`, closes with `code-review` + `commit`), with `diagnosing-bugs`, `research`, `prototype`, `triage`, and the reference skills alongside.
 
-Most of the suite is vendored unmodified and auto-updated by `update.py`. Six skills carry local edits and are listed in `update.PATCHED`, so updates skip them: `setup-matt-pocock-skills`, `to-spec`, `to-tickets`, `implement`, `tdd`, and `handoff`. Each customization below records the problem it solves, the change, and the files it touches.
+Most of the suite is vendored unmodified and auto-updated by `update.py`. Seven skills carry local edits and are listed in `update.PATCHED`, so updates skip them: `setup-matt-pocock-skills`, `to-spec`, `to-tickets`, `implement`, `tdd`, `prototype`, and `handoff`. Each customization below records the problem it solves, the change, and the files it touches.
 
 **Origin:** the suite replaced the [obra/superpowers](https://github.com/obra/superpowers) suite in 2026-07. Several customizations below (requirement-driven testing, no-fallback rules, visual UI testing, change propagation, HTML companions, the user testing gate) were carried over from that era because the failure modes they guard against are model- and suite-independent. The superpowers-era rationale document and its migration history were removed with the suite; both are preserved in git history (`docs/superpowers-customization-rationale.md`, deleted 2026-07).
 
@@ -137,7 +137,15 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `handoff/SKILL.md`
 
-## 13. Naming and Suite Wiring
+## 13. Tailscale-Reachable UI Prototype Preview
+
+**Problem:** Upstream `prototype` hands over a UI prototype via a localhost URL only, so the preview is unreachable when reviewing from another device over Tailscale.
+
+**Solution:** The UI branch's hand-over step runs the dev server bound to all interfaces (`--host` / `0.0.0.0`) and surfaces both the localhost and Tailscale URLs.
+
+**Files changed:** `prototype/UI.md`
+
+## 14. Naming and Suite Wiring
 
 - **`tdd` uses the upstream name.** The local skill was previously named `test-driven-development` for superpowers compatibility; those references are retired, so the skill was renamed to match upstream while keeping the local customizations.
 - **`implement` references local skill names** (`/tdd`, `/code-review`, the `commit` skill) so its handoffs resolve in this repo's flattened skill layout.

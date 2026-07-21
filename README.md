@@ -26,6 +26,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | [to-tickets](skills/to-tickets/) | Break a spec into tracer-bullet tickets with blocking edges | ↳ `skills/engineering/to-tickets` | `Requirement:` spec-trace field, visual + behavior-walkthrough UI acceptance criteria, cross-phase change propagation, HTML plan companion |
 | [implement](skills/implement/) | Implement one ticket at a time with TDD, code review, and commit | ↳ `skills/engineering/implement` | No-fallback hard gate, suggest-don't-auto-apply, version-upgrade test cleanup, visual + end-to-end UI checks with close-out e2e pass, cross-phase change propagation, local skill names |
 | [tdd](skills/tdd/) | Test-driven development with seam-based red-green loops | ↳ `skills/engineering/tdd` | Reapplies local rules: command timeouts, user-requirement hierarchy, required end-to-end pass (real-data full run, live browser walkthrough for web apps) on top of visual UI checks, no silent fallbacks, stale v1/v2 test cleanup, and review-stage refactoring (renamed from local `test-driven-development` to the upstream name) |
+| [prototype](skills/prototype/) | Throwaway logic/UI prototypes to answer design questions | ↳ `skills/engineering/prototype` | UI prototype dev server binds to all interfaces so the preview is reachable over Tailscale as well as localhost |
 | [handoff](skills/handoff/) | Compact the current conversation into a handoff document for another agent to pick up | ↳ `skills/productivity/handoff` | Saves the handoff doc to the workspace root instead of the OS temp dir, and stays model-invocable |
 | **[ui-ux-pro-max suite](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** | | | Harness-compatible plain skill names |
 | [slides](skills/slides/) | Slide creation — copywriting formulas, layout patterns, strategies | ↳ `.claude/skills/slides` | Renames invalid upstream skill name `ckm:slides` to `slides` for harness compatibility |
@@ -53,7 +54,6 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | [domain-modeling](skills/domain-modeling/) | Build and sharpen a project's domain model, glossary, and ADRs | ↳ `skills/engineering/domain-modeling` |
 | [grill-with-docs](skills/grill-with-docs/) | Interview + domain modeling to build shared language before speccing | ↳ `skills/engineering/grill-with-docs` |
 | [improve-codebase-architecture](skills/improve-codebase-architecture/) | Find architecture improvements and deeper module boundaries | ↳ `skills/engineering/improve-codebase-architecture` |
-| [prototype](skills/prototype/) | Throwaway logic/UI prototypes to answer design questions | ↳ `skills/engineering/prototype` |
 | [research](skills/research/) | Investigate a question against primary sources, capture findings | ↳ `skills/engineering/research` |
 | [resolving-merge-conflicts](skills/resolving-merge-conflicts/) | Intent-traced merge/rebase conflict resolution | ↳ `skills/engineering/resolving-merge-conflicts` |
 | [triage](skills/triage/) | Move issues through the triage state machine | ↳ `skills/engineering/triage` |

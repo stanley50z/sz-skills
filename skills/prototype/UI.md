@@ -93,7 +93,7 @@ Put the switcher in a single shared component so both sub-shapes can reuse it. L
 
 ### 5. Hand it over
 
-Surface the URL (and the `?variant=` keys). The user will flip through whenever they get to it. The interesting feedback is usually **"I want the header from B with the sidebar from C"** — that's the actual design they want.
+Run the dev server bound to all interfaces (`--host` / `0.0.0.0`, per the framework) so the preview is reachable over Tailscale as well as localhost. Surface both URLs — `http://localhost:<port>/...` and `http://<tailscale-hostname>:<port>/...` (get the hostname from `tailscale status` if available) — along with the `?variant=` keys. The user will flip through whenever they get to it. The interesting feedback is usually **"I want the header from B with the sidebar from C"** — that's the actual design they want.
 
 ### 6. Capture the answer and clean up
 
