@@ -33,4 +33,9 @@ A mid-implementation change has the same authority as an initial requirement sta
 
 ## Close Out
 
-Once done, use `/code-review` to review the work, address what it finds, then commit to the current branch with the commit skill. When the whole feature branch is complete, ask the user to test the feature themselves before wrapping up — automated tests passing does not mean it works as they expected.
+Once done:
+
+1. Use `/code-review` to review the work and address what it finds.
+2. Commit to the current branch with the commit skill.
+3. Push the feature branch and create a ready-to-review pull request. The PR must not be a draft; give it a clear title and a body that summarizes the change, links the relevant spec or tickets, and lists the validation performed.
+4. Ask the user to test the feature themselves before wrapping up — automated tests passing does not mean it works as they expected.
