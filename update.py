@@ -32,6 +32,9 @@ BINARY_EXTS = frozenset([
 # (e.g. ui-ux-pro-max SKILL.md from .claude/skills vs data/scripts from src/).
 
 UPSTREAM = {
+    "browser-harness": [
+        {"repo": "browser-use/browser-harness", "path": "", "only": ["SKILL.md"]},
+    ],
     "ketch": [
         {"repo": "1broseidon/ketch", "path": "skills/ketch"},
     ],

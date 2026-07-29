@@ -13,19 +13,19 @@ Use one `yt-dlp` shape for YouTube and Bilibili downloads so local checks match 
 
 ```bash
 python "<skill-dir>/scripts/download_video_with_subtitles.py" \
-  --url "https://www.youtube.com/watch?v=VIDEO_ID" \
-  --target-path "$HOME/Movies/sz-video-downloads"
+  --url "https://www.youtube.com/watch?v=VIDEO_ID"
 ```
 
 For Bilibili:
 
 ```bash
 python "<skill-dir>/scripts/download_video_with_subtitles.py" \
-  --url "https://www.bilibili.com/video/BV..." \
-  --target-path "$HOME/Movies/sz-video-downloads"
+  --url "https://www.bilibili.com/video/BV..."
 ```
 
 On Windows PowerShell, use the same Python script with backticks instead of backslashes if you split lines.
+
+Downloads go directly into the current user's `Downloads` folder by default, with no intermediate subfolder. Use `--target-path` only when the user asks for a different destination.
 
 The helper defaults to `~/Documents/youtube_cookie.txt` for YouTube and `~/Documents/bilibili_cookie.txt` for Bilibili — these local paths, not the Docker cookie paths. Override with `--cookies-path`, or pass `--no-cookies` only for public videos that do not need cookies.
 

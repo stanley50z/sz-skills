@@ -29,6 +29,7 @@ HOME = Path.home()
 # Repo-managed skill names that were intentionally retired. setup.py removes
 # these from managed target roots so stale copies do not keep triggering.
 RETIRED_SKILLS = [
+    "browser-use",  # upstream browser-harness skill's former name
     "docker-expert",
     "find-skills",
     "graphify",

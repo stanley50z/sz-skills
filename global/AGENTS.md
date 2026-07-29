@@ -10,7 +10,12 @@ After DevTools MCP work, close the browser only if MCP launched it with its own 
 
 ## File Links
 
-When operating inside T3 Code and referencing local files, use T3 Code-compatible Markdown links formatted as `[label](/C:/absolute/path/to/file.ext:line)` (line number optional); use forward slashes and never `file://` URLs or backticks.
+When operating inside T3 Code, make file references clickable with Markdown links rather than wrapping them in backticks.
+
+- For files in the thread workspace, prefer a workspace-relative destination: `[app.ts](src/app.ts:12:3)`.
+- For an absolute destination, use a `file:///` URI with forward slashes: `[AGENTS.md](file:///C:/Users/name/project/AGENTS.md#L12C3)` on Windows or `[AGENTS.md](file:///home/name/project/AGENTS.md#L12C3)` on POSIX.
+- Percent-encode spaces, non-ASCII characters such as Chinese, and other URL-sensitive characters in `file:///` destinations.
+- T3 Code supports either `:line[:column]` path suffixes or `#Lline[Ccolumn]` anchors. Do not include both.
 
 ## Question Dialogs and Hidden Text
 

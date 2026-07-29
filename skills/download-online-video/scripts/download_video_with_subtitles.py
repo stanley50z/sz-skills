@@ -19,7 +19,11 @@ SUBTITLE_LANGS = "en.*,zh.*,ai-en,ai-zh"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Download a YouTube or Bilibili video with sidecar SRT subtitles.")
     parser.add_argument("--url", required=True)
-    parser.add_argument("--target-path", required=True)
+    parser.add_argument(
+        "--target-path",
+        default=str(Path.home() / "Downloads"),
+        help="Destination directory (default: the current user's Downloads folder)",
+    )
     parser.add_argument("--provider", choices=["auto", "youtube", "bilibili"], default="auto")
     parser.add_argument("--cookies-path")
     parser.add_argument("--ffmpeg-location")
