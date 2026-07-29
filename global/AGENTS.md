@@ -12,10 +12,10 @@ After DevTools MCP work, close the browser only if MCP launched it with its own 
 
 When operating inside T3 Code, make file references clickable with Markdown links rather than wrapping them in backticks.
 
-- For files in the thread workspace, prefer a workspace-relative destination: `[app.ts](src/app.ts:12:3)`.
-- For an absolute destination, use a `file:///` URI with forward slashes: `[AGENTS.md](file:///C:/Users/name/project/AGENTS.md#L12C3)` on Windows or `[AGENTS.md](file:///home/name/project/AGENTS.md#L12C3)` on POSIX.
-- Percent-encode spaces, non-ASCII characters such as Chinese, and other URL-sensitive characters in `file:///` destinations.
-- T3 Code supports either `:line[:column]` path suffixes or `#Lline[Ccolumn]` anchors. Do not include both.
+- For files in the thread workspace whose path contains only ASCII characters, prefer a workspace-relative destination: `[app.ts](src/app.ts:12:3)`.
+- For an absolute Windows destination, use a leading slash, the drive letter, and forward slashes: `[AGENTS.md](/C:/Users/name/project/AGENTS.md:12:3)`. For POSIX, use the normal absolute path: `[AGENTS.md](/home/name/project/AGENTS.md:12:3)`.
+- Percent-encode spaces, non-ASCII characters such as Chinese, and other URL-sensitive characters in the Markdown destination. For paths containing Chinese, use the encoded absolute form because T3 Code's workspace-relative file-link matcher accepts only ASCII path segments.
+- Append `:line` or `:line:column` when a source position is useful.
 
 ## Question Dialogs and Hidden Text
 
