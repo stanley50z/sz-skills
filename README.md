@@ -10,7 +10,7 @@ My personal collection of AI agent skills, synced across devices.
 | [global-project-preferences](skills/global-project-preferences/) | Default tech stack preferences for new projects, extensions, scripts, and other greenfield work |
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
-| [pr-codex-review](skills/pr-codex-review/) | Run a bounded, user-invoked Codex review loop — request focused reviews, fix valid findings, escalate unstable designs, merge a clean head, and remove the merged branch |
+| [pr-codex-review](skills/pr-codex-review/) | Run a convergent, user-invoked Codex review loop — use custom prompts to front-load findings, verify fixes, escalate unstable designs, merge a clean head, and remove the merged branch |
 | [openwiki](skills/openwiki/) | Maintain OpenWiki repository docs locally on the ChatGPT-subscription login and publish them to the native GitHub Wiki |
 | [setup-git-repo](skills/setup-git-repo/) | Bootstrap a local and remote GitHub repository, then add the setup-matt-pocock-skills config and OpenWiki docs |
 
