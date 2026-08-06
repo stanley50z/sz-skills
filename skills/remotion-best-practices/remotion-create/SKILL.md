@@ -18,8 +18,10 @@ Scaffold one using:
 ```bash
 npx create-video@latest --yes --blank --no-tailwind my-video
 cd my-video
-npm i
+pnpm i
 ```
+
+Prefer `pnpm` over `npm` for installing dependencies: pnpm's global content-addressable store means additional Remotion projects reuse the same packages on disk instead of each costing another ~300 MB of `node_modules`. (Install once with `npm i -g pnpm` if missing.) Use plain `npm i` only if pnpm is unavailable.
 
 Replace `my-video` with a suitable project name.
 
