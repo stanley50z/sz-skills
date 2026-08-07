@@ -1,6 +1,6 @@
 # mattpocock/skills Suite Customization Rationale
 
-This document explains why and how the [mattpocock/skills](https://github.com/mattpocock/skills) v1.1 suite was customized for this repo. The suite is this repo's development cycle: `grill-with-docs` (or `wayfinder`) → `to-spec` → `to-tickets` → `implement` per ticket (drives `tdd`, closes with `code-review` + `commit`), with `diagnosing-bugs`, `research`, `prototype`, `triage`, and the reference skills alongside.
+This document explains why and how the [mattpocock/skills](https://github.com/mattpocock/skills) v1.2 suite was customized for this repo. The suite is this repo's development cycle: `grill-with-docs` (or `wayfinder`) → `to-spec` → `to-tickets` → `implement` per ticket (drives `tdd`, closes with `code-review` + `commit`), with `diagnosing-bugs`, `research`, `prototype`, `triage`, and the reference skills alongside.
 
 Most of the suite is vendored unmodified and auto-updated by `update.py`. Seven skills carry local edits and are listed in `update.PATCHED`, so updates skip them: `setup-matt-pocock-skills`, `to-spec`, `to-tickets`, `implement`, `tdd`, `prototype`, and `handoff`. Each customization below records the problem it solves, the change, and the files it touches.
 
@@ -145,11 +145,15 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `prototype/UI.md`
 
+**v1.2 rebase note (2026-08):** v1.2 reshaped the logic branch from a terminal app into a single shareable HTML file (free-play buttons + guided walkthroughs) and made prototypes primary sources captured on a `prototype/<name>` throwaway branch instead of deleted. The reshape was adopted wholesale — a self-contained HTML file serves the multi-device review case behind this customization even better than a bound dev server — so the only surviving local edit is the Tailscale hand-over line in `prototype/UI.md` (`SKILL.md` and `LOGIC.md` are stock v1.2).
+
 ## 14. Naming and Suite Wiring
 
 - **`tdd` uses the upstream name.** The local skill was previously named `test-driven-development` for superpowers compatibility; those references are retired, so the skill was renamed to match upstream while keeping the local customizations.
 - **`implement` references local skill names** (`/tdd`, `/code-review`, the `commit` skill) so its handoffs resolve in this repo's flattened skill layout.
+- **`writing-for-agents` tracks the upstream rename.** v1.2 renamed `writing-great-skills` to `writing-for-agents`; the local directory, `update.py`, `README.md`, and `setup.py`'s retired list follow upstream (the skill itself is vendored unmodified).
 - **Flattened layout**: upstream nests skills under `skills/engineering/` and `skills/productivity/`; this repo vendors each as an independent sibling directory under `skills/` because OpenCode discovers skills by a root-level `SKILL.md`. `update.py` maps each skill to its upstream path individually.
+- **Codex metadata follows local invocation policy.** v1.2 added `agents/openai.yaml` beside every skill. For skills this repo makes model-invocable against upstream's user-invoked default (`setup-matt-pocock-skills`, `handoff`), the local yaml omits upstream's `policy.allow_implicit_invocation: false` block so Codex does not hide them from model invocation.
 
 **Files changed:** `tdd/SKILL.md`, `implement/SKILL.md`, `update.py`, `setup.py`
 

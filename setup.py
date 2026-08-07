@@ -35,8 +35,9 @@ RETIRED_SKILLS = [
     "graphify",
     "restart-stale-docker",
     "supabase-postgres-best-practices",
-    "writing-skills",  # replaced by vendored writing-great-skills (mattpocock/skills)
-    # Superpowers development cycle, replaced by the mattpocock/skills v1.1 suite:
+    "writing-skills",  # replaced by vendored writing-for-agents (mattpocock/skills)
+    "writing-great-skills",  # renamed upstream to writing-for-agents in v1.2
+    # Superpowers development cycle, replaced by the mattpocock/skills v1.2 suite:
     "writing-plans",
     "executing-plans",
     "subagent-driven-development",

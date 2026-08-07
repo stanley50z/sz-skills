@@ -84,15 +84,28 @@ UPSTREAM = {
     "wayfinder": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/wayfinder"},
     ],
+    # New in v1.2: interactive bash walkthroughs for human-only procedures.
+    "wizard": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/wizard"},
+    ],
     "grilling": [
         {"repo": "mattpocock/skills", "path": "skills/productivity/grilling"},
     ],
     "grill-me": [
         {"repo": "mattpocock/skills", "path": "skills/productivity/grill-me"},
     ],
-    # Replaces the superpowers `writing-skills` skill.
-    "writing-great-skills": [
-        {"repo": "mattpocock/skills", "path": "skills/productivity/writing-great-skills"},
+    # New in v1.2: questionnaire for the one person who can answer a decision.
+    "to-questionnaire": [
+        {"repo": "mattpocock/skills", "path": "skills/productivity/to-questionnaire"},
+    ],
+    # New in v1.2: one-word verbosity corrective.
+    "wait-what": [
+        {"repo": "mattpocock/skills", "path": "skills/productivity/wait-what"},
+    ],
+    # Replaces the superpowers `writing-skills` skill (renamed upstream from
+    # writing-great-skills in v1.2).
+    "writing-for-agents": [
+        {"repo": "mattpocock/skills", "path": "skills/productivity/writing-for-agents"},
     ],
     "improve-codebase-architecture": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/improve-codebase-architecture"},

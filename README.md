@@ -37,7 +37,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | [design-system](skills/design-system/) | Design tokens, component specs, slide generation | ↳ `.claude/skills/design-system` | Renames invalid upstream skill name `ckm:design-system` to `design-system` |
 | [ui-styling](skills/ui-styling/) | UI styling — Tailwind, shadcn/ui, canvas design system, bundled fonts | ↳ `.claude/skills/ui-styling` | Renames invalid upstream skill name `ckm:ui-styling` to `ui-styling` |
 
-> The customization rationale for the mattpocock/skills suite lives in [docs/mattpocock-customization-rationale.md](docs/mattpocock-customization-rationale.md). This repo previously vendored the [obra/superpowers](https://github.com/obra/superpowers) suite, fully retired in favor of the mattpocock/skills v1.1 development cycle; the superpowers-era rationale and migration history are preserved in git history (`docs/superpowers-customization-rationale.md`).
+> The customization rationale for the mattpocock/skills suite lives in [docs/mattpocock-customization-rationale.md](docs/mattpocock-customization-rationale.md). This repo previously vendored the [obra/superpowers](https://github.com/obra/superpowers) suite, fully retired in favor of the mattpocock/skills v1.2 development cycle; the superpowers-era rationale and migration history are preserved in git history (`docs/superpowers-customization-rationale.md`).
 
 ## Vendor Skills
 
@@ -60,9 +60,12 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | [resolving-merge-conflicts](skills/resolving-merge-conflicts/) | Intent-traced merge/rebase conflict resolution | ↳ `skills/engineering/resolving-merge-conflicts` |
 | [triage](skills/triage/) | Move issues through the triage state machine | ↳ `skills/engineering/triage` |
 | [wayfinder](skills/wayfinder/) | Plan work too big for one session as a shared map of decision tickets | ↳ `skills/engineering/wayfinder` |
+| [wizard](skills/wizard/) | Interactive bash walkthroughs for procedures only a human can perform | ↳ `skills/engineering/wizard` |
 | [grilling](skills/grilling/) | Shared interview loop used by the grill skills | ↳ `skills/productivity/grilling` |
 | [grill-me](skills/grill-me/) | Deep interview on any plan or design decision | ↳ `skills/productivity/grill-me` |
-| [writing-great-skills](skills/writing-great-skills/) | Reference for writing and editing skills — vocabulary and principles for predictable skills | ↳ `skills/productivity/writing-great-skills` |
+| [to-questionnaire](skills/to-questionnaire/) | Turn an unanswerable decision into a questionnaire for the person who can answer it | ↳ `skills/productivity/to-questionnaire` |
+| [wait-what](skills/wait-what/) | One-word corrective that re-pitches a message that didn't land | ↳ `skills/productivity/wait-what` |
+| [writing-for-agents](skills/writing-for-agents/) | Reference for writing and editing skills — vocabulary and principles for predictable skills | ↳ `skills/productivity/writing-for-agents` |
 | [remotion-best-practices](skills/remotion-best-practices/) | Best practices for Remotion-based video creation in React, including preview and render workflows | [remotion-dev/skills](https://github.com/remotion-dev/skills/tree/main/skills/remotion-best-practices) |
 | [revealjs](skills/revealjs/) | Create polished reveal.js presentations, decks, and slideshows with HTML and CSS | [ryanbbrown/revealjs-skill](https://github.com/ryanbbrown/revealjs-skill/tree/main/skills/revealjs) |
 | **[ui-ux-pro-max suite](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** | | |

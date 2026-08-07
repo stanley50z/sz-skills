@@ -71,7 +71,8 @@ class MattpocockMigrationTests(unittest.TestCase):
         "domain-modeling", "grill-me", "grill-with-docs", "grilling",
         "implement", "improve-codebase-architecture", "prototype", "research",
         "resolving-merge-conflicts", "setup-matt-pocock-skills", "tdd",
-        "to-spec", "to-tickets", "triage", "wayfinder",
+        "to-questionnaire", "to-spec", "to-tickets", "triage", "wait-what",
+        "wayfinder", "wizard",
     ]
     PATCHED_SUITE = ["implement", "prototype", "setup-matt-pocock-skills", "tdd", "to-spec", "to-tickets"]
 
@@ -148,7 +149,7 @@ class MattpocockMigrationTests(unittest.TestCase):
         self.assertIn("### 2. Require GitHub", source)
         self.assertIn("gh repo view --json nameWithOwner,url", source)
         self.assertIn("Do not fall back to local Markdown", source)
-        self.assertIn("Issues and PRDs for this repo live as GitHub issues", tracker)
+        self.assertIn("Issues and specs for this repo live as GitHub issues", tracker)
         self.assertIn("Create a GitHub issue", tracker)
 
     def test_tdd_uses_upstream_name(self):

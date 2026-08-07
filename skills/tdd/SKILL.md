@@ -6,7 +6,7 @@ description: Use when implementing any feature or bugfix, before writing impleme
 # Test-Driven Development
 
 This skill is based on Matt Pocock's `tdd` skill under its upstream name. It
-keeps the v1.1 emphasis on agreed test seams and independent expected values,
+keeps the v1.2 emphasis on agreed test seams and independent expected values,
 while retaining the local requirements for command timeouts, user-requirement
 test priority, explicit failure over fallback behavior, stale v1/v2 test
 cleanup, end-to-end behavior coverage with real data when available, and
@@ -49,6 +49,12 @@ internal helper just because it is convenient.
 
 Ask: "What public interface are we testing, and which behavior should prove it
 works?"
+
+When the shape of that interface is itself in question — how deep the module
+is, where the seam belongs, what the interface should expose — use the
+`/codebase-design` skill for the vocabulary. It is the shared source of the
+module, interface, depth, seam, adapter, leverage and locality terms, and it
+is a reference to consult, not a session to run.
 
 ## Timeout Rule
 
