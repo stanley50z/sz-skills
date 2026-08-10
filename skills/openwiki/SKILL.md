@@ -40,11 +40,15 @@ Done when every touched file is explained by the review and no OpenWiki CI workf
 
 The GitHub Wiki is a separate git repository, cloned as a **sibling** at `..\<repo>.wiki` (clone missing or wiki not yet created → [references/setup.md](references/setup.md)). The Wiki **flattens** all pages into one namespace, so publishing is copy + rename + link rewrite.
 
-Before a first publication, check whether the sibling clone exists. If it does not, check whether the `<repo>.wiki.git` remote is available. GitHub does not create that remote until someone enables Wikis and manually creates and saves the first page in the repository's Wiki tab. If the remote is unavailable, stop before copy/commit/push work and visibly tell the user:
+Before a first publication, check whether the sibling clone exists. If it does not, check whether the `<repo>.wiki.git` remote is available. GitHub creates that remote only after Wikis are enabled and the first page is saved.
 
-> Publishing is blocked because this repository's GitHub Wiki has not been initialized. Enable Wikis in the repository settings, then manually create and save the first page in the Wiki tab. Once that page exists, rerun this task so I can clone and publish the generated OpenWiki pages.
+When the remote is unavailable, invoke the `browser-harness` skill and initialize it through GitHub's web UI:
 
-Do not reduce this prerequisite to a generic clone or authentication error, and do not silently leave the generated docs unpublished. If the user confirms that the first page already exists, investigate Wiki enablement, repository access, and Git credentials as separate causes.
+1. Open the repository **Settings** page and enable **Wikis** under **Features**.
+2. Open the repository **Wiki** tab, create the first page as `Home`, give it the temporary body `Initializing OpenWiki publication.`, and save it.
+3. Verify that `<repo>.wiki.git` now resolves, then clone it as the sibling `..\<repo>.wiki` and continue publication in the same run.
+
+Use the logged-in browser session according to the browser-harness login rules. Stop only when GitHub requires user-only authentication or confirmation, the authenticated account lacks repository administration permission, or the repository/account plan does not expose Wikis. Report the exact blocker and preserve the generated docs for a later retry. If the saved first page exists but the remote remains unavailable, investigate Wiki enablement, repository access, and Git credentials as separate causes.
 
 Map each source page to a wiki file:
 

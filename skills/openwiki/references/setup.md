@@ -27,17 +27,17 @@ Done when `openwiki/quickstart.md` exists, both agent files carry an OPENWIKI bl
 
 ## Wiki: create and clone
 
-The `<repo>.wiki.git` remote only comes into existence once the wiki has a saved first page — creating that page manually is the prerequisite that unblocks the clone.
+The `<repo>.wiki.git` remote only comes into existence once the wiki has a saved first page. If the remote is unavailable, invoke the `browser-harness` skill and complete the prerequisite through GitHub's web interface:
 
-If the remote is not yet available, stop and explicitly notify the user that publication is blocked until they complete steps 1 and 2 below in GitHub's web interface. Do not keep retrying the clone or report only a generic git/authentication failure.
-
-1. Enable **Wikis** in the GitHub repository settings.
-2. Create and save a first page in the Wiki tab.
-3. Clone the wiki as a sibling of the main repository:
+1. Open the repository **Settings** page and enable **Wikis** under **Features**.
+2. Open the repository **Wiki** tab, create `Home` with the temporary body `Initializing OpenWiki publication.`, and save it.
+3. Verify that the wiki remote resolves, then clone it as a sibling of the main repository:
 
    ```powershell
    git clone https://github.com/<owner>/<repo>.wiki.git ..\<repo>.wiki
    ```
+
+Use the browser's existing GitHub session. Stop only for user-only authentication or confirmation, missing repository administration permission, or a plan that does not expose Wikis; report that concrete blocker. Once the clone succeeds, continue the publication flow in the same run.
 
 GitHub's documentation:
 
