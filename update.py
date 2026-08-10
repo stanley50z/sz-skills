@@ -35,9 +35,6 @@ UPSTREAM = {
     "browser-harness": [
         {"repo": "browser-use/browser-harness", "path": "", "only": ["SKILL.md"]},
     ],
-    "ketch": [
-        {"repo": "1broseidon/ketch", "path": "skills/ketch"},
-    ],
     "code-review": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/code-review"},
     ],
@@ -161,7 +158,6 @@ UPSTREAM = {
 
 # Skills with local customizations — skip during auto-update
 PATCHED = {
-    "ketch",
     "handoff",
     "setup-matt-pocock-skills",
     "to-spec",

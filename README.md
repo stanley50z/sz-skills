@@ -20,7 +20,6 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 
 | Skill | Description | Source | Customization |
 |---|---|---|---|
-| [ketch](skills/ketch/) | Route live research across web search, OSS code search, library docs, page scraping, and site crawling with bounded output and cited synthesis | [1broseidon/ketch](https://github.com/1broseidon/ketch/tree/main/skills/ketch) | Pi defaults to ketch; harnesses with native web tools retain their native search default unless ketch is explicitly requested or specifically better suited |
 | **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | | Locally adapted development-cycle skills |
 | [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time GitHub repo configuration — GitHub Issues, triage labels, docs layout | ↳ `skills/engineering/setup-matt-pocock-skills` | Requires a reachable GitHub remote and stops before writing when one is missing; uses GitHub Issues exclusively; keeps canonical triage labels, `AGENTS.md` when no agent file exists, and write-then-report behavior; model-invocable so `setup-git-repo` can invoke it |
 | [to-spec](skills/to-spec/) | Synthesize the current conversation into a published spec | ↳ `skills/engineering/to-spec` | Structured HTML Companion review aid and explicit handoff to `/to-tickets` |

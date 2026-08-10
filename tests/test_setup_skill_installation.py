@@ -42,6 +42,29 @@ class SkillInstallationTests(unittest.TestCase):
             self.assertEqual(mirrored_skill.resolve(), copied_skill.resolve())
             self.assertEqual((mirrored_skill / "SKILL.md").read_text(encoding="utf-8"), "# alpha\n")
 
+    def test_ketch_is_retired_from_general_harness_roots(self):
+        with tempfile.TemporaryDirectory() as home_tmp:
+            target_roots = [
+                Path(home_tmp) / ".claude" / "skills",
+                Path(home_tmp) / ".codex" / "skills",
+                Path(home_tmp) / ".config" / "opencode" / "skills",
+                Path(home_tmp) / ".agents" / "skills",
+            ]
+            for root in target_roots:
+                stale = root / "ketch"
+                stale.mkdir(parents=True)
+                (stale / "SKILL.md").write_text("# ketch\n", encoding="utf-8")
+
+            with redirect_stdout(StringIO()):
+                removed = setup.remove_retired_skills(
+                    target_roots=target_roots,
+                    mirror_target_roots={},
+                )
+
+            self.assertEqual(removed, 4)
+            for root in target_roots:
+                self.assertFalse((root / "ketch").exists())
+
     def test_removes_retired_repo_managed_skills_from_target_roots(self):
         with tempfile.TemporaryDirectory() as home_tmp:
             target_roots = [

@@ -152,6 +152,16 @@ class MattpocockMigrationTests(unittest.TestCase):
         self.assertIn("Issues and specs for this repo live as GitHub issues", tracker)
         self.assertIn("Create a GitHub issue", tracker)
 
+    def test_setup_detects_hidden_symlinked_triage_skill_by_exact_file(self):
+        source = (
+            REPO_ROOT / "skills" / "setup-matt-pocock-skills" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("`../triage/SKILL.md`", source)
+        self.assertIn("`disable-model-invocation: true`", source)
+        self.assertIn("symlink", source.lower())
+        self.assertIn("Do not infer that `triage` is absent", source)
+
     def test_tdd_uses_upstream_name(self):
         source = (REPO_ROOT / "skills" / "tdd" / "SKILL.md").read_text(encoding="utf-8")
 

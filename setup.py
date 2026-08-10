@@ -33,6 +33,7 @@ RETIRED_SKILLS = [
     "docker-expert",
     "find-skills",
     "graphify",
+    "ketch",  # Pi-only; provided by the sz-pi-extensions package
     "restart-stale-docker",
     "supabase-postgres-best-practices",
     "writing-skills",  # replaced by vendored writing-for-agents (mattpocock/skills)
