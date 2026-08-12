@@ -2,7 +2,7 @@
 
 This document explains why and how the [mattpocock/skills](https://github.com/mattpocock/skills) v1.2 suite was customized for this repo. The suite is this repo's development cycle: `grill-with-docs` (or `wayfinder`) → `to-spec` → `to-tickets` → `implement` per ticket (drives `tdd`, closes with `code-review` + `commit`), with `diagnosing-bugs`, `research`, `prototype`, `triage`, and the reference skills alongside.
 
-Most of the suite is vendored unmodified and auto-updated by `update.py`. Seven skills carry local edits and are listed in `update.PATCHED`, so updates skip them: `setup-matt-pocock-skills`, `to-spec`, `to-tickets`, `implement`, `tdd`, `prototype`, and `handoff`. Each customization below records the problem it solves, the change, and the files it touches.
+Most of the suite is vendored unmodified and auto-updated by `update.py`. Eight skills carry local edits and are listed in `update.PATCHED`, so updates skip them: `setup-matt-pocock-skills`, `wayfinder`, `to-spec`, `to-tickets`, `implement`, `tdd`, `prototype`, and `handoff`. Each customization below records the problem it solves, the change, and the files it touches.
 
 **Origin:** the suite replaced the [obra/superpowers](https://github.com/obra/superpowers) suite in 2026-07. Several customizations below (requirement-driven testing, no-fallback rules, visual UI testing, change propagation, HTML companions, the user testing gate) were carried over from that era because the failure modes they guard against are model- and suite-independent. The superpowers-era rationale document and its migration history were removed with the suite; both are preserved in git history (`docs/superpowers-customization-rationale.md`, deleted 2026-07).
 
@@ -147,7 +147,15 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **v1.2 rebase note (2026-08):** v1.2 reshaped the logic branch from a terminal app into a single shareable HTML file (free-play buttons + guided walkthroughs) and made prototypes primary sources captured on a `prototype/<name>` throwaway branch instead of deleted. The reshape was adopted wholesale — a self-contained HTML file serves the multi-device review case behind this customization even better than a bound dev server — so the only surviving local edit is the Tailscale hand-over line in `prototype/UI.md` (`SKILL.md` and `LOGIC.md` are stock v1.2).
 
-## 14. Naming and Suite Wiring
+## 14. Resumable Wayfinder Grilling
+
+**Problem:** A Wayfinder grilling ticket recorded only its final resolution. If the live interview stopped midway, settled answers and redirects remained trapped in the original chat and could not be resumed reliably from another machine or session.
+
+**Solution:** Every response to a grilling round is persisted immediately as an append-only checkpoint comment before the agent continues. Each checkpoint preserves the questions, offered options, recommendations, user response, and per-question state; clarifications and redirects remain open rather than being converted into decisions. A resumed session rebuilds the design tree from the ticket's checkpoint history, while the issue body remains the original question.
+
+**Files changed:** `wayfinder/SKILL.md`
+
+## 15. Naming and Suite Wiring
 
 - **`tdd` uses the upstream name.** The local skill was previously named `test-driven-development` for superpowers compatibility; those references are retired, so the skill was renamed to match upstream while keeping the local customizations.
 - **`implement` references local skill names** (`/tdd`, `/code-review`, the `commit` skill) so its handoffs resolve in this repo's flattened skill layout.

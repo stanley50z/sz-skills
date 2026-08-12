@@ -76,8 +76,26 @@ Every ticket is either **HITL** — human in the loop, worked _with_ a human who
 
 - **Research** (AFK): Reading documentation, third-party APIs, or local resources like knowledge bases to surface a fact a decision waits on. Resolved by a `/research` **subagent**. Use when knowledge outside the current working directory is required.
 - **Prototype** (HITL): Raise the fidelity of the discussion by making a cheap, rough, concrete artifact to react to — an outline, a rough take, a stub, or UI/logic code via the /prototype skill. Links the prototype as an asset. Use when "how should it look" or "how should it behave" is the key question.
-- **Grilling** (HITL): Conversation. The default case. Always invoke the /grilling and /domain-modeling skills.
+- **Grilling** (HITL): Conversation. The default case. Always invoke the /grilling and /domain-modeling skills, using the checkpoint protocol below.
 - **Task** (HITL or AFK): Manual work that must happen before a _decision_ can be made — nothing to decide, prototype, or research, but the discussion is blocked until it's done. Signing up for a service so its API can be judged, provisioning access, moving data so its shape can be seen. This is the one type that _does_ rather than decides — and it earns its place by unblocking a decision, not by delivering the destination. The agent drives it alone where it can (AFK); otherwise it hands the human a precise checklist (HITL). Resolved when the work is done; the answer records what was done and any resulting facts (credentials location, new URLs, row counts) later tickets depend on.
+
+### Grilling checkpoints
+
+The comments on a grilling ticket are its resumable session state. After every user response to a round, append one **checkpoint comment immediately** — before answering a clarification, following a redirection, asking the next round, or resolving the ticket. A successful comment write is the completion criterion for consuming that response; if the write fails, report the failure and pause the grilling session.
+
+The checkpoint captures the exchange, not just the decisions inferred from it. For every question in the round, record:
+
+- the question as asked;
+- its offered options, when present;
+- the agent's recommendation, when present;
+- the user's response;
+- its status: **settled**, **open**, or **redirected**, plus the settled outcome when there is one.
+
+Quote the user's response verbatim. A clarification or counter-question remains **open**; a change of direction is **redirected**; a correction or custom answer is **settled** when it supplies a definite outcome, and otherwise remains open or redirected. Record the response as given rather than manufacturing an answer. When one response addresses several questions, retain the response once and make each question's status explicit.
+
+Use append-only comments; keep the ticket body as the original question and do not rewrite earlier checkpoints. After the final user response, write its checkpoint before the resolution comment and ticket closure.
+
+On resume, read the ticket body and every checkpoint comment before restarting `/grilling`. Reconstruct the design tree from their settled, open, and redirected states, then continue from the current frontier without re-asking settled questions. The checkpoint history must be sufficient to continue without the original chat transcript.
 
 ## Fog of war
 

@@ -170,6 +170,7 @@ PATCHED = {
     "to-tickets",
     "implement",
     "prototype",
+    "wayfinder",
     "ui-styling",
 }
 

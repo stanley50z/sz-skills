@@ -22,6 +22,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 |---|---|---|---|
 | **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | | Locally adapted development-cycle skills |
 | [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time GitHub repo configuration — GitHub Issues, triage labels, docs layout | ↳ `skills/engineering/setup-matt-pocock-skills` | Requires a reachable GitHub remote and stops before writing when one is missing; uses GitHub Issues exclusively; keeps canonical triage labels, `AGENTS.md` when no agent file exists, and write-then-report behavior; model-invocable so `setup-git-repo` can invoke it |
+| [wayfinder](skills/wayfinder/) | Plan multi-session work as a map of decision tickets | ↳ `skills/engineering/wayfinder` | Persists every grilling-round exchange as an issue checkpoint so interrupted sessions can resume without the original chat transcript |
 | [to-spec](skills/to-spec/) | Synthesize the current conversation into a published spec | ↳ `skills/engineering/to-spec` | Structured HTML Companion review aid and explicit handoff to `/to-tickets` |
 | [to-tickets](skills/to-tickets/) | Break a spec into tracer-bullet tickets with blocking edges | ↳ `skills/engineering/to-tickets` | `Requirement:` spec-trace field, visual + behavior-walkthrough UI acceptance criteria, cross-phase change propagation, HTML plan companion |
 | [implement](skills/implement/) | Implement one ticket at a time with TDD, code review, commit, and a review-ready PR | ↳ `skills/engineering/implement` | No-fallback hard gate, suggest-don't-auto-apply, version-upgrade test cleanup, visual + end-to-end UI checks with close-out e2e pass, cross-phase change propagation, review-ready PR creation, local skill names |
@@ -58,7 +59,6 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | [research](skills/research/) | Investigate a question against primary sources, capture findings | ↳ `skills/engineering/research` |
 | [resolving-merge-conflicts](skills/resolving-merge-conflicts/) | Intent-traced merge/rebase conflict resolution | ↳ `skills/engineering/resolving-merge-conflicts` |
 | [triage](skills/triage/) | Move issues through the triage state machine | ↳ `skills/engineering/triage` |
-| [wayfinder](skills/wayfinder/) | Plan work too big for one session as a shared map of decision tickets | ↳ `skills/engineering/wayfinder` |
 | [wizard](skills/wizard/) | Interactive bash walkthroughs for procedures only a human can perform | ↳ `skills/engineering/wizard` |
 | [grilling](skills/grilling/) | Shared interview loop used by the grill skills | ↳ `skills/productivity/grilling` |
 | [grill-me](skills/grill-me/) | Deep interview on any plan or design decision | ↳ `skills/productivity/grill-me` |
