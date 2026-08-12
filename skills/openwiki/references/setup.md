@@ -31,11 +31,14 @@ The `<repo>.wiki.git` remote only comes into existence once the wiki has a saved
 
 1. Open the repository **Settings** page and enable **Wikis** under **Features**.
 2. Open the repository **Wiki** tab, create `Home` with the temporary body `Initializing OpenWiki publication.`, and save it.
-3. Verify that the wiki remote resolves, then clone it as a sibling of the main repository:
+3. Verify that the Wiki remote resolves, then ignore and clone it inside the main repository:
 
    ```powershell
-   git clone https://github.com/<owner>/<repo>.wiki.git ..\<repo>.wiki
+   Add-Content .gitignore "/wiki/"
+   git clone https://github.com/<owner>/<repo>.wiki.git wiki
    ```
+
+   If `/wiki/` is already ignored, leave `.gitignore` unchanged. If `wiki/` already exists, verify that it is the correct Wiki clone; stop and report a path collision instead of replacing any existing content.
 
 Use the browser's existing GitHub session. Stop only for user-only authentication or confirmation, missing repository administration permission, or a plan that does not expose Wikis; report that concrete blocker. Once the clone succeeds, continue the publication flow in the same run.
 

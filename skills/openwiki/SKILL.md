@@ -20,7 +20,7 @@ OpenWiki is a CLI that generates and maintains agent-facing repository documenta
 | `openwiki/` in the repo | Generated docs; `quickstart.md` is the entry page; `INSTRUCTIONS.md` is the generation prompt, never published |
 | `<!-- OPENWIKI:START/END -->` blocks in `AGENTS.md` / `CLAUDE.md` | Rewritten by OpenWiki on each code run; leave their contents to OpenWiki |
 | `~/.openwiki/.env` | Provider and model selection plus ChatGPT OAuth tokens |
-| Sibling `..\<repo>.wiki` clone | Git repository backing the GitHub Wiki tab |
+| `wiki/` in the repo (ignored by the main repo) | Separate git repository backing the GitHub Wiki tab |
 | `~/.openwiki/wiki` | Personal-mode wiki — unrelated to repository docs |
 
 Treat every value in `~/.openwiki/.env` as a password, the refresh token above all: if you must inspect the file, read variable names only — never print, copy, or commit a value.
@@ -38,15 +38,15 @@ Done when every touched file is explained by the review and no OpenWiki CI workf
 
 ## Publish to the GitHub Wiki
 
-The GitHub Wiki is a separate git repository, cloned as a **sibling** at `..\<repo>.wiki` (clone missing or wiki not yet created → [references/setup.md](references/setup.md)). The Wiki **flattens** all pages into one namespace, so publishing is copy + rename + link rewrite.
+The GitHub Wiki is a separate git repository, cloned inside the main repository at `wiki/` (clone missing or wiki not yet created → [references/setup.md](references/setup.md)). Keep `/wiki/` in the main repository's `.gitignore` so the nested Wiki repository never appears in its status. The Wiki **flattens** all pages into one namespace, so publishing is copy + rename + link rewrite.
 
-Before a first publication, check whether the sibling clone exists. If it does not, check whether the `<repo>.wiki.git` remote is available. GitHub creates that remote only after Wikis are enabled and the first page is saved.
+Before publication, check whether `wiki/` is the Wiki clone. If `wiki/` exists but is not that clone, stop and report the path collision rather than replacing its contents. If `wiki/` is absent but the legacy sibling `../<repo>.wiki` exists, verify that its `origin` is this repository's Wiki, add `/wiki/` to the main repository's `.gitignore`, and move the clone to `wiki/`; leave any mismatched sibling untouched and report it. When neither location has the clone, check whether the `<repo>.wiki.git` remote is available. GitHub creates the Wiki remote only after Wikis are enabled and the first page is saved.
 
 When the remote is unavailable, invoke the `browser-harness` skill and initialize it through GitHub's web UI:
 
 1. Open the repository **Settings** page and enable **Wikis** under **Features**.
 2. Open the repository **Wiki** tab, create the first page as `Home`, give it the temporary body `Initializing OpenWiki publication.`, and save it.
-3. Verify that `<repo>.wiki.git` now resolves, then clone it as the sibling `..\<repo>.wiki` and continue publication in the same run.
+3. Verify that `<repo>.wiki.git` now resolves, add `/wiki/` to the main repository's `.gitignore`, clone the Wiki into `wiki/`, and continue publication in the same run.
 
 Use the logged-in browser session according to the browser-harness login rules. Stop only when GitHub requires user-only authentication or confirmation, the authenticated account lacks repository administration permission, or the repository/account plan does not expose Wikis. Report the exact blocker and preserve the generated docs for a later retry. If the saved first page exists but the remote remains unavailable, investigate Wiki enablement, repository access, and Git credentials as separate causes.
 
@@ -66,11 +66,11 @@ Done when every page under `openwiki/` except `INSTRUCTIONS.md` has exactly one 
 Validate and push from the clone (the wiki's default branch — the one GitHub renders — is typically `master`):
 
 ```powershell
-git -C ..\<repo>.wiki status --short
-git -C ..\<repo>.wiki diff --check
-git -C ..\<repo>.wiki add --all
-git -C ..\<repo>.wiki commit -m "docs: sync OpenWiki pages"
-git -C ..\<repo>.wiki push origin master
+git -C wiki status --short
+git -C wiki diff --check
+git -C wiki add --all
+git -C wiki commit -m "docs: sync OpenWiki pages"
+git -C wiki push origin master
 ```
 
 Done when the clone's local `HEAD`, upstream, and remote branch agree, and the Wiki tab renders `Home` with the sidebar.

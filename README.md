@@ -11,7 +11,7 @@ My personal collection of AI agent skills, synced across devices.
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
 | [pr-codex-review](skills/pr-codex-review/) | Run a convergent, user-invoked Codex review loop — use custom prompts to front-load findings, verify fixes, escalate unstable designs, merge a clean head, and remove the merged branch |
-| [openwiki](skills/openwiki/) | Maintain OpenWiki repository docs locally on the ChatGPT-subscription login and publish them to the native GitHub Wiki, initializing it through browser-harness when needed |
+| [openwiki](skills/openwiki/) | Maintain OpenWiki repository docs locally and publish them through an ignored `wiki/` clone inside the project, initializing the native GitHub Wiki through browser-harness when needed |
 | [setup-git-repo](skills/setup-git-repo/) | Bootstrap a local and remote GitHub repository, add the engineering-skills config, and publish OpenWiki docs to an initialized native Wiki |
 
 ## Vendor Skills (customized)
