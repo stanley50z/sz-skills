@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 Implement the work described by the user in the spec or tickets.
 
+Before coding, create and switch to a feature branch from the latest `main`.
+
 Work one ticket at a time from the frontier (tickets whose blockers are all done). Read the ticket's **Requirement** before coding.
 
 Use `/tdd` where possible, at pre-agreed seams. For UI layout, styling, responsive behavior, visual hierarchy, and interaction states, use the visual RED/GREEN checks from the tdd skill — no component tests, DOM assertions, or snapshot tests. UI behavior additionally gets the tdd skill's live browser walkthrough: click the actual buttons, enter input, and review the result.
