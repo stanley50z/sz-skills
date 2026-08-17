@@ -1,21 +1,44 @@
-For plain local `file://` HTML pages, prefer Chrome DevTools MCP for visual inspection, screenshots, and simulated button/key presses.
+## Working Values
 
-For other browser verification and control tasks, prefer tools in this order:
+Build complex things as simple as possible. Understand the real constraint, then fight for the smallest change that makes the correct behavior unsurprising — measure twice, cut once; YAGNI. Fight scope creep: honor the task's intent in a minimal, realistic fashion.
 
-1. Codex Chrome Plugin, when the harness is Codex and the plugin is available.
-2. Chrome DevTools MCP connected to the existing user profile and session.
-3. Chrome DevTools MCP in a new session/window.
+## General Coding Preferences
 
-After DevTools MCP work, close the browser only if MCP launched it with its own isolated profile or `user-data-dir`. If it attached to an existing browser (`browser-url`, `ws-endpoint`, `autoConnect`, or a normal profile), close only task tabs.
+- Type safety is useful; lean on it.
+- Propose bold ideas when they can meaningfully benefit the work.
+- Be careful with destructive actions the user didn't explicitly request.
+- Keep tests focused: regression tests for real bugs and real behavior, not endless smoke tests.
+- Comment how a function or class is used, above its definition — not every line — and update comments when the code changes.
 
-## File Links
+## TypeScript
 
-When operating inside T3 Code, make file references clickable with Markdown links rather than wrapping them in backticks.
+- Write idiomatic TypeScript; if it reads like a Python dev wrote it, rewrite it.
+- Prefer inferred types over annotations. Use `any` only when no reasonably typed alternative exists or the user asks for it.
+- Skip one-liner wrappers that exist only to cast.
 
-- For files in the thread workspace whose path contains only ASCII characters, prefer a workspace-relative destination: `[app.ts](src/app.ts:12:3)`.
-- For an absolute Windows destination, use a leading slash, the drive letter, and forward slashes: `[AGENTS.md](/C:/Users/name/project/AGENTS.md:12:3)`. For POSIX, use the normal absolute path: `[AGENTS.md](/home/name/project/AGENTS.md:12:3)`.
-- Percent-encode spaces, non-ASCII characters such as Chinese, and other URL-sensitive characters in the Markdown destination. For paths containing Chinese, use the encoded absolute form because T3 Code's workspace-relative file-link matcher accepts only ASCII path segments.
-- Append `:line` or `:line:column` when a source position is useful.
+## Questions Are Read-Only
+
+When the user asks how something works or why, investigate and answer. Start editing only when the user requests a change.
+
+## Match Ceremony to the Task
+
+Work a single agent finishes in one pass gets a single agent. Delegate to sub-agents only for breadth or adversarial review.
+
+## Visual and Design Work
+
+- Mock first: explore directions in throwaway mocks, and touch real components only after the user picks one.
+- Use strong contrast; follow the project's existing design tokens.
+
+## File links
+
+Only link files inside the current thread's project. Use absolute paths, forward slashes, and optional `:line:column`:
+
+- Windows: `[app.ts](/C:/Users/name/project/src/app.ts:12:3)`
+- macOS/Linux: `[app.ts](/Users/name/project/src/app.ts:12:3)`
+
+Percent-encode special characters in link targets.
+
+For files outside the current project—even in another T3 project—print the native absolute path as plain text without backticks.
 
 ## Question Dialogs and Hidden Text
 
@@ -26,15 +49,15 @@ Harnesses like T3 Code collapse assistant text that precedes a tool call into th
 
 ## Web Search
 
-When unsure about a fact involving real-world products, use web search before answering.
+When unsure about a fact involving real-world products/news/repositories, use web search before answering.
 
 ## Localhost Ports
 
-Before picking a localhost port, read `C:\Users\13982\LOCALHOST_PORTS.md` (create it if missing). Don't reuse ports assigned to other projects unless verified safe. Register any new fixed port there in the same change.
+Before picking a localhost port, read `~\LOCALHOST_PORTS.md` (create it if missing). Don't reuse ports assigned to other projects unless verified safe. Register any new fixed port there in the same change.
 
-## Scripting Defaults
-
-Scripts default to Python unless a language is specified. Write cross-platform code (paths, shell invocation, filesystem behavior, environment).
+## Utility Scripts
+For any project that needs to launch sth, make a start.py script to do it.
+Utility scripts default to Python unless a language is specified. Write cross-platform code (paths, shell invocation, filesystem behavior, environment).
 
 ## Shell Commands on Windows
 
