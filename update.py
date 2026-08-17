@@ -171,6 +171,7 @@ PATCHED = {
     "implement",
     "prototype",
     "wayfinder",
+    "grilling",
     "ui-styling",
 }
 

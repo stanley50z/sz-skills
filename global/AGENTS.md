@@ -6,14 +6,14 @@ Build complex things as simple as possible. Understand the real constraint, then
 
 - Type safety is useful; lean on it.
 - Propose bold ideas when they can meaningfully benefit the work.
-- Be careful with destructive actions the user didn't explicitly request.
-- Keep tests focused: regression tests for real bugs and real behavior, not endless smoke tests.
+- Limit destructive actions to targets explicitly authorized by the user.
+- Write focused regression tests for real behavior.
 - Comment how a function or class is used, above its definition — not every line — and update comments when the code changes.
 
 ## TypeScript
 
 - Write idiomatic TypeScript; if it reads like a Python dev wrote it, rewrite it.
-- Prefer inferred types over annotations. Use `any` only when no reasonably typed alternative exists or the user asks for it.
+- Prefer inferred types over annotations. Use `any` only when no reasonable typed alternative exists or the user requests it.
 - Skip one-liner wrappers that exist only to cast.
 
 ## Questions Are Read-Only
@@ -38,14 +38,11 @@ Only link files inside the current thread's project. Use absolute paths, forward
 
 Percent-encode special characters in link targets.
 
-For files outside the current project—even in another T3 project—print the native absolute path as plain text without backticks.
+For files outside the current project, print the native absolute path as plain text.
 
 ## Question Dialogs and Hidden Text
 
-Harnesses like T3 Code collapse assistant text that precedes a tool call into the Work Log, so the user never sees it. Never ask a question (via AskUserQuestion or any dialog tool) that refers to content living only in that hidden text — e.g. "does this summary match your understanding?" when the summary itself is invisible.
-
-- Make every question dialog self-contained: put the summary, plan, or recommendation being confirmed into the question text and option descriptions.
-- If the content is too long to fit in the dialog, don't use the dialog tool: end the turn with the content plus the question as plain visible text, and wait for the reply.
+Give context in plain text before asking a question.
 
 ## Web Search
 
@@ -53,11 +50,11 @@ When unsure about a fact involving real-world products/news/repositories, use we
 
 ## Localhost Ports
 
-Before picking a localhost port, read `~\LOCALHOST_PORTS.md` (create it if missing). Don't reuse ports assigned to other projects unless verified safe. Register any new fixed port there in the same change.
+Before picking a localhost port, read `~\LOCALHOST_PORTS.md` and create it if missing. Choose an unassigned port, verify it is available, and register any new fixed port there in the same change.
 
 ## Utility Scripts
-For any project that needs to launch sth, make a start.py script to do it.
-Utility scripts default to Python unless a language is specified. Write cross-platform code (paths, shell invocation, filesystem behavior, environment).
+
+For projects requiring a repeatable launch command, provide a cross-platform `start.py`. Default utility scripts to Python unless another language is specified.
 
 ## Shell Commands on Windows
 
@@ -75,12 +72,12 @@ In PowerShell, use explicit UTF-8 when reading, writing, or verifying anything t
 
 ## Notes and Memory
 
-Record durable facts and decisions directly in the project's relevant doc files and/or agent files (AGENTS.md / CLAUDE.md), DO NOT USE memory.
+Record durable facts and decisions in the relevant project or agent documentation.
 
-## Incidental Fixes
+## Scope
 
-When you notice a small issue or flaw while working on the main task, fix it in passing — don't ask whether to fix it, just do it.
+Keep changes within the user's requested scope.
 
 ## Installing Dependencies
 
-When you need a library or tool (e.g. openpyxl), just install it with whatever tool you know best — don't take detours.
+Install required dependencies with the project's preferred package manager. When the project has no preference, use pnpm, then Bun, then other appropriate package managers.

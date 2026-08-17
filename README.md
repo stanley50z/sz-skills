@@ -10,7 +10,6 @@ My personal collection of AI agent skills, synced across devices.
 | [global-project-preferences](skills/global-project-preferences/) | Default tech stack preferences for new projects, extensions, scripts, and other greenfield work |
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
 | [commit](skills/commit/) | Git commit workflow — stages files, drafts message, and runs git commit |
-| [pr-codex-review](skills/pr-codex-review/) | Run a convergent, user-invoked Codex review loop — use custom prompts to front-load findings, verify fixes, escalate unstable designs, merge a clean head, and remove the merged branch |
 | [openwiki](skills/openwiki/) | Maintain OpenWiki repository docs locally and publish them through an ignored `wiki/` clone inside the project, initializing the native GitHub Wiki through browser-harness when needed |
 | [setup-git-repo](skills/setup-git-repo/) | Bootstrap a local and remote GitHub repository, add the engineering-skills config, and publish OpenWiki docs to an initialized native Wiki |
 
@@ -29,6 +28,7 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | [tdd](skills/tdd/) | Test-driven development with seam-based red-green loops | ↳ `skills/engineering/tdd` | Reapplies local rules: command timeouts, user-requirement hierarchy, required end-to-end pass (real-data full run, live browser walkthrough for web apps) on top of visual UI checks, no silent fallbacks, stale v1/v2 test cleanup, and review-stage refactoring (renamed from local `test-driven-development` to the upstream name) |
 | [prototype](skills/prototype/) | Throwaway logic/UI prototypes to answer design questions | ↳ `skills/engineering/prototype` | UI prototype dev server binds to all interfaces so the preview is reachable over Tailscale as well as localhost |
 | [handoff](skills/handoff/) | Compact the current conversation into a handoff document for another agent to pick up | ↳ `skills/productivity/handoff` | Saves the handoff doc to the workspace root instead of the OS temp dir, and stays model-invocable |
+| [grilling](skills/grilling/) | Shared interview loop used by the grill skills | ↳ `skills/productivity/grilling` | Bounds the design tree to requested behavior; excludes speculative recovery and preventable concurrency branches |
 | **[ui-ux-pro-max suite](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** | | | Harness-compatible plain skill names |
 | [slides](skills/slides/) | Slide creation — copywriting formulas, layout patterns, strategies | ↳ `.claude/skills/slides` | Renames invalid upstream skill name `ckm:slides` to `slides` for harness compatibility |
 | [banner-design](skills/banner-design/) | Banner design with sizes, styles, and layout references | ↳ `.claude/skills/banner-design` | Renames invalid upstream skill name `ckm:banner-design` to `banner-design` |
@@ -60,7 +60,6 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | [resolving-merge-conflicts](skills/resolving-merge-conflicts/) | Intent-traced merge/rebase conflict resolution | ↳ `skills/engineering/resolving-merge-conflicts` |
 | [triage](skills/triage/) | Move issues through the triage state machine | ↳ `skills/engineering/triage` |
 | [wizard](skills/wizard/) | Interactive bash walkthroughs for procedures only a human can perform | ↳ `skills/engineering/wizard` |
-| [grilling](skills/grilling/) | Shared interview loop used by the grill skills | ↳ `skills/productivity/grilling` |
 | [grill-me](skills/grill-me/) | Deep interview on any plan or design decision | ↳ `skills/productivity/grill-me` |
 | [to-questionnaire](skills/to-questionnaire/) | Turn an unanswerable decision into a questionnaire for the person who can answer it | ↳ `skills/productivity/to-questionnaire` |
 | [wait-what](skills/wait-what/) | One-word corrective that re-pitches a message that didn't land | ↳ `skills/productivity/wait-what` |

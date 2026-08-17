@@ -1,6 +1,6 @@
 ---
 name: setup-git-repo
-description: Bootstrap a local and remote GitHub repository with the standard repo tooling (engineering-skills config, OpenWiki docs). Use when the user asks to init a git repo or set up a new repository.
+description: Use when the user asks to init a git repo or set up a new repository — bootstraps the local and remote GitHub repo with the standard tooling (engineering-skills config, OpenWiki docs).
 ---
 
 # Setup Git repo

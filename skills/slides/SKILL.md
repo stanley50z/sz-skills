@@ -1,6 +1,6 @@
 ---
 name: slides
-description: Create strategic HTML presentations with Chart.js, design tokens, responsive layouts, copywriting formulas, and contextual slide strategies.
+description: Use when the user asks for a presentation, slide deck, slideshow, or slides — builds strategic HTML presentations with Chart.js and design tokens.
 argument-hint: "[topic] [slide-count]"
 metadata:
   author: claudekit

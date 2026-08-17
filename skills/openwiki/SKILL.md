@@ -1,6 +1,6 @@
 ---
 name: openwiki
-description: Generate and maintain OpenWiki repository documentation (the openwiki/ directory) and publish it to the repo's native GitHub Wiki. Use when the user asks to set up OpenWiki in a repository, update the generated docs, or publish them to the GitHub Wiki — or when work touches the openwiki CLI, an openwiki/ directory, or an OPENWIKI block in AGENTS.md/CLAUDE.md.
+description: Use when the user asks to set up OpenWiki in a repository, update the generated openwiki/ docs, or publish them to the GitHub Wiki — or when work touches the openwiki CLI, an openwiki/ directory, or an OPENWIKI block in AGENTS.md/CLAUDE.md.
 ---
 
 # OpenWiki
