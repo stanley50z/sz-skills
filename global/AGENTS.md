@@ -29,16 +29,9 @@ Work a single agent finishes in one pass gets a single agent. Delegate to sub-ag
 - Mock first: explore directions in throwaway mocks, and touch real components only after the user picks one.
 - Use strong contrast; follow the project's existing design tokens.
 
-## File links
+## File handoff
 
-Only link files inside the current thread's project. Use absolute paths, forward slashes, and optional `:line:column`:
-
-- Windows: `[app.ts](/C:/Users/name/project/src/app.ts:12:3)`
-- macOS/Linux: `[app.ts](/Users/name/project/src/app.ts:12:3)`
-
-Percent-encode special characters in link targets.
-
-For files outside the current project, print the native absolute path as plain text.
+In T3 Code, use `t3code-file-links` whenever returning or displaying a local file. In other harnesses, use that harness's native file-link syntax and include the native absolute path when the user needs a copyable location.
 
 ## Question Dialogs and Hidden Text
 
