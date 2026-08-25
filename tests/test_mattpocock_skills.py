@@ -5,6 +5,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 TO_SPEC = REPO_ROOT / "skills" / "to-spec" / "SKILL.md"
 TO_TICKETS = REPO_ROOT / "skills" / "to-tickets" / "SKILL.md"
+IMPLEMENT = REPO_ROOT / "skills" / "implement" / "SKILL.md"
 RATIONALE = REPO_ROOT / "docs" / "mattpocock-customization-rationale.md"
 
 
@@ -166,6 +167,14 @@ class MattpocockMigrationTests(unittest.TestCase):
         source = (REPO_ROOT / "skills" / "tdd" / "SKILL.md").read_text(encoding="utf-8")
 
         self.assertIn("name: tdd", source)
+
+    def test_implement_branches_from_the_repository_default_branch(self):
+        source = IMPLEMENT.read_text(encoding="utf-8")
+
+        self.assertIn("repository's default branch", source)
+        self.assertIn("latest remote tip", source)
+        self.assertIn("targets that same default branch explicitly", source)
+        self.assertNotIn("latest `main`", source)
 
 
 if __name__ == "__main__":

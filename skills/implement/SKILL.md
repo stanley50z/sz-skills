@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Implement the work described by the user in the spec or tickets.
 
-Before coding, create and switch to a feature branch from the latest `main`.
+Before coding, resolve the repository's default branch from Git or hosting metadata. For a fork, use the default branch of the repository that will receive the PR. Fetch it, then create and switch to a feature branch from its latest remote tip. Keep the resolved branch name for close-out.
 
 Work one ticket at a time from the frontier (tickets whose blockers are all done). Read the ticket's **Requirement** before coding.
 
@@ -39,5 +39,5 @@ Once done:
 
 1. Use `/code-review` to review the work and address what it finds.
 2. Commit to the current branch with the commit skill.
-3. Push the feature branch and create a ready-to-review pull request. The PR must not be a draft; give it a clear title and a body that summarizes the change, links the relevant spec or tickets, and lists the validation performed.
+3. Push the feature branch and create a ready-to-review pull request that targets that same default branch explicitly. The PR must not be a draft; give it a clear title and a body that summarizes the change, links the relevant spec or tickets, and lists the validation performed.
 4. Ask the user to test the feature themselves before wrapping up — automated tests passing does not mean it works as they expected.

@@ -165,6 +165,14 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `tdd/SKILL.md`, `implement/SKILL.md`, `update.py`, `setup.py`
 
+## 16. Default-Branch-Aware Implementation
+
+**Problem:** `implement` assumed every repository used `main`, so repositories and forks with another configured default branch could start feature work from the wrong base and open a PR against the wrong target.
+
+**Solution:** Resolve the PR target repository's configured default branch from Git or hosting metadata, branch from its latest remote tip, and explicitly reuse that branch as the PR base.
+
+**Files changed:** `implement/SKILL.md`
+
 ## Retired Customizations
 
 - **User Requirements vs Agent Design Decisions / `[USER-REQ]` tagging** (removed 2026-07): the requirement-source split was designed for the superpowers pipeline, where specs passed through several agent hands. The Pocock cycle front-loads user intent through the grilling interview and keeps the user in the loop at each stage (seam check, ticket quiz, close-out testing), so the tag machinery added ceremony without pulling its weight. Cross-phase change propagation (#7) and the ticket `Requirement:` trace (#1) carry the surviving intent.
