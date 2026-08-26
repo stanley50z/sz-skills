@@ -41,6 +41,16 @@ Give context in plain text before asking a question.
 
 When unsure about a fact involving real-world products/news/repositories, use web search before answering.
 
+## Specific GitHub Repository Questions
+
+When the user asks a question about a specific third-party GitHub repository, clone it under `~\github repo ref\` and inspect its source code directly before answering. Treat the code as the primary evidence instead of relying on documentation or web search. This workflow applies only when the repository itself is the subject of the user's question; brainstorming about repositories or encountering one during web research does not trigger it.
+
+After every answer about the cloned repository, report that repository folder's current size and ask whether to keep or delete it. If the user continues asking about the repository without answering, answer the new question and repeat the size and retention question. Delete the clone only with explicit user authorization.
+
+## Tool Boundaries
+
+Never use computer use unless the user explicitly requests it.
+
 ## Localhost Ports
 
 Before picking a localhost port, read `~\LOCALHOST_PORTS.md` and create it if missing. Choose an unassigned port, verify it is available, and register any new fixed port there in the same change.
@@ -58,6 +68,7 @@ Commands execute via `powershell.exe -Command "<string>"` (Windows PowerShell 5.
 - For multiline Python or scripts: write the code to a temp file with the file-write tool, run `python tempfile.py`, then delete it. Do NOT pipe multiline code via stdin.
 - For one-liners: `python -c "..."` with double quotes outside and single quotes inside.
 - On a parse or quoting error, switch to the temp-file approach immediately — don't retry with different quoting.
+- When a command requires administrator privileges, launch an elevated script and proceed on the assumption that the user will approve the UAC prompt.
 
 ## Encoding on Windows
 
