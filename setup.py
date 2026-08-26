@@ -11,6 +11,7 @@ required). On macOS / Linux: creates symlinks. Codex-readable roots are copied
 instead of linked so Codex does not namespace the resolved repo path.
 """
 
+import argparse
 import os
 import platform
 import json
@@ -194,6 +195,23 @@ def _toml_literal(value: str) -> str:
 
 def _path_key(path: Path) -> str:
     return os.path.normcase(str(path.resolve(strict=False)))
+
+
+def resolve_github_username(explicit: str | None = None) -> str | None:
+    """Resolve the GitHub username to include in installed instructions."""
+    configured = explicit or os.environ.get("SZ_GITHUB_USERNAME")
+    if configured:
+        return configured
+    try:
+        result = subprocess.run(
+            ["gh", "api", "user", "--jq", ".login"],
+            capture_output=True,
+            check=True,
+            text=True,
+        )
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return None
+    return result.stdout.strip() or None
 
 
 def _replace_or_append_toml_table(text: str, header: str, body_lines: list[str]) -> str:
@@ -505,14 +523,32 @@ def remove_retired_skills(
 
 def install_global_instructions(
     links: list[tuple[Path, Path]] = GLOBAL_INSTRUCTION_LINKS,
+    *,
+    github_username: str | None = None,
 ) -> int:
-    """Link repo-managed global instruction files into harness locations."""
+    """Install repo-managed global instructions with local user identity."""
     installed = 0
     for source, target in links:
         try:
-            make_file_link(source, target)
+            if source.name == "AGENTS.md":
+                identity = ""
+                if github_username:
+                    identity = (
+                        "## User Identity\n\n"
+                        f"- GitHub username: `{github_username}`.\n\n"
+                    )
+                target.parent.mkdir(parents=True, exist_ok=True)
+                _remove_existing_target(target)
+                target.write_text(
+                    identity + source.read_text(encoding="utf-8").lstrip(),
+                    encoding="utf-8",
+                )
+                relation = "<="
+            else:
+                make_file_link(source, target)
+                relation = "->"
             installed += 1
-            print(f"  {_green(f'{target} -> {source}')}")
+            print(f"  {_green(f'{target} {relation} {source}')}")
         except Exception as e:
             print(f"  {_red(f'FAILED: {target} — {e}')}")
     return installed
@@ -540,7 +576,14 @@ def install_git_hooks(
 
 # ── Main ─────────────────────────────────────────────────────────────────
 
-def main():
+def main(argv: list[str] | None = None):
+    parser = argparse.ArgumentParser(description="Install sz-skills into coding harnesses.")
+    parser.add_argument(
+        "--github-username",
+        help="GitHub username to add to the generated global agent instructions.",
+    )
+    args = parser.parse_args(argv)
+
     skills = discover_skills()
 
     if not skills:
@@ -553,8 +596,13 @@ def main():
 
     install_skills(skills)
 
-    print(f"\n{_cyan('Creating global instruction links')}")
-    install_global_instructions()
+    print(f"\n{_cyan('Installing global instructions')}")
+    github_username = resolve_github_username(args.github_username)
+    if github_username is None:
+        print(
+            f"  {_yellow('GitHub username unresolved; installing global instructions without a user identity.')}"
+        )
+    install_global_instructions(github_username=github_username)
 
     print(f"\n{_cyan('Syncing Codex hook plugin files')}")
     try:

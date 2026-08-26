@@ -25,6 +25,7 @@ from setup import (
     install_plugin_hooks,
     install_skills,
     remove_retired_skills,
+    resolve_github_username,
 )
 
 
@@ -115,8 +116,13 @@ def main() -> int:
     remove_retired_skills()
     installed_skills = install_selected_skills(selected)
 
-    print(f"\n{_cyan('Creating global instruction links')}")
-    installed_globals = install_global_instructions()
+    print(f"\n{_cyan('Installing global instructions')}")
+    github_username = resolve_github_username()
+    if github_username is None:
+        print(
+            f"  {_yellow('GitHub username unresolved; installing global instructions without a user identity.')}"
+        )
+    installed_globals = install_global_instructions(github_username=github_username)
 
     print(f"\n{_cyan('Enabling plugin hooks')}")
     install_plugin_hooks()

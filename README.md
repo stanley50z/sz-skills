@@ -84,7 +84,8 @@ cd ~/.sz-skills
 python setup.py
 ```
 
-`setup.py` installs every skill in this repo, links the repo-managed global instruction files under `global/`, and enables the local `sz-skills` plugin hooks for Codex and Claude Code.
+`setup.py` installs every skill in this repo, installs the repo-managed global instructions under `global/`, and enables the local `sz-skills` plugin hooks for Codex and Claude Code.
+It prepends the current user's GitHub username to the installed `~/.codex/AGENTS.md`. Pass `--github-username <name>` to set it explicitly, set `SZ_GITHUB_USERNAME`, or let setup read the authenticated account from `gh`. If none is available, setup installs the generic instructions and prints a warning.
 To choose specific skills from a terminal menu instead, run:
 
 ```sh
@@ -102,9 +103,9 @@ The Claude Code and Opencode targets use junctions (Windows) or symlinks (macOS/
 
 The script creates those directories if they do not exist yet. For each skill in this repo, it adds the skill if missing and replaces the target only when a skill with the same name already exists. Retired repo-managed skill names are removed; unrelated skills in those directories are left alone.
 
-`setup.py` also links:
+`setup.py` also installs:
 
-- `global/AGENTS.md` -> `~/.codex/AGENTS.md`
+- `global/AGENTS.md` => generated `~/.codex/AGENTS.md`, with a local GitHub identity header when resolved
 - `global/CLAUDE.md` -> `~/.claude/CLAUDE.md`
 
 It also registers local `sz-skills` plugin hooks:
