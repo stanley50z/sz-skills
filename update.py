@@ -35,6 +35,9 @@ UPSTREAM = {
     "browser-harness": [
         {"repo": "browser-use/browser-harness", "path": "", "only": ["SKILL.md"]},
     ],
+    "unslop": [
+        {"repo": "cursor/plugins", "path": "pstack/skills/unslop"},
+    ],
     "code-review": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/code-review"},
     ],

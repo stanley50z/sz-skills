@@ -49,6 +49,7 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | Skill | Description | Source |
 |---|---|---|
 | [browser-harness](skills/browser-harness/) | Control local or remote browsers through Browser Harness using CDP | [browser-use/browser-harness](https://github.com/browser-use/browser-harness/blob/main/SKILL.md) |
+| [unslop](skills/unslop/) | Cut AI tells from writing and add a more specific human voice | [cursor/plugins pstack by Lauren Tan](https://github.com/cursor/plugins/tree/main/pstack/skills/unslop) |
 | **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | |
 | [ask-matt](skills/ask-matt/) | Router for picking the right skill/workflow for a request | ↳ `skills/engineering/ask-matt` |
 | [code-review](skills/code-review/) | Review diffs against repo standards and originating specs | ↳ `skills/engineering/code-review` |
