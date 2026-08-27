@@ -57,7 +57,7 @@ Before picking a localhost port, read `~\LOCALHOST_PORTS.md` and create it if mi
 
 ## Utility Scripts
 
-For projects requiring a repeatable launch command, provide cross-platform `start.py` and `stop.py` scripts. Default utility scripts to Python unless another language is specified.
+For projects requiring a repeatable launch command, provide cross-platform `start.py` and `stop.py` scripts. Both scripts must run without opening a terminal window, and `start.py` must leave long-running processes in the background. Default utility scripts to Python unless another language is specified.
 
 ## Shell Commands on Windows
 
