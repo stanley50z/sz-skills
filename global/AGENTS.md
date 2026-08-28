@@ -41,6 +41,12 @@ Give context in plain text before asking a question.
 
 When unsure about a fact involving real-world products/news/repositories, use web search before answering.
 
+## Browser Use
+
+For browser exploration, automation, scraping, testing, or site/app interaction, invoke the `browser-harness` skill.
+
+After browser exploration or testing, close every browser tab opened for the task.
+
 ## Specific GitHub Repository Questions
 
 When the user asks a question about a specific third-party GitHub repository, clone it under `~\github repo ref\` and inspect its source code directly before answering. Treat the code as the primary evidence instead of relying on documentation or web search. This workflow applies only when the repository itself is the subject of the user's question; brainstorming about repositories or encountering one during web research does not trigger it.
