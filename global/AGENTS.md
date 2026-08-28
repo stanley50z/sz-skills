@@ -28,6 +28,9 @@ Work a single agent finishes in one pass gets a single agent. Delegate to sub-ag
 
 - Mock first: explore directions in throwaway mocks, and touch real components only after the user picks one.
 - Use strong contrast; follow the project's existing design tokens.
+- Require every frontend UI element to convey unique information, clarify structure or state, or enable an action. Remove duplicated content.
+- Keep layouts as clean and compact as the content allows; whitespace is preferable to filler.
+- Use familiar icon-only controls when the symbol communicates the action unambiguously. Give each control an accessible name.
 
 ## File handoff
 
@@ -45,7 +48,7 @@ When unsure about a fact involving real-world products/news/repositories, use we
 
 For browser exploration, automation, scraping, testing, or site/app interaction, invoke the `browser-harness` skill.
 
-After browser exploration or testing, close every browser tab opened for the task.
+After browser exploration or testing, close every browser tab opened for the task and delete every temporary script created for it.
 
 ## Specific GitHub Repository Questions
 
