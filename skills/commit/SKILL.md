@@ -61,6 +61,7 @@ parse `@{}` as a hashtable.
 ## Content readiness
 
 Closure assumes the implementation, tests, and documentation are finished.
+Delete temporary files created during the task before staging.
 Before staging, correct an obvious mechanical mismatch in agent-facing files
 or project docs, and run a required setup/sync command when those files
 propagate elsewhere. When closure reveals substantive design work, code or test
