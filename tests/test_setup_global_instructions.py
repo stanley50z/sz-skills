@@ -9,6 +9,22 @@ import setup
 
 
 class GlobalInstructionInstallTests(unittest.TestCase):
+    def test_default_agents_file_targets_every_supported_harness(self):
+        agents_targets = {
+            target.relative_to(setup.HOME).as_posix()
+            for source, target in setup.GLOBAL_INSTRUCTION_LINKS
+            if source.name == "AGENTS.md"
+        }
+
+        self.assertEqual(
+            agents_targets,
+            {
+                ".codex/AGENTS.md",
+                ".pi/agent/AGENTS.md",
+                ".config/opencode/AGENTS.md",
+            },
+        )
+
     def test_explicit_github_username_takes_precedence(self):
         with patch.dict("os.environ", {"SZ_GITHUB_USERNAME": "environment-user"}):
             with patch.object(setup.subprocess, "run") as run:
@@ -63,6 +79,8 @@ class GlobalInstructionInstallTests(unittest.TestCase):
 
             links = [
                 (agents_source, target_root / ".codex" / "AGENTS.md"),
+                (agents_source, target_root / ".pi" / "agent" / "AGENTS.md"),
+                (agents_source, target_root / ".config" / "opencode" / "AGENTS.md"),
                 (claude_source, target_root / ".claude" / "CLAUDE.md"),
             ]
 
@@ -72,19 +90,24 @@ class GlobalInstructionInstallTests(unittest.TestCase):
                     github_username="octocat",
                 )
 
-            self.assertEqual(installed, 2)
-            self.assertEqual(
-                (target_root / ".codex" / "AGENTS.md").read_text(encoding="utf-8"),
-                "## User Identity\n\n- GitHub username: `octocat`.\n\nagents v1\n",
-            )
+            self.assertEqual(installed, 4)
+            expected_agents = "## User Identity\n\n- GitHub username: `octocat`.\n\nagents v1\n"
+            for target in (
+                target_root / ".codex" / "AGENTS.md",
+                target_root / ".pi" / "agent" / "AGENTS.md",
+                target_root / ".config" / "opencode" / "AGENTS.md",
+            ):
+                self.assertEqual(target.read_text(encoding="utf-8"), expected_agents)
             self.assertEqual((target_root / ".claude" / "CLAUDE.md").read_text(encoding="utf-8"), "@~/.codex/AGENTS.md\n")
 
             agents_source.write_text("agents v2\n", encoding="utf-8")
 
-            self.assertEqual(
-                (target_root / ".codex" / "AGENTS.md").read_text(encoding="utf-8"),
-                "## User Identity\n\n- GitHub username: `octocat`.\n\nagents v1\n",
-            )
+            for target in (
+                target_root / ".codex" / "AGENTS.md",
+                target_root / ".pi" / "agent" / "AGENTS.md",
+                target_root / ".config" / "opencode" / "AGENTS.md",
+            ):
+                self.assertEqual(target.read_text(encoding="utf-8"), expected_agents)
 
     def test_installs_generic_agents_file_when_identity_is_unresolved(self):
         with tempfile.TemporaryDirectory() as repo_tmp, tempfile.TemporaryDirectory() as home_tmp:

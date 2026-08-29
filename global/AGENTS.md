@@ -52,9 +52,9 @@ After browser exploration or testing, close every browser tab opened for the tas
 
 ## Specific GitHub Repository Questions
 
-When the user asks a question about a specific third-party GitHub repository, clone it under `~\github repo ref\` and inspect its source code directly before answering. Treat the code as the primary evidence instead of relying on documentation or web search. This workflow applies only when the repository itself is the subject of the user's question; brainstorming about repositories or encountering one during web research does not trigger it.
+When the user asks about a specific GitHub repository, compare its owner with the user's GitHub account. For a repository owned by the user, inspect the existing first-party checkout at its default location, `~\<repo-name>`; ask for its location if absent. For a repository owned by another account, reuse or clone it under `~\github repo ref\`. Treat the source code as the primary evidence instead of relying on documentation or web search. This workflow applies only when the repository itself is the subject of the user's question.
 
-After every answer about the cloned repository, report that repository folder's current size and ask whether to keep or delete it. If the user continues asking about the repository without answering, answer the new question and repeat the size and retention question. Delete the clone only with explicit user authorization.
+After every answer about a repository cloned under `~\github repo ref\`, report that repository folder's current size and ask whether to keep or delete it. If the user continues asking about the repository without answering, answer the new question and repeat the size and retention question. Delete the clone only with explicit user authorization.
 
 ## Tool Boundaries
 

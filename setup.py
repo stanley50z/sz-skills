@@ -79,6 +79,8 @@ MIRROR_TARGET_ROOTS = {
 # Global instruction files for harnesses that support user-level memory.
 GLOBAL_INSTRUCTION_LINKS = [
     (GLOBAL_DIR / "AGENTS.md", HOME / ".codex" / "AGENTS.md"),
+    (GLOBAL_DIR / "AGENTS.md", HOME / ".pi" / "agent" / "AGENTS.md"),
+    (GLOBAL_DIR / "AGENTS.md", HOME / ".config" / "opencode" / "AGENTS.md"),
     (GLOBAL_DIR / "CLAUDE.md", HOME / ".claude" / "CLAUDE.md"),
 ]
 
