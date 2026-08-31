@@ -173,6 +173,14 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `implement/SKILL.md`
 
+## 17. Non-executable specs and staged ticket publication
+
+**Problem:** `to-spec` applied `ready-for-agent` to a broad spec issue. Automode correctly treated that label as an implementation queue entry. `to-tickets` also exposed child tickets to the queue before their native parent and dependency relationships had been verified, which allowed a polling agent to claim blocked work during publication.
+
+**Solution:** Spec issues remain non-executable parents without a triage state. `to-tickets` creates implementation tickets without queue labels, wires and reads back the complete native graph, then applies `ready-for-agent` only after verification. A graph mismatch leaves every new ticket outside the queue.
+
+**Files changed:** `to-spec/SKILL.md`, `to-tickets/SKILL.md`
+
 ## Retired Customizations
 
 - **User Requirements vs Agent Design Decisions / `[USER-REQ]` tagging** (removed 2026-07): the requirement-source split was designed for the superpowers pipeline, where specs passed through several agent hands. The Pocock cycle front-loads user intent through the grilling interview and keeps the user in the loop at each stage (seam check, ticket quiz, close-out testing), so the tag machinery added ceremony without pulling its weight. Cross-phase change propagation (#7) and the ticket `Requirement:` trace (#1) carry the surviving intent.

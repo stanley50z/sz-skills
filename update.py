@@ -74,7 +74,7 @@ UPSTREAM = {
         {"repo": "mattpocock/skills", "path": "skills/engineering/setup-matt-pocock-skills"},
     ],
     # Replaces the superpowers `brainstorming` spec output (customized:
-    # structured HTML companion, handoff to to-tickets).
+    # non-executable spec parents, structured HTML companion, handoff to to-tickets).
     "to-spec": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/to-spec"},
     ],
@@ -110,8 +110,9 @@ UPSTREAM = {
     "improve-codebase-architecture": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/improve-codebase-architecture"},
     ],
-    # Replaces the superpowers `writing-plans` skill (customized: requirement
-    # trace field, visual UI criteria, change propagation, HTML plan companion).
+    # Replaces the superpowers `writing-plans` skill (customized: staged graph
+    # publication, requirement trace field, UI criteria, change propagation,
+    # HTML plan companion).
     "to-tickets": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/to-tickets"},
     ],

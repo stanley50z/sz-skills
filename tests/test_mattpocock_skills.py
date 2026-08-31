@@ -128,6 +128,25 @@ class MattpocockMigrationTests(unittest.TestCase):
         self.assertIn("ready-for-agent", to_tickets)
         self.assertNotIn("Default medium is local ticket files", to_tickets)
 
+    def test_spec_parents_stay_out_of_the_implementation_queue(self):
+        to_spec = TO_SPEC.read_text(encoding="utf-8")
+        to_tickets = TO_TICKETS.read_text(encoding="utf-8")
+
+        self.assertIn("spec parent is not an implementation ticket", to_spec)
+        self.assertNotIn("Apply the `ready-for-agent` triage label", to_spec)
+        self.assertIn("Remove `ready-for-agent` from the spec parent", to_tickets)
+
+    def test_ticket_publication_wires_and_verifies_the_graph_before_queueing(self):
+        source = TO_TICKETS.read_text(encoding="utf-8")
+
+        create = source.index("Create every implementation ticket without `ready-for-agent`")
+        wire = source.index("Wire the complete graph")
+        verify = source.index("Read the graph back")
+        queue = source.index("Apply `ready-for-agent`")
+        self.assertLess(create, wire)
+        self.assertLess(wire, verify)
+        self.assertLess(verify, queue)
+
     def test_setup_skill_is_non_interactive_with_standing_defaults(self):
         source = (
             REPO_ROOT / "skills" / "setup-matt-pocock-skills" / "SKILL.md"
