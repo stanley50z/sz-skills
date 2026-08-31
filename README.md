@@ -63,6 +63,7 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | [triage](skills/triage/) | Move issues through the triage state machine | ↳ `skills/engineering/triage` |
 | [wizard](skills/wizard/) | Interactive bash walkthroughs for procedures only a human can perform | ↳ `skills/engineering/wizard` |
 | [grill-me](skills/grill-me/) | Deep interview on any plan or design decision | ↳ `skills/productivity/grill-me` |
+| [teach](skills/teach/) | Teach one concept across sessions in a stateful learning workspace | ↳ `skills/productivity/teach` |
 | [to-questionnaire](skills/to-questionnaire/) | Turn an unanswerable decision into a questionnaire for the person who can answer it | ↳ `skills/productivity/to-questionnaire` |
 | [wait-what](skills/wait-what/) | One-word corrective that re-pitches a message that didn't land | ↳ `skills/productivity/wait-what` |
 | [writing-for-agents](skills/writing-for-agents/) | Reference for writing and editing skills — vocabulary and principles for predictable skills | ↳ `skills/productivity/writing-for-agents` |

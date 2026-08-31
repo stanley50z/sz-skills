@@ -94,6 +94,9 @@ UPSTREAM = {
     "grill-me": [
         {"repo": "mattpocock/skills", "path": "skills/productivity/grill-me"},
     ],
+    "teach": [
+        {"repo": "mattpocock/skills", "path": "skills/productivity/teach"},
+    ],
     # New in v1.2: questionnaire for the one person who can answer a decision.
     "to-questionnaire": [
         {"repo": "mattpocock/skills", "path": "skills/productivity/to-questionnaire"},

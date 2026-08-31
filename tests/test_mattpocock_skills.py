@@ -71,7 +71,7 @@ class MattpocockMigrationTests(unittest.TestCase):
         "ask-matt", "code-review", "codebase-design", "diagnosing-bugs",
         "domain-modeling", "grill-me", "grill-with-docs", "grilling",
         "implement", "improve-codebase-architecture", "prototype", "research",
-        "resolving-merge-conflicts", "setup-matt-pocock-skills", "tdd",
+        "resolving-merge-conflicts", "setup-matt-pocock-skills", "tdd", "teach",
         "to-questionnaire", "to-spec", "to-tickets", "triage", "wait-what",
         "wayfinder", "wizard",
     ]
