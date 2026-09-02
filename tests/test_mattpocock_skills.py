@@ -147,6 +147,14 @@ class MattpocockMigrationTests(unittest.TestCase):
         self.assertLess(wire, verify)
         self.assertLess(verify, queue)
 
+    def test_direct_single_ticket_requests_publish_without_review(self):
+        source = TO_TICKETS.read_text(encoding="utf-8")
+
+        self.assertIn("direct single-ticket request", source)
+        self.assertIn("Treat the invocation as approval", source)
+        self.assertIn("publish that ticket immediately and skip breakdown review", source)
+        self.assertIn("any proposal producing multiple tickets", source)
+
     def test_setup_skill_is_non_interactive_with_standing_defaults(self):
         source = (
             REPO_ROOT / "skills" / "setup-matt-pocock-skills" / "SKILL.md"

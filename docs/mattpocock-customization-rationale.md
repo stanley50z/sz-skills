@@ -189,6 +189,14 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `implement/SKILL.md`
 
+## 19. Direct single-ticket publication
+
+**Problem:** A direct, self-contained request invoked with `/to-tickets` already fixes the ticket granularity and has no dependency graph to review. Asking the user to approve that one-ticket breakdown adds ceremony without resolving a decision.
+
+**Solution:** Treat the invocation as approval when the request clearly maps to one complete ticket with no blockers, and publish it immediately. The review quiz remains for specs, plans, multi-requirement conversations, and multi-ticket breakdowns; ambiguity that prevents a complete ticket still triggers clarification.
+
+**Files changed:** `to-tickets/SKILL.md`
+
 ## Retired Customizations
 
 - **User Requirements vs Agent Design Decisions / `[USER-REQ]` tagging** (removed 2026-07): the requirement-source split was designed for the superpowers pipeline, where specs passed through several agent hands. The Pocock cycle front-loads user intent through the grilling interview and keeps the user in the loop at each stage (seam check, ticket quiz, close-out testing), so the tag machinery added ceremony without pulling its weight. Cross-phase change propagation (#7) and the ticket `Requirement:` trace (#1) carry the surviving intent.

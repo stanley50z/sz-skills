@@ -41,9 +41,13 @@ Give each ticket its **blocking edges** — the other tickets that must complete
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change — rename a column, retype a shared symbol — whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket — green is promised only there.
 
-### 4. Quiz the user
+### 4. Review the breakdown when there is one
 
-Present the proposed breakdown as a numbered list. For each ticket, show:
+First verify that every requirement maps to at least one ticket. None may be silently dropped.
+
+A **direct single-ticket request** is a self-contained request supplied with this skill invocation that clearly maps to one ticket with no blocking edges. Treat the invocation as approval: publish that ticket immediately and skip breakdown review. Scope or acceptance-criteria ambiguity that prevents a complete ticket is the only reason to ask a clarifying question.
+
+For specs, plans, conversations with multiple requirements, or any proposal producing multiple tickets, present the breakdown as a numbered list. For each ticket, show:
 
 - **Title**: short descriptive name
 - **Blocked by**: which other tickets (if any) must complete first
@@ -55,13 +59,11 @@ Ask the user:
 - Are the blocking edges correct — does each ticket only depend on tickets that genuinely gate it?
 - Should any tickets be merged or split further?
 
-Also verify yourself: does every requirement in the spec map to at least one ticket? None may be silently dropped.
-
 Iterate until the user approves the breakdown.
 
 ### 5. Publish the tickets to the configured tracker
 
-Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock-skills` configured. The tickets stay the same; only the blocking representation changes.
+Publish the direct ticket or approved breakdown. **How** depends on the tracker `/setup-matt-pocock-skills` configured. The tickets stay the same; only the blocking representation changes.
 
 - **Local files**: write one file per ticket under the local tracker's per-ticket path (see `docs/agents/issue-tracker.md`), numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below. Write one ticket per file.
 - **A real issue tracker (GitHub, Linear, and similar)**: publish in the staged sequence below. The graph must become visible before any ticket enters an automated implementation queue.

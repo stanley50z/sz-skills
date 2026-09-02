@@ -113,9 +113,9 @@ UPSTREAM = {
     "improve-codebase-architecture": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/improve-codebase-architecture"},
     ],
-    # Replaces the superpowers `writing-plans` skill (customized: staged graph
-    # publication, requirement trace field, UI criteria, change propagation,
-    # HTML plan companion).
+    # Replaces the superpowers `writing-plans` skill (customized: direct single-ticket
+    # publication, staged graph publication, requirement trace field, UI criteria,
+    # change propagation, HTML plan companion).
     "to-tickets": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/to-tickets"},
     ],
