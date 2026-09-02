@@ -181,6 +181,14 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `to-spec/SKILL.md`, `to-tickets/SKILL.md`
 
+## 18. Manual implementation records stay out of Automode
+
+**Problem:** A direct `/implement` session created its recordkeeping issue with `ready-for-agent`. Automode correctly treated that label as an Auto-Implement queue entry, so the manual session and Automode started the same work concurrently.
+
+**Solution:** When direct work has no existing implementation issue, `implement` creates one record with applicable category or metadata labels such as `bug` or `enhancement`, but without `ready-for-agent`. The active session owns implementation and opens a non-draft pull request that closes the record. Automode ignores the issue and discovers the pull request through Auto-Review.
+
+**Files changed:** `implement/SKILL.md`
+
 ## Retired Customizations
 
 - **User Requirements vs Agent Design Decisions / `[USER-REQ]` tagging** (removed 2026-07): the requirement-source split was designed for the superpowers pipeline, where specs passed through several agent hands. The Pocock cycle front-loads user intent through the grilling interview and keeps the user in the loop at each stage (seam check, ticket quiz, close-out testing), so the tag machinery added ceremony without pulling its weight. Cross-phase change propagation (#7) and the ticket `Requirement:` trace (#1) carry the surviving intent.

@@ -187,6 +187,15 @@ class MattpocockMigrationTests(unittest.TestCase):
 
         self.assertIn("name: tdd", source)
 
+    def test_direct_implementation_records_an_issue_without_queueing_automode(self):
+        source = IMPLEMENT.read_text(encoding="utf-8")
+
+        self.assertIn("requirement directly", source)
+        self.assertIn("create one implementation issue", source)
+        self.assertIn("`bug` or `enhancement`", source)
+        self.assertIn("leave off `ready-for-agent`", source)
+        self.assertIn("This session owns the implementation", source)
+
     def test_implement_branches_from_the_repository_default_branch(self):
         source = IMPLEMENT.read_text(encoding="utf-8")
 
