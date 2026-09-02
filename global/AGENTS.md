@@ -52,9 +52,9 @@ After browser exploration or testing, close every browser tab opened for the tas
 
 ## Specific GitHub Repository Questions
 
-When the user asks about a specific GitHub repository, compare its owner with the user's GitHub account. For a repository owned by the user, inspect the existing first-party checkout at its default location, `~\<repo-name>`; ask for its location if absent. For a repository owned by another account, reuse or clone it under `~\github repo ref\`. Treat the source code as the primary evidence instead of relying on documentation or web search. This workflow applies only when the repository itself is the subject of the user's question.
+When the user asks about a specific GitHub repository, compare its owner with the user's GitHub account. For a repository owned by the user, inspect the existing first-party checkout at its default location, `~\<repo-name>`; ask for its location if absent. For a repository owned by another account, use `~\github repo ref\<repo-name>`. If that checkout already exists, run `git pull --ff-only` before inspecting it. Otherwise, clone it there. Treat the source code as the primary evidence instead of relying on documentation or web search. This workflow applies only when the repository itself is the subject of the user's question.
 
-After every answer about a repository cloned under `~\github repo ref\`, report that repository folder's current size and ask whether to keep or delete it. If the user continues asking about the repository without answering, answer the new question and repeat the size and retention question. Delete the clone only with explicit user authorization.
+After every answer about a repository newly cloned under `~\github repo ref\` for the current request, report that repository folder's current size and ask whether to keep or delete it. Do not ask about deleting a checkout that existed before the request. If the user continues asking about a newly cloned repository without answering, answer the new question and repeat the size and retention question. Delete the clone only with explicit user authorization.
 
 ## Tool Boundaries
 
