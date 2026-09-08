@@ -1,6 +1,6 @@
 # First-time setup
 
-Follow the parent skill's output-directory support check before generating docs. The order is verify CLI support, create/clone the GitHub Wiki into `wiki/`, then generate directly into that clone.
+Create/clone the GitHub Wiki into `<project>/openwiki/`, then generate directly into that clone using OpenWiki's default code-mode output directory.
 
 ## Machine
 
@@ -14,9 +14,9 @@ The machine's first initialization captures the ChatGPT-subscription login in `~
 
 ## Create and clone the GitHub Wiki
 
-Keep `/wiki/` in the main project's `.gitignore`, even if the global Git ignore already covers it. Preserve existing entries and add the rule only once.
+Keep `/openwiki/` in the main project's `.gitignore`, even if the global Git ignore already covers it. Preserve existing entries and add the rule only once.
 
-If `wiki/` exists, confirm that it has its own Git repository with this project's Wiki as `origin`. Stop on a path collision instead of replacing its contents. For a legacy layout, use the migration section below.
+If `openwiki/` exists, confirm that it has its own Git repository with this project's Wiki as `origin`. For existing generated docs without a Wiki clone or a legacy layout, use the migration section below. Preserve existing content; stop on unrelated path collisions.
 
 GitHub creates `<repo>.wiki.git` only after Wikis are enabled and the first page is saved. If the remote is unavailable, invoke `browser-harness`:
 
@@ -25,30 +25,31 @@ GitHub creates `<repo>.wiki.git` only after Wikis are enabled and the first page
 3. Verify that the Wiki remote resolves, then clone it from the main project root:
 
    ```powershell
-   git clone https://github.com/<owner>/<repo>.wiki.git wiki
+   git clone https://github.com/<owner>/<repo>.wiki.git openwiki
    ```
 
 Use the existing GitHub browser session according to browser-harness login rules. Stop for user-only authentication or confirmation, missing administration permission, or a plan without Wikis. Report the exact blocker. If a saved first page exists but the remote remains unavailable, investigate Wiki enablement, repository access, and Git credentials separately.
 
-Done when `wiki/` is the correct separate Git repository and `git check-ignore --no-index wiki/Home.md` confirms the main repository ignores it.
+Done when `openwiki/` is the correct separate Git repository and `git check-ignore --no-index openwiki/Home.md` confirms the main repository ignores it.
 
 ## Generate and publish
 
-From the main project root, run code-mode initialization with the verified configuration targeting `<project>/wiki/`, not the CLI's default output. Use the parent skill's provider/model settings. Keep the main project as the source root; running from inside the Wiki clone would document the wrong repository.
+From the main project root, run `openwiki code --init` with the parent skill's provider/model settings. The CLI generates directly into the `openwiki/` clone by default. Keep the main project as the source root; running from inside the Wiki clone would document the wrong repository.
 
-Follow the parent skill's generation review and in-place GitHub Wiki synchronization steps. Keep the generation prompt and internal state local to the clone and excluded from publication. Both project agent files must reference `wiki/`.
+Follow the parent skill's generation review and in-place GitHub Wiki synchronization steps. Keep the generation prompt and internal state local to the clone and excluded from publication. Both project agent files must reference `openwiki/`.
 
-Done when `wiki/Home.md` renders on GitHub with its sidebar, Wiki local and remote revisions agree, no separate `openwiki/` tree exists, and no OpenWiki CI workflow was introduced.
+Done when `openwiki/Home.md` renders on GitHub with its sidebar, Wiki local and remote revisions agree, no second documentation tree exists, and no OpenWiki CI workflow was introduced.
 
-## Existing two-folder layouts
+## Existing docs and legacy layouts
 
-Treat a project-root `openwiki/` tree or a sibling `../<repo>.wiki` clone as legacy, not a second supported output location.
+The destination is always `<project>/openwiki/`. A `wiki/` clone or sibling `../<repo>.wiki` clone is a legacy location, not a second supported output directory.
 
-- If only the sibling clone exists, verify its `origin` before moving it into `wiki/`. Preserve its history and local changes; stop if the destination already exists or the remote does not match.
-- When `openwiki/` exists, inspect both trees and their Git state. Report a migration plan and obtain authorization before moving/deleting files or removing tracked docs from the main repository. Preserve unique pages, generation instructions, metadata, and uncommitted work. Resolve conflicting versions explicitly.
-- A migration must leave one Wiki tree at `wiki/`, update the output configuration and agent-file references, and reconfigure existing update hooks. A new `.gitignore` rule does not untrack existing files.
+- Inspect existing docs, clone remotes, and both repositories' Git state before migrating. Existing `openwiki/` docs without their own Wiki Git repository need migration too; their folder name is already correct.
+- Report a migration plan and obtain authorization before moving/deleting files or removing tracked docs from the main repository. Preserve unique pages, generation instructions, metadata, Wiki history, and uncommitted work. Resolve conflicting versions explicitly.
+- If the correct Wiki clone exists at a legacy location and `openwiki/` is absent, move that clone into `openwiki/` during the authorized migration. If the destination already contains docs, reconcile them with the clone without overwriting either version or discarding Git history.
+- Finish with one Wiki tree at `openwiki/`, project agent-file references to it, and update hooks using the CLI's default output from the main project root. A new `.gitignore` rule does not untrack existing files.
 
-Do not perform a migration merely because an update discovered a legacy directory. Stop the update and report the required migration rather than continuing the two-folder workflow.
+Do not perform a migration merely because an update discovered an old layout. Stop the update and report the required migration rather than generating into an unconfigured directory.
 
 GitHub references:
 
