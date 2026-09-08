@@ -10,6 +10,7 @@ OpenWiki is a CLI that generates and maintains agent-facing repository documenta
 ## Durable decisions
 
 - OpenWiki runs **local-only**, on the saved ChatGPT-subscription login: set `OPENWIKI_PROVIDER` to `openai-chatgpt` for every run. The upstream README recommends a scheduled CI workflow, but that path needs a metered API key, so repositories stay free of OpenWiki CI: delete `.github/workflows/openwiki-update.yml` (or the GitLab equivalent) whenever a run recreates it.
+- Use GPT 5.6 Luna: set `OPENWIKI_MODEL_ID` to `gpt-5.6-luna` for every run, alongside the provider. If unavailable, report the error and ask before switching models.
 - Generated docs publish to the repository's **native GitHub Wiki**, not MkDocs or GitHub Pages.
 - Pages under `openwiki/` change by rerunning OpenWiki, never by hand-editing (unless explicitly asked).
 
@@ -29,6 +30,7 @@ Treat every value in `~/.openwiki/.env` as a password, the refresh token above a
 
 ```powershell
 $env:OPENWIKI_PROVIDER = 'openai-chatgpt'
+$env:OPENWIKI_MODEL_ID = 'gpt-5.6-luna'
 openwiki code --update --print
 ```
 

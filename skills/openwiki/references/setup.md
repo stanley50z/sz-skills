@@ -16,10 +16,11 @@ From the repository root:
 
 ```powershell
 $env:OPENWIKI_PROVIDER = 'openai-chatgpt'
+$env:OPENWIKI_MODEL_ID = 'gpt-5.6-luna'
 openwiki code --init
 ```
 
-Complete the browser login at `auth.openai.com` — the wizard also prints the URL for headless use, where you open it on another machine and paste the redirect URL back into the terminal — then select the model. The run generates `openwiki/` and writes the `<!-- OPENWIKI:START/END -->` blocks into `AGENTS.md` and `CLAUDE.md`, creating those files if absent.
+Complete the browser login at `auth.openai.com` — the wizard also prints the URL for headless use, where you open it on another machine and paste the redirect URL back into the terminal — then select the model specified in the skill's durable decisions if prompted. The run generates `openwiki/` and writes the `<!-- OPENWIKI:START/END -->` blocks into `AGENTS.md` and `CLAUDE.md`, creating those files if absent.
 
 Review `git status --short`, `git diff --check`, and `git diff` before committing.
 
