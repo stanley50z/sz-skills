@@ -43,7 +43,7 @@ Done when all changes are explained, Wiki Git metadata is intact, and the main r
 
 Prepare the generated pages in place inside `openwiki/`:
 
-- Preserve established page names. On first generation, normalize the entry page to `Home.md` and flatten other names into a single namespace, such as `Architecture-overview.md`. Resolve filename collisions explicitly rather than overwriting a page.
+- Keep `Home.md` as the GitHub Wiki landing page and retain `quickstart.md` for the CLI's generated local references. Preserve established root filenames and flatten nested pages into a single namespace, such as `architecture-overview.md`. Resolve filename collisions explicitly rather than overwriting a page.
 - Give every published content page one `_Sidebar.md` entry. Exclude the generation prompt and internal state.
 - Use flattened page names without `.md` for internal links, preserving anchors. Links to main-project files must be absolute `https://github.com/<owner>/<repo>/blob/<branch>/...` or `tree/...` URLs.
 - Keep generation instructions consistent with the final page names so later runs update these same pages rather than creating duplicate source pages.
@@ -51,3 +51,7 @@ Prepare the generated pages in place inside `openwiki/`:
 Review and stage only the intended page changes in the Wiki clone. Run `git -C openwiki diff --cached --check` and inspect the staged diff before committing. Commit only if it changed, then push the Wiki's actual rendered branch; discover it rather than assuming `master`. A rejected push is a blocker, not permission to force-push. Do not stage or commit the main repository as part of Wiki synchronization.
 
 Done when each generated content page has one published page and sidebar entry, internal links resolve in GitHub's flattened namespace, the Wiki clone's `HEAD` and remote rendered branch agree, and the Wiki tab renders `Home` with its sidebar.
+
+## Automatic post-commit synchronization
+
+The `setup-git-repo` skill bundles the executable pull → generate → validate → commit → push workflow. For installation or replacement of an update-only hook, follow [its installation reference](../setup-git-repo/references/post-commit.md). The hook performs Wiki Git operations itself; the OpenWiki CLI does not automatically invoke this coding-assistant skill. Successful automatic runs publish Wiki changes without a separate review or sync request, while main-project instruction changes remain uncommitted.
