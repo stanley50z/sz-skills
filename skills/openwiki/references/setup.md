@@ -1,49 +1,56 @@
 # First-time setup
 
-Three independent first-times: each machine, each repository, and each repository's wiki needs its own.
+Follow the parent skill's output-directory support check before generating docs. The order is verify CLI support, create/clone the GitHub Wiki into `wiki/`, then generate directly into that clone.
 
-## Machine: install the CLI
+## Machine
+
+Install the CLI if missing:
 
 ```powershell
 npm install --global openwiki
 ```
 
-The ChatGPT-subscription login is captured during the machine's first `--init` and saved to `~/.openwiki/.env`; later runs in any repository reuse it, and the access token refreshes itself on expiry.
+The machine's first initialization captures the ChatGPT-subscription login in `~/.openwiki/.env`; later repositories reuse it. Select the provider and model from the parent skill's durable decisions. Complete user-only authentication when required, without exposing saved tokens.
 
-## Repository: generate the docs
+## Create and clone the GitHub Wiki
 
-From the repository root:
+Keep `/wiki/` in the main project's `.gitignore`, even if the global Git ignore already covers it. Preserve existing entries and add the rule only once.
 
-```powershell
-$env:OPENWIKI_PROVIDER = 'openai-chatgpt'
-$env:OPENWIKI_MODEL_ID = 'gpt-5.6-luna'
-openwiki code --init
-```
+If `wiki/` exists, confirm that it has its own Git repository with this project's Wiki as `origin`. Stop on a path collision instead of replacing its contents. For a legacy layout, use the migration section below.
 
-Complete the browser login at `auth.openai.com` — the wizard also prints the URL for headless use, where you open it on another machine and paste the redirect URL back into the terminal — then select the model specified in the skill's durable decisions if prompted. The run generates `openwiki/` and writes the `<!-- OPENWIKI:START/END -->` blocks into `AGENTS.md` and `CLAUDE.md`, creating those files if absent.
+GitHub creates `<repo>.wiki.git` only after Wikis are enabled and the first page is saved. If the remote is unavailable, invoke `browser-harness`:
 
-Review `git status --short`, `git diff --check`, and `git diff` before committing.
-
-Done when `openwiki/quickstart.md` exists, both agent files carry an OPENWIKI block, and no OpenWiki CI workflow was added.
-
-## Wiki: create and clone
-
-The `<repo>.wiki.git` remote only comes into existence once the wiki has a saved first page. If the remote is unavailable, invoke the `browser-harness` skill and complete the prerequisite through GitHub's web interface:
-
-1. Open the repository **Settings** page and enable **Wikis** under **Features**.
-2. Open the repository **Wiki** tab, create `Home` with the temporary body `Initializing OpenWiki publication.`, and save it.
-3. Verify that the Wiki remote resolves, then ignore and clone it inside the main repository:
+1. Enable **Wikis** under **Features** on the repository's **Settings** page.
+2. In the **Wiki** tab, create `Home` with the temporary body `Initializing OpenWiki publication.` and save it.
+3. Verify that the Wiki remote resolves, then clone it from the main project root:
 
    ```powershell
-   Add-Content .gitignore "/wiki/"
    git clone https://github.com/<owner>/<repo>.wiki.git wiki
    ```
 
-   If `/wiki/` is already ignored, leave `.gitignore` unchanged. If `wiki/` already exists, verify that it is the correct Wiki clone; stop and report a path collision instead of replacing any existing content.
+Use the existing GitHub browser session according to browser-harness login rules. Stop for user-only authentication or confirmation, missing administration permission, or a plan without Wikis. Report the exact blocker. If a saved first page exists but the remote remains unavailable, investigate Wiki enablement, repository access, and Git credentials separately.
 
-Use the browser's existing GitHub session. Stop only for user-only authentication or confirmation, missing repository administration permission, or a plan that does not expose Wikis; report that concrete blocker. Once the clone succeeds, continue the publication flow in the same run.
+Done when `wiki/` is the correct separate Git repository and `git check-ignore --no-index wiki/Home.md` confirms the main repository ignores it.
 
-GitHub's documentation:
+## Generate and publish
+
+From the main project root, run code-mode initialization with the verified configuration targeting `<project>/wiki/`, not the CLI's default output. Use the parent skill's provider/model settings. Keep the main project as the source root; running from inside the Wiki clone would document the wrong repository.
+
+Follow the parent skill's generation review and in-place GitHub Wiki synchronization steps. Keep the generation prompt and internal state local to the clone and excluded from publication. Both project agent files must reference `wiki/`.
+
+Done when `wiki/Home.md` renders on GitHub with its sidebar, Wiki local and remote revisions agree, no separate `openwiki/` tree exists, and no OpenWiki CI workflow was introduced.
+
+## Existing two-folder layouts
+
+Treat a project-root `openwiki/` tree or a sibling `../<repo>.wiki` clone as legacy, not a second supported output location.
+
+- If only the sibling clone exists, verify its `origin` before moving it into `wiki/`. Preserve its history and local changes; stop if the destination already exists or the remote does not match.
+- When `openwiki/` exists, inspect both trees and their Git state. Report a migration plan and obtain authorization before moving/deleting files or removing tracked docs from the main repository. Preserve unique pages, generation instructions, metadata, and uncommitted work. Resolve conflicting versions explicitly.
+- A migration must leave one Wiki tree at `wiki/`, update the output configuration and agent-file references, and reconfigure existing update hooks. A new `.gitignore` rule does not untrack existing files.
+
+Do not perform a migration merely because an update discovered a legacy directory. Stop the update and report the required migration rather than continuing the two-folder workflow.
+
+GitHub references:
 
 - <https://docs.github.com/en/communities/documenting-your-project-with-wikis/adding-or-editing-wiki-pages>
 - <https://docs.github.com/en/communities/documenting-your-project-with-wikis/creating-a-footer-or-sidebar-for-your-wiki>
