@@ -64,6 +64,10 @@ Never use computer use unless the user explicitly requests it.
 
 Before picking a localhost port, read `~\LOCALHOST_PORTS.md` and create it if missing. Choose an unassigned port, verify it is available, and register any new fixed port there in the same change.
 
+## Test server cleanup
+
+Stop every temporary test or dev server you start once testing finishes, including on failure and before handing off or completing the task, unless the user explicitly asks to leave it running. Track their PIDs and ports, stop their child processes too, and verify the processes have exited and their ports are released. Target only processes started for the task; preserve existing apps and agent sessions, and never kill processes by runtime name alone, such as all `node` processes.
+
 ## Utility Scripts
 
 For projects requiring a repeatable launch command, provide cross-platform `start.py` and `stop.py` scripts. Both scripts must run without opening a terminal window, and `start.py` must leave long-running processes in the background. Default utility scripts to Python unless another language is specified.
