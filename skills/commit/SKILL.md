@@ -7,6 +7,10 @@ description: Use when the user asks to commit changes to git, or to finalize git
 
 Execute immediately. Do not print commands for the user to run when the state
 is verifiable by CLI; run the command, read the output, and act on it.
+Use Git commands directly through the shell tool, not generated Python or other
+wrapper programs. Automatic background hooks own their work. Finish after
+project commit/push verification without waiting for, polling, or repairing
+background Wiki jobs; generated instruction edits remain for later review.
 
 ## Closure path
 

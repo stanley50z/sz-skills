@@ -3,9 +3,9 @@
 # Invoke this launcher from post-commit without replacing other hook behavior.
 root=$(git rev-parse --show-toplevel) || exit 0
 if command -v python3 >/dev/null 2>&1; then
-    python3 "$root/.githooks/openwiki_post_commit.py" --root "$root"
+    python3 "$root/.githooks/openwiki_post_commit.py" --root "$root" --background
 elif command -v python >/dev/null 2>&1; then
-    python "$root/.githooks/openwiki_post_commit.py" --root "$root"
+    python "$root/.githooks/openwiki_post_commit.py" --root "$root" --background
 else
     printf '%s\n' 'OpenWiki sync failed: Python 3.10+ is required.' >&2
 fi

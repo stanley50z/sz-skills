@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Pull, generate, validate, commit and push a project's nested GitHub Wiki.
 
-Copy this file and openwiki-sync into <project>/.githooks/. The launcher runs
-synchronously from post-commit. Requires Python 3.10+, Git and OpenWiki on PATH.
+Copy this file and openwiki-sync into <project>/.githooks/. The launcher starts
+a detached worker from post-commit. Requires Python 3.10+, Git and OpenWiki on PATH.
 """
 
 import argparse
@@ -21,6 +21,7 @@ from urllib.parse import quote, unquote, urlsplit
 
 PROVIDER = 'openai-chatgpt'
 MODEL = 'gpt-5.6-luna'
+NO_WINDOW = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
 
 
 class SyncError(Exception):
@@ -45,7 +46,8 @@ def save_diagnostics(path, output):
 def git(cwd, *args, env, timeout=120):
     """Run noninteractive Git without triggering hooks in either repository."""
     result = subprocess.run(['git', '-c', f'core.hooksPath={os.devnull}', '-C', str(cwd), *args], env=env,
-                            capture_output=True, text=True, encoding='utf-8', timeout=timeout)
+                            capture_output=True, text=True, encoding='utf-8', timeout=timeout,
+                            creationflags=NO_WINDOW)
     if result.returncode:
         # Do not echo remote URLs or credential-bearing diagnostics into terminal output.
         detail = 'inspect this repository manually'
@@ -61,7 +63,7 @@ def clean_git_env():
     """Detach nested Git commands from the committing process's repository/index."""
     env = os.environ.copy()
     keys = subprocess.run(['git', 'rev-parse', '--local-env-vars'], check=True,
-                          capture_output=True, text=True, timeout=10).stdout.splitlines()
+                          capture_output=True, text=True, timeout=10, creationflags=NO_WINDOW).stdout.splitlines()
     for key in keys:
         env.pop(key, None)
     env.pop('SZ_OPENWIKI_LOG', None)
@@ -229,7 +231,7 @@ def prepare_pages(root, wiki, git_dir, project, source_ref):
 
 def generate(executable, root, env, timeout):
     """Bound generation and terminate its descendants on timeout or interruption."""
-    options = ({'creationflags': subprocess.CREATE_NEW_PROCESS_GROUP} if os.name == 'nt'
+    options = ({'creationflags': subprocess.CREATE_NEW_PROCESS_GROUP | NO_WINDOW} if os.name == 'nt'
                else {'start_new_session': True})
     process = subprocess.Popen([executable, 'code', '--update', '--print'], cwd=root,
                                env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
@@ -239,7 +241,7 @@ def generate(executable, root, env, timeout):
     except BaseException:
         if os.name == 'nt':
             subprocess.run(['taskkill', '/PID', str(process.pid), '/T', '/F'],
-                           capture_output=True, timeout=30)
+                           capture_output=True, timeout=30, creationflags=NO_WINDOW)
         else:
             try:
                 os.killpg(process.pid, signal.SIGKILL)
@@ -355,17 +357,46 @@ def verify_wiki_config(wiki, config, branch, env):
         raise SyncError('Wiki configuration or branch changed during synchronization; inspect before publishing.')
 
 
+def start_background(root, generation_timeout):
+    """Detach Wiki work from Git's process, console and pipes; retain private diagnostics."""
+    root = root.resolve()
+    env = clean_git_env()
+    wiki = root / 'openwiki'
+    if not (wiki / '.git').exists():
+        raise SyncError('openwiki/ must be the separate GitHub Wiki clone.')
+    git_dir = Path(git(wiki, 'rev-parse', '--absolute-git-dir', env=env))
+    log = git_dir / 'openwiki-background.log'
+    if log.is_symlink():
+        raise SyncError('Refusing to follow a symlink for the private background log.')
+    descriptor = os.open(log, os.O_CREAT | os.O_APPEND | os.O_WRONLY, 0o600)
+    options = ({'creationflags': subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP}
+               if os.name == 'nt' else {'start_new_session': True})
+    with os.fdopen(descriptor, 'ab') as stream:
+        log.chmod(0o600)
+        process = subprocess.Popen(
+            [sys.executable, '-u', str(Path(__file__).resolve()), '--root', str(root),
+             '--generation-timeout', str(generation_timeout)],
+            cwd=root, env=env, stdin=subprocess.DEVNULL, stdout=stream, stderr=stream,
+            close_fds=True, **options)
+    print(f'OpenWiki sync started in background (PID {process.pid}); see {log}.')
+
+
 def main():
-    """Expose a standalone command usable by a Git hook or a manual retry."""
+    """Expose detached hook startup and a synchronous manual retry command."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path.cwd())
+    parser.add_argument('--background', action='store_true',
+                        help='Start a detached Wiki job and return immediately.')
     parser.add_argument('--generation-timeout', type=float, default=1800,
                         help='Maximum generation time in seconds (default: 1800).')
     args = parser.parse_args()
     if not 0 < args.generation_timeout < float('inf'):
         parser.error('--generation-timeout must be positive and finite')
     try:
-        sync(args.root, args.generation_timeout)
+        if args.background:
+            start_background(args.root, args.generation_timeout)
+        else:
+            sync(args.root, args.generation_timeout)
     except KeyboardInterrupt:
         print('OpenWiki sync interrupted; generated work was preserved.', file=sys.stderr)
         return 130
@@ -377,4 +408,6 @@ def main():
 
 
 if __name__ == '__main__':
-    raise SystemExit(main())
+    status = main()
+    print(f'OpenWiki sync process {os.getpid()} finished (exit {status}).')
+    raise SystemExit(status)

@@ -41,7 +41,7 @@ Done when the installed files match the bundle, Git invokes the launcher exactly
 
 ## What runs automatically
 
-The launcher waits for the runner, reports failures, and returns success so other post-commit behavior can continue. The runner performs:
+The launcher starts a detached worker with redirected input/output and returns immediately so Git and other hooks can finish. On Windows the worker has no console, and every runner-launched Git, generator, and cleanup process uses `CREATE_NO_WINDOW` to prevent flashing windows; on POSIX the worker starts a new session. The committing agent commits, pushes, verifies the project revision, and finishes without waiting for, polling, or repairing Wiki work. The background worker performs:
 
 1. Check repository identities and clean working trees; acquire a per-Wiki lock.
 2. Pull the Wiki's actual remote default branch with `--ff-only`. Stop on divergence or unrelated unpublished local commits.
@@ -56,7 +56,7 @@ Generation and publication operate on the same `openwiki/` tree. The hook never 
 
 A failure leaves the completed project commit intact and preserves generated work for inspection. A rejected push also preserves the local Wiki commit; a private receipt allows the runner to retry its own unpublished commit, but not arbitrary local Wiki history. No force pushes or automatic conflict resolution.
 
-Diagnostics are stored in the Wiki's Git directory as `openwiki-sync.log`, never in published pages. Common credential formats are redacted, but still treat this local log as sensitive. The page-name map and pending-push receipt also live in that Git directory. An interrupted process may leave `openwiki-sync.lock`; remove that lock only after confirming no sync is running.
+Background status and failures are appended to `openwiki-background.log` in the Wiki's Git directory, with worker PIDs and exit status. Detailed generation/Git diagnostics are stored there as `openwiki-sync.log`, never in published pages. Common credential formats are redacted, but still treat this local log as sensitive. The page-name map and pending-push receipt also live in that Git directory. An interrupted process may leave `openwiki-sync.lock`; remove that lock only after confirming no sync is running.
 
 After resolving the failure and reviewing pending changes, retry from the project root:
 
@@ -64,6 +64,6 @@ After resolving the failure and reviewing pending changes, retry from the projec
 python .githooks/openwiki_post_commit.py --root .
 ```
 
-Use `--generation-timeout <seconds>` to change the generation limit for a manual run. The runner returns nonzero on failure; only the hook launcher deliberately returns success to preserve other post-commit behavior.
+Use `--generation-timeout <seconds>` to change the generation limit for a manual run. Manual runs stay synchronous and return nonzero on failure. `--background` starts a detached job instead; successful startup does not imply successful publication. Only the hook launcher deliberately returns success on startup failure to preserve other post-commit behavior.
 
-Report the installed paths and the automatic pull → generate → validate → commit → push workflow. Explain that project commits now wait for Wiki synchronization and may leave project instruction-file changes for review.
+Report the installed paths and automatic background workflow. Project commits and pushes do not wait for Wiki synchronization. Background failures and generated project instruction changes belong to a separately requested maintenance task, not commit closure.

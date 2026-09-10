@@ -6,10 +6,12 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 
 SKILL = Path(__file__).resolve().parents[1]
+NO_WINDOW = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
 
 
 class WikiHookTests(unittest.TestCase):
@@ -83,7 +85,7 @@ class WikiHookTests(unittest.TestCase):
     def git(self, cwd, *args):
         return subprocess.run(['git', '-C', str(cwd), *args], env=self.env,
                               text=True, encoding='utf-8', capture_output=True,
-                              check=True, timeout=30)
+                              check=True, timeout=30, creationflags=NO_WINDOW)
 
     def install(self):
         hooks = self.root / '.githooks'
@@ -100,7 +102,54 @@ class WikiHookTests(unittest.TestCase):
         self.git(self.root, 'config', 'core.hooksPath', '.githooks')
 
     def commit(self):
-        return self.git(self.root, 'commit', '--allow-empty', '-m', 'project change')
+        result = self.git(self.root, 'commit', '--allow-empty', '-m', 'project change')
+        return self.wait_background(result)
+
+    def wait_background(self, result):
+        """Wait only in tests, then expose the detached worker's diagnostics to assertions."""
+        output = result.stdout + result.stderr
+        self.assertIn('OpenWiki sync started in background (PID ', output)
+        pid = int(output.split('OpenWiki sync started in background (PID ')[1].split(')')[0])
+        log = self.wiki / '.git/openwiki-background.log'
+        deadline = time.monotonic() + 30
+        while time.monotonic() < deadline:
+            text = log.read_text(encoding='utf-8') if log.exists() else ''
+            if f'OpenWiki sync process {pid} finished ' in text:
+                return subprocess.CompletedProcess(result.args, result.returncode, result.stdout + text, result.stderr)
+            time.sleep(0.05)
+        if os.name == 'nt':
+            subprocess.run(['taskkill', '/PID', str(pid), '/T', '/F'], capture_output=True, timeout=10, creationflags=NO_WINDOW)
+        else:
+            import signal
+            os.killpg(pid, signal.SIGKILL)
+        self.fail('Background Wiki job did not finish within 30 seconds')
+
+    def test_commit_returns_before_generation_finishes_without_inheriting_output_pipes(self):
+        release = self.base / 'release-generator'
+        expired = self.base / 'generator-expired'
+        with self.stub.open('a', encoding='utf-8') as script:
+            script.write(
+                'import time\n'
+                'deadline = time.monotonic() + 5\n'
+                'while not Path(' + repr(str(release)) + ').exists():\n'
+                '    if time.monotonic() > deadline:\n'
+                '        Path(' + repr(str(expired)) + ').touch()\n'
+                '        break\n'
+                '    time.sleep(0.05)\n'
+            )
+        self.install()
+        try:
+            # Captured pipes make this hang if the worker inherits Git's output handles.
+            result = self.git(self.root, 'commit', '--allow-empty', '-m', 'project change')
+            self.assertFalse(expired.exists(), 'git commit waited for Wiki generation')
+            self.assertIn('existing-hook-ran', result.stdout + result.stderr)
+            self.assertNotIn('Wiki synced', result.stdout + result.stderr)
+        finally:
+            release.touch()
+            if 'result' in locals() and 'started in background' in result.stdout + result.stderr:
+                self.wait_background(result)
+        self.assertEqual(self.git(self.wiki, 'rev-parse', 'HEAD').stdout,
+                         self.git(self.remote, 'rev-parse', 'HEAD').stdout)
 
     def test_commit_pulls_generates_commits_and_pushes_only_wiki(self):
         self.install()
@@ -285,7 +334,7 @@ class WikiHookTests(unittest.TestCase):
             script.write(
                 "import subprocess\n"
                 "(wiki / 'secret.txt').write_text('not a Wiki page', encoding='utf-8')\n"
-                "subprocess.run(['git', '-C', str(wiki), 'add', 'secret.txt'], check=True)\n"
+                "subprocess.run(['git', '-C', str(wiki), 'add', 'secret.txt'], check=True, creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))\n"
             )
         self.install()
         remote = self.git(self.remote, 'rev-parse', 'HEAD').stdout
@@ -298,7 +347,7 @@ class WikiHookTests(unittest.TestCase):
         with self.stub.open('a', encoding='utf-8') as script:
             script.write(
                 "import subprocess\n"
-                "subprocess.run(['git', '-c', 'core.hooksPath=', 'commit', '--allow-empty', '-m', 'concurrent change'], check=True)\n"
+                "subprocess.run(['git', '-c', 'core.hooksPath=', 'commit', '--allow-empty', '-m', 'concurrent change'], check=True, creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))\n"
             )
         self.install()
         remote = self.git(self.remote, 'rev-parse', 'HEAD').stdout
@@ -322,7 +371,7 @@ class WikiHookTests(unittest.TestCase):
         with self.stub.open('a', encoding='utf-8') as script:
             script.write(
                 "import subprocess\n"
-                "subprocess.run(['git', '-C', str(wiki), 'config', 'remote.origin.pushurl', " + repr(str(self.remote)) + "], check=True)\n"
+                "subprocess.run(['git', '-C', str(wiki), 'config', 'remote.origin.pushurl', " + repr(str(self.remote)) + "], check=True, creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))\n"
             )
         self.install()
         remote = self.git(self.remote, 'rev-parse', 'HEAD').stdout
@@ -334,7 +383,7 @@ class WikiHookTests(unittest.TestCase):
         marker = self.base / 'orphan-wrote'
         self.stub.write_text(
             'import subprocess, sys, time\n'
-            'subprocess.Popen([sys.executable, "-c", ' + repr("import time; from pathlib import Path; time.sleep(3); Path(" + repr(str(marker)) + ").write_text('orphan')") + '])\n'
+            'subprocess.Popen([sys.executable, "-c", ' + repr("import time; from pathlib import Path; time.sleep(3); Path(" + repr(str(marker)) + ").write_text('orphan')") + '], creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))\n'
             'time.sleep(60)\n', encoding='utf-8',
         )
         # Commit installation before invoking the public retry CLI with a short timeout.
@@ -343,7 +392,7 @@ class WikiHookTests(unittest.TestCase):
         result = subprocess.run(
             [sys.executable, str(self.root / '.githooks/openwiki_post_commit.py'),
              '--root', str(self.root), '--generation-timeout', '1'],
-            env=self.env, capture_output=True, text=True, timeout=15,
+            env=self.env, capture_output=True, text=True, timeout=15, creationflags=NO_WINDOW,
         )
         self.assertEqual(result.returncode, 1)
         self.assertIn('generation timed out', result.stderr)
