@@ -28,10 +28,12 @@ BINARY_EXTS = frozenset([
 
 # ── Upstream sources ─────────────────────────────────────────────────────
 # Each entry maps a local skill directory to a list of (repo, path, only?) dicts.
-# Multiple paths pull from different locations in the same repo
-# (e.g. ui-ux-pro-max SKILL.md from .claude/skills vs data/scripts from src/).
+# Multiple paths pull from different locations in the same repo.
 
 UPSTREAM = {
+    "frontend-design": [
+        {"repo": "anthropics/skills", "path": "skills/frontend-design"},
+    ],
     "browser-harness": [
         {"repo": "browser-use/browser-harness", "path": "", "only": ["SKILL.md"]},
     ],
@@ -134,33 +136,6 @@ UPSTREAM = {
     "remotion-best-practices": [
         {"repo": "remotion-dev/skills", "path": "skills/remotion-best-practices"},
     ],
-    "revealjs": [
-        {"repo": "ryanbbrown/revealjs-skill", "path": "skills/revealjs"},
-    ],
-    # ── ui-ux-pro-max skill set ──────────────────────────────────────────
-    "ui-ux-pro-max": [
-        {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/ui-ux-pro-max", "only": ["SKILL.md"]},
-        {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": "src/ui-ux-pro-max", "only": ["data", "scripts"]},
-    ],
-    # Companion skills
-    "banner-design": [
-        {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/banner-design"},
-    ],
-    "brand": [
-        {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/brand"},
-    ],
-    "design-system": [
-        {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/design-system"},
-    ],
-    "design": [
-        {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/design"},
-    ],
-    "slides": [
-        {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/slides"},
-    ],
-    "ui-styling": [
-        {"repo": "nextlevelbuilder/ui-ux-pro-max-skill", "path": ".claude/skills/ui-styling"},
-    ],
 }
 
 # Skills with local customizations — skip during auto-update
@@ -168,18 +143,12 @@ PATCHED = {
     "handoff",
     "setup-matt-pocock-skills",
     "to-spec",
-    "slides",
-    "banner-design",
-    "brand",
-    "design",
-    "design-system",
     "tdd",
     "to-tickets",
     "implement",
     "prototype",
     "wayfinder",
     "grilling",
-    "ui-styling",
 }
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────

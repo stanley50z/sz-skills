@@ -30,13 +30,6 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | [prototype](skills/prototype/) | Throwaway logic/UI prototypes to answer design questions | ↳ `skills/engineering/prototype` | UI prototype dev server binds to all interfaces so the preview is reachable over Tailscale as well as localhost |
 | [handoff](skills/handoff/) | Compact the current conversation into a handoff document for another agent to pick up | ↳ `skills/productivity/handoff` | Saves the handoff doc to the workspace root instead of the OS temp dir, and stays model-invocable |
 | [grilling](skills/grilling/) | Shared interview loop used by the grill skills | ↳ `skills/productivity/grilling` | Bounds the design tree to requested behavior; excludes speculative recovery and preventable concurrency branches |
-| **[ui-ux-pro-max suite](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** | | | Harness-compatible plain skill names |
-| [slides](skills/slides/) | Slide creation — copywriting formulas, layout patterns, strategies | ↳ `.claude/skills/slides` | Renames invalid upstream skill name `ckm:slides` to `slides` for harness compatibility |
-| [banner-design](skills/banner-design/) | Banner design with sizes, styles, and layout references | ↳ `.claude/skills/banner-design` | Renames invalid upstream skill name `ckm:banner-design` to `banner-design` |
-| [brand](skills/brand/) | Brand identity system — guidelines, voice, typography, color, logo rules | ↳ `.claude/skills/brand` | Renames invalid upstream skill name `ckm:brand` to `brand` |
-| [design](skills/design/) | Design routing — logos, icons, CIP, slides, social photos | ↳ `.claude/skills/design` | Renames invalid upstream skill name `ckm:design` to `design` |
-| [design-system](skills/design-system/) | Design tokens, component specs, slide generation | ↳ `.claude/skills/design-system` | Renames invalid upstream skill name `ckm:design-system` to `design-system` |
-| [ui-styling](skills/ui-styling/) | UI styling — Tailwind, shadcn/ui, canvas design system, bundled fonts | ↳ `.claude/skills/ui-styling` | Renames invalid upstream skill name `ckm:ui-styling` to `ui-styling` |
 
 > The customization rationale for the mattpocock/skills suite lives in [docs/mattpocock-customization-rationale.md](docs/mattpocock-customization-rationale.md). This repo previously vendored the [obra/superpowers](https://github.com/obra/superpowers) suite, fully retired in favor of the mattpocock/skills v1.2 development cycle; the superpowers-era rationale and migration history are preserved in git history (`docs/superpowers-customization-rationale.md`).
 
@@ -44,10 +37,13 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 
 Skills sourced from other projects. Run `python update.py` to pull latest versions.
 
+Anthropic's `frontend-design` is the sole visual-design skill. Architecture, prototyping, and video tooling remain separate. UI testing defaults to desktop; other devices require an explicit user request.
+
 Vendor skill directories use the official upstream skill name from `SKILL.md` unchanged. Do not rename them to match a simplified repo folder name.
 
 | Skill | Description | Source |
 |---|---|---|
+| [frontend-design](skills/frontend-design/) | Anthropic's guidance for visual direction, typography, layout, and UI copy | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design) |
 | [browser-harness](skills/browser-harness/) | Control local or remote browsers through Browser Harness using CDP | [browser-use/browser-harness](https://github.com/browser-use/browser-harness/blob/main/SKILL.md) |
 | [unslop](skills/unslop/) | Cut AI tells from writing and add a more specific human voice | [cursor/plugins pstack by Lauren Tan](https://github.com/cursor/plugins/tree/main/pstack/skills/unslop) |
 | **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | |
@@ -68,13 +64,6 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 | [wait-what](skills/wait-what/) | One-word corrective that re-pitches a message that didn't land | ↳ `skills/productivity/wait-what` |
 | [writing-for-agents](skills/writing-for-agents/) | Reference for writing and editing skills — vocabulary and principles for predictable skills | ↳ `skills/productivity/writing-for-agents` |
 | [remotion-best-practices](skills/remotion-best-practices/) | Best practices for Remotion-based video creation in React, including preview and render workflows | [remotion-dev/skills](https://github.com/remotion-dev/skills/tree/main/skills/remotion-best-practices) |
-| [revealjs](skills/revealjs/) | Create polished reveal.js presentations, decks, and slideshows with HTML and CSS | [ryanbbrown/revealjs-skill](https://github.com/ryanbbrown/revealjs-skill/tree/main/skills/revealjs) |
-| **[ui-ux-pro-max suite](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** | | |
-| [ui-ux-pro-max](skills/ui-ux-pro-max/) | UI/UX design intelligence — styles, palettes, font pairings, chart types across 10+ stacks | ↳ `.claude/skills/ui-ux-pro-max` + `src/ui-ux-pro-max` |
-
-> **Note:** `ui-styling` includes font license files (OFL) but binary `.ttf` files are skipped during
-> `update.py` to keep the repo lightweight. If you need the actual font files, download them from the
-> upstream repo or use Google Fonts.
 
 ## Setup
 

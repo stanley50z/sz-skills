@@ -51,8 +51,8 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 **Solution:** UI look-and-feel is tested visually, never with code tests:
 
 - No code tests for UI layout, styling, responsive behavior, visual hierarchy, or interaction-state appearance.
-- Agents use the strongest available real-browser inspection tool (Chrome DevTools MCP preferred for local `file://` pages), full-screen unless a viewport is specified.
-- Visual checks explicitly cover clipping, overflow, alignment, horizontal/vertical visual balance, interaction states, and responsive viewports.
+- Agents use the strongest available real-browser inspection tool (Chrome DevTools MCP preferred for local `file://` pages), full-screen on desktop unless the user explicitly requests another device or viewport.
+- Visual checks explicitly cover clipping, overflow, alignment, horizontal/vertical visual balance, and interaction states on desktop.
 - A dedicated `visual-tests.md` reference keeps the inspection checklist out of the main workflow.
 - `to-tickets` writes UI acceptance criteria along the same axes; `implement` repeats the no-component-test rule.
 

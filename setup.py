@@ -30,6 +30,16 @@ HOME = Path.home()
 # Repo-managed skill names that were intentionally retired. setup.py removes
 # these from managed target roots so stale copies do not keep triggering.
 RETIRED_SKILLS = [
+    # Visual-design skills replaced by Anthropic frontend-design:
+    "banner-design",
+    "brand",
+    "design",
+    "design-system",
+    "frontend-skill",
+    "revealjs",
+    "slides",
+    "ui-styling",
+    "ui-ux-pro-max",
     "browser-use",  # upstream browser-harness skill's former name
     "docker-expert",
     "find-skills",

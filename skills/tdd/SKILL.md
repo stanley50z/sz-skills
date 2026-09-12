@@ -153,8 +153,8 @@ Tool priority:
 Project instructions may name a more specific browser tool for a target. Follow
 those instructions when they are more specific than this default order.
 
-When opening a browser for visual inspection, use full-screen unless the user,
-project, or target viewport specifies otherwise.
+Use a full-screen desktop browser for UI checks unless the user explicitly
+requests another device or viewport.
 
 Visual checks must cover:
 
@@ -166,7 +166,6 @@ Visual checks must cover:
 - Spacing, grouping, and hierarchy make the primary workflow obvious.
 - Interactive states are visible and usable: hover, focus, active, disabled,
   selected, loading, empty, and error states when relevant.
-- Responsive layouts work at realistic desktop and mobile viewports.
 - The inspection is based on screenshots or live browser observation, not DOM
   guesses or implementation details.
 
@@ -246,7 +245,7 @@ Before writing any code:
 - [ ] Confirm with user which user-facing behaviors to test first
 - [ ] Identify the end-to-end entry point and what real data is available for
       the final full run
-- [ ] For UI changes, define the visual states and viewports to inspect and
+- [ ] For UI changes, define the visual states to inspect and
       the user workflows to walk through in the browser
 - [ ] Identify and confirm the public seam under test
 - [ ] Identify opportunities for [deep modules](deep-modules.md)
@@ -391,7 +390,7 @@ not patch around it or declare partial success.
 [ ] RED run failed for the expected reason
 [ ] RED and GREEN commands used command-level timeouts
 [ ] UI changes were verified visually and behaviorally in the browser, not with code tests
-[ ] Visual check covered clipping/overflow, alignment, visual balance, states, and responsive viewports
+[ ] Visual check covered clipping/overflow, alignment, visual balance, and states on desktop
 [ ] Feature has at least one end-to-end test/run through the real entry point
 [ ] Final end-to-end run used real data when available (noted if only synthetic data existed)
 [ ] Web app flows were walked through live: buttons clicked, results reviewed

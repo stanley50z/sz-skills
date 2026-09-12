@@ -19,8 +19,8 @@ browser walkthrough (see below). Neither check replaces the other.
 Project instructions may name a more specific browser tool for a target. Follow
 those instructions when they are more specific than this default order.
 
-When opening a browser for visual inspection, use full-screen unless the user,
-project, or target viewport specifies otherwise.
+Use a full-screen desktop browser for UI checks unless the user explicitly
+requests another device or viewport.
 
 ## Visual RED/GREEN
 
@@ -29,7 +29,7 @@ For UI work, the TDD cycle becomes:
 ```text
 RED:   Open the current UI and capture/inspect the broken or missing state
 GREEN: Implement the smallest change
-VERIFY: Reopen, interact, screenshot, and inspect the relevant viewports/states
+VERIFY: Reopen, interact, screenshot, and inspect the relevant screens/states
 ```
 
 The evidence is a screenshot or live browser observation plus concise notes.
@@ -47,7 +47,6 @@ Inspect each relevant screen/state for:
 - Clear hierarchy, grouping, and spacing.
 - No incoherent overlap between adjacent sections, controls, cards, modals, or
   navigation.
-- Responsive behavior at realistic desktop and mobile viewports.
 - Hover, focus, active, disabled, selected, loading, empty, and error states
   when those states exist.
 - No unexpected scrollbars, layout jumps, or off-screen controls.

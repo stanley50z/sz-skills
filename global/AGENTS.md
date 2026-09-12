@@ -26,6 +26,8 @@ Work a single agent finishes in one pass gets a single agent. Delegate to sub-ag
 
 ## Visual and Design Work
 
+- Use Anthropic's `frontend-design` as the sole visual-design skill.
+- UI testing targets desktop unless the user explicitly requests another device or viewport.
 - Mock first: explore directions in throwaway mocks, and touch real components only after the user picks one.
 - For UI design choices, prefer one self-contained HTML comparison page containing every option, clearly labeled to match the question. Images are acceptable when every option has a visible preview, either in a labeled comparison sheet or as individually linked images. Before asking the user to choose, provide access to all previews in the preceding message. Agent-side image inspection does not count as showing the user. Keep the comparison available until the user decides.
 - Use strong contrast; follow the project's existing design tokens.
