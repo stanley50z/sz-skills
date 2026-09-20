@@ -94,6 +94,8 @@ In PowerShell, use explicit UTF-8 when reading, writing, or verifying anything t
 
 Record durable facts and decisions in the relevant project or agent documentation.
 
+WHEN THE USER MAKES A DECISION THAT OVERRIDES A PREVIOUS DECISION, REVISIT AND RECONFIRM THE OVERRIDDEN DECISION AND ALL PREVIOUS RELATED DECISIONS IN LIGHT OF THE NEW DECISION BEFORE PROCEEDING.
+
 ## Scope
 
 Keep changes within the user's requested scope.
