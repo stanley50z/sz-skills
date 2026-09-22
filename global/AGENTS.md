@@ -10,6 +10,10 @@ Build complex things as simple as possible. Understand the real constraint, then
 - Write focused regression tests for real behavior.
 - Comment how a function or class is used, above its definition — not every line — and update comments when the code changes.
 
+## Debugging artifacts
+
+Always provide persistent log and crash dump paths for debugging. Configure the application to write to them and document their locations in the project. If the runtime cannot produce native crash dumps, persist crash reports with stack traces instead.
+
 ## TypeScript
 
 - Write idiomatic TypeScript; if it reads like a Python dev wrote it, rewrite it.
