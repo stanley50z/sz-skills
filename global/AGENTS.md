@@ -88,7 +88,14 @@ Commands execute via `powershell.exe -Command "<string>"` (Windows PowerShell 5.
 - For multiline Python or scripts: write the code to a temp file with the file-write tool, run `python tempfile.py`, then delete it. Do NOT pipe multiline code via stdin.
 - For one-liners: `python -c "..."` with double quotes outside and single quotes inside.
 - On a parse or quoting error, switch to the temp-file approach immediately — don't retry with different quoting.
-- When a command requires administrator privileges, launch an elevated script and proceed on the assumption that the user will approve the UAC prompt.
+
+## Windows UAC approval
+
+- When an authorized task requires administrator privileges, launch the elevated script immediately. The user expects the Windows UAC prompt and is usually nearby to approve it.
+- Keep the agent running: wait 10 seconds, then check process status, logs, or the intended system change to determine whether elevation succeeded. Never ask the user whether they approved UAC or end the turn waiting for a chat reply.
+- If approval has not gone through, reissue the UAC request and repeat the 10-second check automatically. Keep only one live approval attempt at a time; retire any stale pending attempt before replacing it.
+- Once the elevated operation starts, monitor it rather than relaunching it. Verify the result and continue the task. A missing result alone does not mean approval failed.
+- Continue this loop until approval succeeds or the user tells you to stop. Diagnose actual launch or command failures from logs rather than treating every failure as missing approval. UAC approval remains a Windows interaction; never bypass it.
 
 ## Encoding on Windows
 
