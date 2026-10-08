@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Break a plan, spec, or conversation into a set of **tickets** — tracer-bullet vertical slices, each declaring the tickets that **block** it.
 
-The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
+The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
 
 ## Process
 
@@ -63,38 +63,16 @@ Iterate until the user approves the breakdown.
 
 ### 5. Publish the tickets to the configured tracker
 
-Publish the direct ticket or approved breakdown. **How** depends on the tracker `/setup-matt-pocock-skills` configured. The tickets stay the same; only the blocking representation changes.
-
-- **Local files**: write one file per ticket under the local tracker's per-ticket path (see `docs/agents/issue-tracker.md`), numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below. Write one ticket per file.
-- **A real issue tracker (GitHub, Linear, and similar)**: publish in the staged sequence below. The graph must become visible before any ticket enters an automated implementation queue.
-
-For a real issue tracker:
+Publish the direct ticket or approved breakdown as GitHub issues, following `docs/agents/issue-tracker.md`, in the staged sequence below. The graph must become visible before any ticket enters an automated implementation queue.
 
 1. Create every implementation ticket without `ready-for-agent` and without an assignee. Create blockers first so later ticket bodies can reference real identifiers.
-2. Wire the complete graph. Link each implementation ticket to the spec parent with the platform's native parent/sub-issue relationship. Add every native blocking dependency. Use "Blocked by" text only when the tracker has no native dependency feature.
+2. Wire the complete graph. Link each implementation ticket to the spec parent with the platform's native parent/sub-issue relationship. Add every native blocking dependency.
 3. Read the graph back from the tracker. Verify that every ticket has the intended parent and blocker set. If any relationship is missing or wrong, leave every new ticket outside the implementation queue and report the mismatch.
 4. Apply `ready-for-agent` to the implementation tickets only after the graph passes verification. Apply any category labels required by the tracker at the same time.
 
 The spec parent remains the central reference and progress tracker. Preserve its body and open/closed state. Remove `ready-for-agent` from the spec parent if a legacy `/to-spec` run added it, and apply the configured non-executable spec label when available.
 
 Work the **frontier**: any implementation ticket whose blockers are all done. For a purely linear chain, that means top to bottom. Blocked implementation tickets may carry `ready-for-agent`; native dependencies keep them out of the live frontier.
-
-<local-ticket-template>
-
-# <NN> — <Ticket title>
-
-**Requirement:** which spec item this implements, quoted or paraphrased.
-
-**What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective — not a layer-by-layer implementation list.
-
-**Blocked by:** the numbers/titles of the tickets that gate this one, or "None — can start immediately".
-
-**Status:** ready-for-agent
-
-- [ ] Acceptance criterion 1
-- [ ] Acceptance criterion 2
-
-</local-ticket-template>
 
 <issue-template>
 
@@ -121,24 +99,17 @@ The end-to-end behaviour this ticket makes work, from the user's perspective —
 
 </issue-template>
 
-In either form, avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
+Avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
 
 For UI work, write acceptance criteria along both tdd-skill axes — visual checks (viewport, state, what must not clip, overflow, or misalign) and end-to-end behavior walkthroughs (the workflow to click through in the browser and the result that must appear, on real data when available) — not component tests, DOM assertions, or snapshots.
 
 ## When the User Requests a Change During Ticketing
 
-**A user change during ticketing is a new requirement — not a footnote.**
-
-If the user says "change A to B" while reviewing the breakdown, do not just edit the tickets. Propagate the change back to the spec first:
-
-1. **Spec**: Update the spec — add B, remove or update A
-2. **Tickets**: Update or add tickets for B, remove tickets for old A
-
-The user's request at any stage has the same authority as an initial requirement stated during grilling.
+A user change during ticketing is a new requirement: propagate it to the spec first, then the tickets, following [`../implement/REQUIREMENT-CHANGES.md`](../implement/REQUIREMENT-CHANGES.md).
 
 ## HTML Plan Companion
 
-For a large or hard-to-review breakdown, create an optional HTML Plan Companion (linked from the parent issue on a real tracker, or saved next to the ticket files on a local tracker — e.g. `docs/plans/<artifact-id>/plan.html`). The published tickets and Markdown ticket files remain the source of truth; the HTML file is a review aid.
+For a large or hard-to-review breakdown, create an optional HTML Plan Companion (linked from the spec parent issue, e.g. `docs/plans/<artifact-id>/plan.html`). The published tickets remain the source of truth; the HTML file is a review aid.
 
 Use an HTML Plan Companion when it would make the breakdown easier to understand through:
 
@@ -152,4 +123,7 @@ Do not create HTML for small breakdowns, short ticket lists, or anything where M
 
 ## Handoff
 
-Work the frontier one ticket at a time with the implement skill (`/implement`), clearing context between tickets.
+Offer the user both execution routes; the user chooses and invokes one:
+
+- `/implement`: work the frontier one ticket at a time, clearing context between tickets.
+- `/implement-spec`: orchestrate the whole spec on one integration branch, for an approved multi-ticket spec.

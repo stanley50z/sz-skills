@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 This skill takes the current conversation context and codebase understanding and produces a spec. Do NOT interview the user — just synthesize what you already know.
 
-The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
+The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
 
 ## Process
 
@@ -16,7 +16,7 @@ The issue tracker and triage label vocabulary should have been provided to you �
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it according to the project issue tracker's spec convention. On a real tracker, use the spec issue as the parent and progress tracker for its later implementation tickets. The spec parent is not an implementation ticket. Give it the configured non-executable type label, such as `spec`, when one exists, and leave it without a triage state label. `ready-for-agent` is reserved for the implementation tickets produced by `/to-tickets`.
+3. Write the spec using the template below, then publish it according to the project issue tracker's spec convention. Use the spec issue as the parent and progress tracker for its later implementation tickets. The spec parent is not an implementation ticket. Give it the configured non-executable type label, such as `spec`, when one exists, and leave it without a triage state label. `ready-for-agent` is reserved for the implementation tickets produced by `/to-tickets`.
 
 <spec-template>
 
@@ -30,7 +30,7 @@ The solution to the problem, from the user's perspective.
 
 ## User Stories
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+A numbered list of user stories. Each user story should be in the format of:
 
 1. As an <actor>, I want a <feature>, so that <benefit>
 
@@ -38,7 +38,7 @@ A LONG, numbered list of user stories. Each user story should be in the format o
 1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
 </user-story-example>
 
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+The list is complete when every agreed requirement and every affected actor has a story, one story per distinct behavior.
 
 ## Implementation Decisions
 
@@ -76,7 +76,7 @@ Any further notes about the feature.
 
 ## Structured HTML Companion
 
-For a large or hard-to-review spec, create an optional Structured HTML Companion (linked from the issue on a real tracker, or saved next to the spec file on a local tracker). The HTML companion is a review aid, not the canonical spec — the published spec remains the source of truth.
+For a large or hard-to-review spec, create an optional Structured HTML Companion (linked from the spec issue). The HTML companion is a review aid, not the canonical spec — the published spec remains the source of truth.
 
 Use it when scanning beats prose:
 
@@ -91,4 +91,4 @@ Skip HTML for short specs, ordinary clarifications, or anything clearer as plain
 
 ## Handoff
 
-Once the spec is published and the user approves it, break it into tracer-bullet tickets with `/to-tickets`.
+Once the spec is published and the user approves it, tell the user the next step is to run `/to-tickets` to break it into tracer-bullet tickets.

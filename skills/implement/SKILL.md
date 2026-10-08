@@ -14,36 +14,21 @@ Reuse an existing implementation issue or ticket when the user supplies one. Cre
 
 When the user gives the requirement directly and no implementation issue already exists, create one implementation issue on the configured tracker before coding. Summarize the requirement and validation plan. Apply only applicable category or metadata labels, such as `bug` or `enhancement`, and leave off `ready-for-agent`. This session owns the implementation; `ready-for-agent` hands work to Auto-Implement. Keep the issue reference for close-out.
 
-Before coding, resolve the repository's default branch from Git or hosting metadata. For a fork, use the default branch of the repository that will receive the PR. Fetch it, then create and switch to a feature branch from its latest remote tip. Keep the resolved branch name for close-out.
+Before coding, resolve the repository's default branch from Git or hosting metadata. For a fork, use the default branch of the repository that will receive the PR. Fetch it, then create and switch to a feature branch from its latest remote tip. Keep the resolved branch name and the branch's start commit for close-out.
 
 Work one ticket at a time from the frontier (tickets whose blockers are all done). Read the ticket's **Requirement** before coding.
 
-Use `/tdd` where possible, at pre-agreed seams. For UI layout, styling, responsive behavior, visual hierarchy, and interaction states, use the visual RED/GREEN checks from the tdd skill — no component tests, DOM assertions, or snapshot tests. UI behavior additionally gets the tdd skill's live browser walkthrough: click the actual buttons, enter input, and review the result.
+Build with the `tdd` skill at pre-agreed seams: load the `tdd` skill before the first test. It owns test policy, including UI checks, command timeouts, and the done gate's end-to-end run through the real entry point. Run typechecking regularly alongside it.
 
-Run typechecking regularly, single test files regularly, and the full test suite once at the end. Before closing a ticket that changes user-facing behavior, run the tdd skill's end-to-end pass: a full run through the real entry point on real data when available, and for web apps the live browser walkthrough of the changed flow.
+**No fallbacks, no silent failure.** The tdd skill's explicit-failure gate binds every change in this session, tested or not.
 
-## Hard Rules
-
-- **No fallbacks, no silent failure.** Implement the feature for real — no default returns, no swallowed errors, no `?? fallbackValue` to make a test pass. If it can't be implemented, let the test fail and say so.
-- **Suggest, don't auto-apply.** When the planned approach keeps failing, stop and present alternatives to the user. The user decides which direction to take.
-- **Version upgrades:** when replacing v1 with v2, remove or rewrite stale v1 tests *before* implementing v2. Never add v1 fallback paths unless the user explicitly asks for backward compatibility.
-
-## When the User Requests a Change Mid-Implementation
-
-Treat it as a new requirement and propagate it to every artifact, not just the code in front of you:
-
-1. **Spec** — update the published spec on the tracker
-2. **Tickets** — update or add tickets on the tracker, remove stale ones
-3. **Tests** — remove/rewrite tests for old behavior, write tests for new
-4. **Implementation** — update the code
-
-A mid-implementation change has the same authority as an initial requirement stated during grilling.
+When the user changes a requirement mid-implementation, follow [REQUIREMENT-CHANGES.md](REQUIREMENT-CHANGES.md).
 
 ## Close Out
 
-Once done:
+Once the tdd done gate passes:
 
-1. Use `/code-review` to review the work and address what it finds.
+1. Load the `code-review` skill with the branch's start commit as the resolved comparison point, plus the spec, ticket, or issue references. Its scope covers the uncommitted work. Address what it finds.
 2. Commit to the current branch with the commit skill.
-3. Push the feature branch and create a ready-to-review pull request that targets that same default branch explicitly. The PR must not be a draft; give it a clear title and a body that summarizes the change, links the relevant spec or tickets, and lists the validation performed. Use a closing reference for an implementation issue this session created so the merge closes it.
-4. Ask the user to test the feature themselves before wrapping up — automated tests passing does not mean it works as they expected.
+3. Push the feature branch and create a ready-to-review pull request that targets that same default branch explicitly. The PR must not be a draft. Give it a clear title, and load the `pr` skill to write the body. Its Evidence lists the validation performed. Add a line that links the relevant spec or tickets, with a closing reference for an implementation issue this session created so the merge closes it.
+4. Ask the user to test the feature themselves before wrapping up. Passing automated tests does not mean it works as they expected.

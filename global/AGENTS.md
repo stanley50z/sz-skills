@@ -34,14 +34,23 @@ Work a single agent finishes in one pass gets a single agent. Delegate to sub-ag
 - UI testing targets desktop unless the user explicitly requests another device or viewport.
 - Mock first: explore directions in throwaway mocks, and touch real components only after the user picks one.
 - For UI design choices, prefer one self-contained HTML comparison page containing every option, clearly labeled to match the question. Images are acceptable when every option has a visible preview, either in a labeled comparison sheet or as individually linked images. Before asking the user to choose, provide access to all previews in the preceding message. Agent-side image inspection does not count as showing the user. Keep the comparison available until the user decides.
-- Use strong contrast; follow the project's existing design tokens.
-- Require every frontend UI element to convey unique information, clarify structure or state, or enable an action. Remove duplicated content.
-- Keep layouts as clean and compact as the content allows; whitespace is preferable to filler.
-- Use familiar icon-only controls when the symbol communicates the action unambiguously. Give each control an accessible name.
+- When building or reviewing UI, apply `~/sz-skills/global/UI-GUIDELINES.md`.
 
 ## File handoff
 
-In T3 Code, use `t3code-file-links` whenever returning or displaying a local file. In other harnesses, use that harness's native file-link syntax and include the native absolute path when the user needs a copyable location.
+In T3 Code, use `t3code-file-links` whenever returning or displaying a local file. In other harnesses, link files as `file:///C:/path/to/file` URLs with forward slashes so the terminal makes them ctrl-clickable, and include the native absolute path when the user needs a copyable location.
+
+## HTML Reports
+
+When the user asks for an HTML report, the report is the deliverable: put all findings, analysis, and summaries in the HTML file. Keep the chat reply to one line stating the report is done plus a ctrl-clickable `file:///` link to it, and nothing else.
+
+## Global Agent Instructions
+
+`~/sz-skills` is the source of truth for these global instructions and for global skills. Edit `~/sz-skills/global/AGENTS.md` (or `global/CLAUDE.md`), then run `python setup.py` there to regenerate the installed copies. Never edit `~/.pi/agent/AGENTS.md`, `~/.codex/AGENTS.md`, `~/.config/opencode/AGENTS.md`, or `~/.claude/CLAUDE.md` directly; `setup.py` overwrites them.
+
+## Loading Skills
+
+When an instruction says to load or use a named skill, call the harness's native skill tool if it has one; otherwise read that skill's `SKILL.md` from the location the harness lists. A skill marked `disable-model-invocation: true` runs only when the user names it; never load it on your own or from another skill.
 
 ## Question Dialogs and Hidden Text
 
@@ -58,6 +67,8 @@ For browser exploration, automation, scraping, testing, or site/app interaction,
 After browser exploration or testing, close every browser tab opened for the task and delete every temporary script created for it.
 
 ## Specific GitHub Repository Questions
+
+When the user writes `@owner/repo`, interpret it as the GitHub repository `https://github.com/owner/repo`, including in installation requests. For example, `@trycua/cua` means `https://github.com/trycua/cua`. Treat it as a scoped npm package only when the user explicitly identifies it as an npm package.
 
 When the user asks about a specific GitHub repository, compare its owner with the user's GitHub account. For a repository owned by the user, inspect the existing first-party checkout at its default location, `~\<repo-name>`; ask for its location if absent. For a repository owned by another account, use `~\github repo ref\<repo-name>`. If that checkout already exists, run `git pull --ff-only` before inspecting it. Otherwise, clone it there. Treat the source code as the primary evidence instead of relying on documentation or web search. This workflow applies only when the repository itself is the subject of the user's question.
 
@@ -81,12 +92,14 @@ For projects requiring a repeatable launch command, provide cross-platform `star
 
 ## Shell Commands on Windows
 
-Commands execute via `powershell.exe -Command "<string>"` (Windows PowerShell 5.1) unless the harness says otherwise. The command is embedded in an extra quoting layer you cannot see.
+The shell depends on the tool that runs your commands:
 
-- Never use POSIX-only syntax: no heredocs (`<<'EOF'`), no `&&`/`||` chaining, no `$(...)`, no `export VAR=x`.
-- Never use PowerShell here-strings (`@'...'@`) inside a `-Command` string — the outer quoting layer breaks them.
+- **A tool named `bash`/`Bash`** (Pi, Claude Code): Git Bash (MSYS2). Use Bash syntax; `&&`, `$(...)`, and heredocs work. `C:\Users\13982` is `/c/Users/13982` or `~`. Call Windows-only commands explicitly, e.g. `powershell.exe -NoProfile -Command '...'`.
+- **A tool named `powershell`, or Codex's shell tool**: Windows PowerShell 5.1 via `powershell.exe -Command "<string>"`, inside an extra quoting layer you cannot see. Use no POSIX-only syntax: no heredocs, no `&&`/`||` chaining, no `$(...)`, no `export VAR=x`, and no here-strings (`@'...'@`).
+
+In either shell:
+
 - For multiline Python or scripts: write the code to a temp file with the file-write tool, run `python tempfile.py`, then delete it. Do NOT pipe multiline code via stdin.
-- For one-liners: `python -c "..."` with double quotes outside and single quotes inside.
 - On a parse or quoting error, switch to the temp-file approach immediately — don't retry with different quoting.
 
 ## Windows UAC approval
@@ -99,7 +112,7 @@ Commands execute via `powershell.exe -Command "<string>"` (Windows PowerShell 5.
 
 ## Encoding on Windows
 
-In PowerShell, use explicit UTF-8 when reading, writing, or verifying anything that may contain non-ASCII (e.g. Chinese) text.
+Use explicit UTF-8 when reading, writing, or verifying anything that may contain non-ASCII (e.g. Chinese) text, especially in PowerShell or when passing text to `powershell.exe`.
 
 ## Notes and Memory
 

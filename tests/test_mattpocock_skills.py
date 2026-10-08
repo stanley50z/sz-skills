@@ -31,7 +31,7 @@ class HtmlCompanionGuidanceTests(unittest.TestCase):
         source = TO_TICKETS.read_text(encoding="utf-8")
 
         self.assertIn("HTML Plan Companion", source)
-        self.assertIn("Markdown ticket files remain the source of truth", source)
+        self.assertIn("The published tickets remain the source of truth", source)
         expected_uses = [
             "ticket dependency maps",
             "file-change maps",
@@ -66,16 +66,21 @@ class MattpocockMigrationTests(unittest.TestCase):
         "dispatching-parallel-agents",
         "using-git-worktrees",
         "finishing-a-development-branch",
+        "resolving-merge-conflicts",
     ]
     SUITE = [
         "ask-matt", "code-review", "codebase-design", "diagnosing-bugs",
         "domain-modeling", "grill-me", "grill-with-docs", "grilling",
-        "implement", "improve-codebase-architecture", "prototype", "research",
-        "resolving-merge-conflicts", "setup-matt-pocock-skills", "tdd", "teach",
-        "to-questionnaire", "to-spec", "to-tickets", "triage", "wait-what",
-        "wayfinder", "wizard",
+        "implement", "implement-spec", "improve-codebase-architecture", "pr",
+        "prototype", "research", "retro", "setup-matt-pocock-skills", "tdd",
+        "teach", "to-questionnaire", "to-spec", "to-tickets", "triage",
+        "wait-what", "wayfinder", "wizard",
     ]
-    PATCHED_SUITE = ["implement", "prototype", "setup-matt-pocock-skills", "tdd", "to-spec", "to-tickets"]
+    PATCHED_SUITE = [
+        "ask-matt", "grill-me", "grill-with-docs", "implement", "implement-spec",
+        "improve-codebase-architecture", "prototype", "retro",
+        "setup-matt-pocock-skills", "tdd", "to-spec", "to-tickets", "triage",
+    ]
 
     def test_retired_skills_are_gone_from_repo(self):
         for skill in self.RETIRED:
@@ -104,10 +109,10 @@ class MattpocockMigrationTests(unittest.TestCase):
             with self.subTest(skill=skill):
                 self.assertIn(skill, update.PATCHED)
 
-    def test_restored_upstream_skills_are_not_patched(self):
+    def test_stock_upstream_skills_are_not_patched(self):
         import update
 
-        for skill in ("grill-with-docs", "improve-codebase-architecture"):
+        for skill in ("domain-modeling", "diagnosing-bugs", "pr", "wait-what"):
             with self.subTest(skill=skill):
                 self.assertNotIn(skill, update.PATCHED)
 

@@ -68,10 +68,7 @@ UPSTREAM = {
     "research": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/research"},
     ],
-    "resolving-merge-conflicts": [
-        {"repo": "mattpocock/skills", "path": "skills/engineering/resolving-merge-conflicts"},
-    ],
-    # Customized: local tracker doc maps to docs/specs/ + docs/plans/ instead of .scratch/.
+    # Customized: GitHub-only, non-interactive, model-invocable.
     "setup-matt-pocock-skills": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/setup-matt-pocock-skills"},
     ],
@@ -133,6 +130,17 @@ UPSTREAM = {
     "tdd": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/tdd"},
     ],
+    # New in v1.3: PR-body shape (model-invoked), session retrospectives and
+    # whole-spec orchestration (both user-invoked).
+    "pr": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/pr"},
+    ],
+    "retro": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/retro"},
+    ],
+    "implement-spec": [
+        {"repo": "mattpocock/skills", "path": "skills/engineering/implement-spec"},
+    ],
     "remotion-best-practices": [
         {"repo": "remotion-dev/skills", "path": "skills/remotion-best-practices"},
     ],
@@ -149,6 +157,16 @@ PATCHED = {
     "prototype",
     "wayfinder",
     "grilling",
+    "ask-matt",
+    "grill-me",
+    "grill-with-docs",
+    "improve-codebase-architecture",
+    "triage",
+    "retro",
+    "implement-spec",
+    "code-review",
+    "codebase-design",
+    "unslop",
 }
 
 # ── Colours (ANSI) ───────────────────────────────────────────────────────

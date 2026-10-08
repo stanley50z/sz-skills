@@ -21,17 +21,27 @@ Skills sourced from other projects with local edits. These are skipped by `updat
 | Skill | Description | Source | Customization |
 |---|---|---|---|
 | **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | | Locally adapted development-cycle skills |
-| [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time GitHub repo configuration — GitHub Issues, triage labels, docs layout | ↳ `skills/engineering/setup-matt-pocock-skills` | Requires a reachable GitHub remote and stops before writing when one is missing; uses GitHub Issues exclusively; keeps canonical triage labels, `AGENTS.md` when no agent file exists, and write-then-report behavior; model-invocable so `setup-git-repo` can invoke it |
+| [setup-matt-pocock-skills](skills/setup-matt-pocock-skills/) | One-time GitHub repo configuration — GitHub Issues, triage labels, docs layout | ↳ `skills/engineering/setup-matt-pocock-skills` | Requires a reachable GitHub remote and stops before writing when one is missing; uses GitHub Issues exclusively; keeps canonical triage labels, `AGENTS.md` when no agent file exists, and write-then-report behavior; model-invocable so `setup-git-repo` can invoke it; writes the v1.3 `GLOSSARY.md` layout and renames a repo's legacy `CONTEXT.md` domain glossary when rerun |
 | [wayfinder](skills/wayfinder/) | Plan multi-session work as a map of decision tickets | ↳ `skills/engineering/wayfinder` | Persists every grilling-round exchange as an issue checkpoint so interrupted sessions can resume without the original chat transcript |
 | [to-spec](skills/to-spec/) | Synthesize the current conversation into a published spec | ↳ `skills/engineering/to-spec` | Non-executable spec parents, Structured HTML Companion review aid, and explicit handoff to `/to-tickets` |
 | [to-tickets](skills/to-tickets/) | Break a spec into tracer-bullet tickets with blocking edges | ↳ `skills/engineering/to-tickets` | Direct single-ticket requests publish without a granularity quiz; staged graph publication before queue labels, native parent/dependency verification, `Requirement:` trace fields, UI acceptance criteria, cross-phase change propagation, HTML plan companion |
 | [implement](skills/implement/) | Implement a direct request or ticket with TDD, code review, commit, and a review-ready PR | ↳ `skills/engineering/implement` | Direct work gets a tracker record without entering the Automode implementation queue; also adds the no-fallback hard gate, suggest-don't-auto-apply, version-upgrade test cleanup, visual + end-to-end UI checks with close-out e2e pass, cross-phase change propagation, review-ready PR creation, and local skill names |
 | [tdd](skills/tdd/) | Test-driven development with seam-based red-green loops | ↳ `skills/engineering/tdd` | Reapplies local rules: command timeouts, user-requirement hierarchy, required end-to-end pass (real-data full run, live browser walkthrough for web apps) on top of visual UI checks, no silent fallbacks, stale v1/v2 test cleanup, and review-stage refactoring (renamed from local `test-driven-development` to the upstream name) |
-| [prototype](skills/prototype/) | Throwaway logic/UI prototypes to answer design questions | ↳ `skills/engineering/prototype` | UI prototype dev server binds to all interfaces so the preview is reachable over Tailscale as well as localhost |
+| [prototype](skills/prototype/) | Throwaway logic/UI prototypes to answer design questions | ↳ `skills/engineering/prototype` | UI options shown together on one static HTML comparison page kept until the user decides; a dev server only when genuinely needed, bound for Tailscale and stopped before handoff unless the user asks to keep it |
 | [handoff](skills/handoff/) | Compact the current conversation into a handoff document for another agent to pick up | ↳ `skills/productivity/handoff` | Saves the handoff doc to the workspace root instead of the OS temp dir, and stays model-invocable |
 | [grilling](skills/grilling/) | Shared interview loop used by the grill skills | ↳ `skills/productivity/grilling` | Bounds the design tree to requested behavior; excludes speculative recovery and preventable concurrency branches |
+| [grill-me](skills/grill-me/) | Deep interview on any plan or design decision | ↳ `skills/productivity/grill-me` | Harness-correct loading of `grilling` |
+| [grill-with-docs](skills/grill-with-docs/) | Interview + domain modeling to build shared language before speccing | ↳ `skills/engineering/grill-with-docs` | Harness-correct loading of `grilling` and `domain-modeling` |
+| [triage](skills/triage/) | Move issues through the triage state machine | ↳ `skills/engineering/triage` | Harness-correct loading of `grilling` and `domain-modeling` |
+| [improve-codebase-architecture](skills/improve-codebase-architecture/) | Find architecture improvements and deeper module boundaries | ↳ `skills/engineering/improve-codebase-architecture` | Harness-correct loading of its reference skills; architecture vocabulary keeps real identifiers and glossary terms |
+| [ask-matt](skills/ask-matt/) | Router for picking the right skill/workflow for a request | ↳ `skills/engineering/ask-matt` | GitHub-only routing, user-directed `/retro`, summaries defer to the skill definitions |
+| [retro](skills/retro/) | Propose environment improvements from a coding-session retrospective (user-invoked) | ↳ `skills/engineering/retro` | Harness-correct loading; finds Pi, Codex, and Claude Code session logs; reads only the named session and changes nothing without approval |
+| [implement-spec](skills/implement-spec/) | Implement a whole spec's ticket graph on one integration branch (user-invoked) | ↳ `skills/engineering/implement-spec` | Workers share the local tdd policy; the orchestrator owns integration validation, the final code review, and the aggregate PR; see the rationale |
+| [code-review](skills/code-review/) | Review diffs against repo standards and originating specs | ↳ `skills/engineering/code-review` | Reviews working-tree changes before commit; see the rationale |
+| [codebase-design](skills/codebase-design/) | Shared vocabulary for designing deep modules at clean seams | ↳ `skills/engineering/codebase-design` | Vocabulary rules apply to architectural discussion; real names stay exact |
+| [unslop](skills/unslop/) | Cut AI tells from user-facing writing | [cursor/plugins pstack by Lauren Tan](https://github.com/cursor/plugins/tree/main/pstack/skills/unslop) | Scoped to user-facing prose; exact technical terms and quotations are preserved; punctuation is judgment, not a ban |
 
-> The customization rationale for the mattpocock/skills suite lives in [docs/mattpocock-customization-rationale.md](docs/mattpocock-customization-rationale.md). This repo previously vendored the [obra/superpowers](https://github.com/obra/superpowers) suite, fully retired in favor of the mattpocock/skills v1.2 development cycle; the superpowers-era rationale and migration history are preserved in git history (`docs/superpowers-customization-rationale.md`).
+> The customization rationale for the mattpocock/skills suite lives in [docs/mattpocock-customization-rationale.md](docs/mattpocock-customization-rationale.md). This repo previously vendored the [obra/superpowers](https://github.com/obra/superpowers) suite, fully retired in favor of the mattpocock/skills development cycle (v1.3 since 2026-10); the superpowers-era rationale and migration history are preserved in git history (`docs/superpowers-customization-rationale.md`).
 
 ## Vendor Skills
 
@@ -45,20 +55,12 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 |---|---|---|
 | [frontend-design](skills/frontend-design/) | Anthropic's guidance for visual direction, typography, layout, and UI copy | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design) |
 | [browser-harness](skills/browser-harness/) | Control local or remote browsers through Browser Harness using CDP | [browser-use/browser-harness](https://github.com/browser-use/browser-harness/blob/main/SKILL.md) |
-| [unslop](skills/unslop/) | Cut AI tells from writing and add a more specific human voice | [cursor/plugins pstack by Lauren Tan](https://github.com/cursor/plugins/tree/main/pstack/skills/unslop) |
 | **[mattpocock/skills suite](https://github.com/mattpocock/skills)** | | |
-| [ask-matt](skills/ask-matt/) | Router for picking the right skill/workflow for a request | ↳ `skills/engineering/ask-matt` |
-| [code-review](skills/code-review/) | Review diffs against repo standards and originating specs | ↳ `skills/engineering/code-review` |
-| [codebase-design](skills/codebase-design/) | Shared vocabulary for designing deep modules at clean seams | ↳ `skills/engineering/codebase-design` |
+| [pr](skills/pr/) | Shape a PR body: smallest visual, before/after evidence, merge danger (model-invoked) | ↳ `skills/engineering/pr` |
 | [diagnosing-bugs](skills/diagnosing-bugs/) | Diagnosis loop for hard bugs and performance regressions | ↳ `skills/engineering/diagnosing-bugs` |
 | [domain-modeling](skills/domain-modeling/) | Build and sharpen a project's domain model, glossary, and ADRs | ↳ `skills/engineering/domain-modeling` |
-| [grill-with-docs](skills/grill-with-docs/) | Interview + domain modeling to build shared language before speccing | ↳ `skills/engineering/grill-with-docs` |
-| [improve-codebase-architecture](skills/improve-codebase-architecture/) | Find architecture improvements and deeper module boundaries | ↳ `skills/engineering/improve-codebase-architecture` |
 | [research](skills/research/) | Investigate a question against primary sources, capture findings | ↳ `skills/engineering/research` |
-| [resolving-merge-conflicts](skills/resolving-merge-conflicts/) | Intent-traced merge/rebase conflict resolution | ↳ `skills/engineering/resolving-merge-conflicts` |
-| [triage](skills/triage/) | Move issues through the triage state machine | ↳ `skills/engineering/triage` |
 | [wizard](skills/wizard/) | Interactive bash walkthroughs for procedures only a human can perform | ↳ `skills/engineering/wizard` |
-| [grill-me](skills/grill-me/) | Deep interview on any plan or design decision | ↳ `skills/productivity/grill-me` |
 | [teach](skills/teach/) | Teach one concept across sessions in a stateful learning workspace | ↳ `skills/productivity/teach` |
 | [to-questionnaire](skills/to-questionnaire/) | Turn an unanswerable decision into a questionnaire for the person who can answer it | ↳ `skills/productivity/to-questionnaire` |
 | [wait-what](skills/wait-what/) | One-word corrective that re-pitches a message that didn't land | ↳ `skills/productivity/wait-what` |
@@ -70,12 +72,13 @@ Vendor skill directories use the official upstream skill name from `SKILL.md` un
 Requires: Python 3.8+, [gh CLI](https://cli.github.com/) (authenticated)
 
 ```sh
-git clone https://github.com/stanley50z/sz-skills ~/.sz-skills
-cd ~/.sz-skills
+git clone https://github.com/stanley50z/sz-skills ~/sz-skills
+cd ~/sz-skills
 python setup.py
 ```
 
 `setup.py` installs every skill in this repo, installs the repo-managed global instructions under `global/`, and enables the local `sz-skills` plugin hooks for Codex and Claude Code.
+The installed global instructions read the detailed UI checklist from `~/sz-skills/global/UI-GUIDELINES.md`; keep the source checkout at `~/sz-skills`. That reference is not copied separately. If the checkout moves, update the source pointer and rerun setup.
 It prepends the current user's GitHub username to the `AGENTS.md` files installed for Codex, Pi, and Opencode. Pass `--github-username <name>` to set it explicitly, set `SZ_GITHUB_USERNAME`, or let setup read the authenticated account from `gh`. If none is available, setup installs the generic instructions and prints a warning.
 To choose specific skills from a terminal menu instead, run:
 
@@ -119,7 +122,7 @@ Both plugins also register an `agent-notify` Stop hook that fires a desktop noti
 Always pull the latest repo state before updating vendor skills. In this repo, "update skills" means:
 
 ```sh
-cd ~/.sz-skills
+cd ~/sz-skills
 git pull --ff-only
 python update.py
 python setup.py

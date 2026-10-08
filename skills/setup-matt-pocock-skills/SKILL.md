@@ -9,7 +9,7 @@ Scaffold the per-repo configuration that the engineering skills assume:
 
 - **Issue tracker** — GitHub Issues
 - **Triage labels** — the strings used for the five canonical triage roles
-- **Domain docs** — where `CONTEXT.md` and ADRs live, and the consumer rules for reading them
+- **Domain docs** — where `GLOSSARY.md` and ADRs live, and the consumer rules for reading them
 
 **This skill is non-interactive after its GitHub prerequisite passes.** Do not quiz the user section by section or show drafts for approval. Explore, validate GitHub, apply the standing defaults below, write, then report what was written.
 
@@ -21,7 +21,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 
 - `git remote -v` and `.git/config` — which remote is the GitHub repo?
 - `AGENTS.md` and `CLAUDE.md` at the repo root — does either exist? Is there already an `## Agent skills` section in either?
-- `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root
+- `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root, plus any domain glossary still under its legacy name (see **Legacy glossary names** below)
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `docs/agents/` — does this skill's prior output already exist?
 - Is the `triage` skill installed? Check the exact sibling file `../triage/SKILL.md` relative to this skill before consulting available skills. An exact file check follows a symlinked skill directory; directory-only discovery may omit it. Treat either that file or a visible `triage` skill as installed. Do not infer that `triage` is absent merely because it is missing from the model's available-skills list: user-invoked copies carry `disable-model-invocation: true` and are intentionally hidden there. This decides whether triage labels are written at all.
@@ -40,7 +40,9 @@ The GitHub template carries a "PRs as a request surface" flag, defaulted **off**
 
 **Triage labels — always the five canonical defaults**, each label string equal to its role name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. Skip labels entirely when the `triage` skill isn't installed — an uninstalled skill needs no labels. On GitHub, create any of the five labels the repo doesn't have yet with `gh label create`.
 
-**Domain docs — single-context by default:** one `CONTEXT.md` + `docs/adr/` at the repo root. Choose **multi-context** (a root `CONTEXT-MAP.md` pointing to per-context `CONTEXT.md` files) automatically when exploration found monorepo signals.
+**Domain docs — single-context by default:** one `GLOSSARY.md` + `docs/adr/` at the repo root. Choose **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSSARY.md` files) automatically when exploration found monorepo signals.
+
+**Legacy glossary names:** the skills read only `GLOSSARY.md` and `GLOSSARY-MAP.md`. If exploration found this repo's domain glossary under the pre-v1.3 names (a root `CONTEXT-MAP.md`, the `CONTEXT.md` files it links, or a root `CONTEXT.md` holding glossary terms), `git mv` each one to `GLOSSARY-MAP.md` or `GLOSSARY.md` in place, then update the map's links and any agent-file or `docs/agents/` pointers to the new names. Leave any other `CONTEXT.md` untouched: only the domain glossary moves. Migrate only the repository being set up, and list every rename in the report.
 
 **Agent instructions file:**
 
@@ -82,4 +84,4 @@ Then write the docs files using the seed templates in this skill folder as a sta
 
 ### 4. Report
 
-Tell the user what was configured, in a few lines: which GitHub repository was resolved from which remote, the label vocabulary and any labels created, the domain doc layout, which instructions file got the `## Agent skills` block, and which `docs/agents/*.md` files were written. Mention they can edit `docs/agents/*.md` directly later — re-running this skill is only necessary to restart from scratch.
+Tell the user what was configured, in a few lines: which GitHub repository was resolved from which remote, the label vocabulary and any labels created, the domain doc layout, which instructions file got the `## Agent skills` block, and which `docs/agents/*.md` files were written. Mention they can edit `docs/agents/*.md` directly later — re-running this skill is only necessary to restart from scratch or to migrate legacy glossary names.

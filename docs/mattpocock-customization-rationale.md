@@ -1,8 +1,8 @@
 # mattpocock/skills Suite Customization Rationale
 
-This document explains why and how the [mattpocock/skills](https://github.com/mattpocock/skills) v1.2 suite was customized for this repo. The suite is this repo's development cycle: `grill-with-docs` (or `wayfinder`) → `to-spec` → `to-tickets` → `implement` per ticket (drives `tdd`, closes with `code-review` + `commit`), with `diagnosing-bugs`, `research`, `prototype`, `triage`, and the reference skills alongside.
+This document explains why and how the [mattpocock/skills](https://github.com/mattpocock/skills) suite (v1.3.1 since 2026-10) was customized for this repo. The suite is this repo's development cycle: `grill-with-docs` (or `wayfinder`) → `to-spec` → `to-tickets` → `implement` per ticket or `implement-spec` for a whole spec (both drive `tdd` and close with `code-review`; `implement` also commits with `commit` and writes its PR body with `pr`), then a user-run `retro` when a session deserves one, with `diagnosing-bugs`, `research`, `prototype`, `triage`, and the reference skills alongside.
 
-Most of the suite is vendored unmodified and auto-updated by `update.py`. Eight skills carry local edits and are listed in `update.PATCHED`, so updates skip them: `setup-matt-pocock-skills`, `wayfinder`, `to-spec`, `to-tickets`, `implement`, `tdd`, `prototype`, and `handoff`. Each customization below records the problem it solves, the change, and the files it touches.
+Skills without local edits are vendored unmodified and auto-updated by `update.py`. Skills with local edits are listed in `update.PATCHED`, so updates skip them; `README.md` lists them under Vendor Skills (customized). Each customization below records the problem it solves, the change, and the files it touches. `grilling` is customized in the same way (bounded design tree, see `README.md`).
 
 **Origin:** the suite replaced the [obra/superpowers](https://github.com/obra/superpowers) suite in 2026-07. Several customizations below (requirement-driven testing, no-fallback rules, visual UI testing, change propagation, HTML companions, the user testing gate) were carried over from that era because the failure modes they guard against are model- and suite-independent. The superpowers-era rationale document and its migration history were removed with the suite; both are preserved in git history (`docs/superpowers-customization-rationale.md`, deleted 2026-07).
 
@@ -51,7 +51,7 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 **Solution:** UI look-and-feel is tested visually, never with code tests:
 
 - No code tests for UI layout, styling, responsive behavior, visual hierarchy, or interaction-state appearance.
-- Agents use the strongest available real-browser inspection tool (Chrome DevTools MCP preferred for local `file://` pages), full-screen on desktop unless the user explicitly requests another device or viewport.
+- Agents drive the real browser through the `browser-harness` skill, full-screen on desktop unless the user explicitly requests another device or viewport.
 - Visual checks explicitly cover clipping, overflow, alignment, horizontal/vertical visual balance, and interaction states on desktop.
 - A dedicated `visual-tests.md` reference keeps the inspection checklist out of the main workflow.
 - `to-tickets` writes UI acceptance criteria along the same axes; `implement` repeats the no-component-test rule.
@@ -77,7 +77,7 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Problem:** Refactoring mid-implementation-loop churns code while behavior is still unproven, and cleanup decisions made one test at a time miss duplication that only shows up across the whole diff.
 
-**Solution:** Refactoring is not part of the RED/GREEN loop. Get the behavior green first, then review the diff — running or requesting `code-review` for non-trivial diffs — and refactor deliberately from its Standards findings, re-running tests (with timeouts) after each step. Never refactor while RED.
+**Solution:** Refactoring is not part of the RED/GREEN loop. Get the behavior green first, then review the diff — running or requesting `code-review` for non-trivial diffs — and refactor deliberately from its Standards findings, re-running tests (with timeouts) after each step. Never refactor while RED. When `implement` or `implement-spec` owns the review phase, tdd defers that review to the caller so workers don't run redundant reviews; an unexpectedly skipped or uncollected required test fails the done gate.
 
 **Files changed:** `tdd/SKILL.md`
 
@@ -85,7 +85,7 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Problem:** Users request changes at every stage — during ticketing, during implementation, during manual testing. Agents typically patch the code in front of them, leaving the spec, tickets, and tests stale.
 
-**Solution:** `to-tickets` and `implement` share the same rule: a user change at any stage has the same authority as an initial requirement and propagates to every artifact — spec (on the tracker), tickets (update/add/remove), tests (remove/rewrite old, write new), and implementation.
+**Solution:** `to-tickets` and `implement` share the same rule: a user change at any stage has the same authority as an initial requirement and propagates to every artifact — spec (on the tracker), tickets (update/add/remove), tests (remove/rewrite old, write new), and implementation. Without a spec, the direct implementation issue is the record; already-landed work also updates its PR body and Evidence and reruns the affected validation.
 
 **Files changed:** `to-tickets/SKILL.md`, `implement/SKILL.md`
 
@@ -117,7 +117,7 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 - **Issue tracker is always GitHub Issues**. Missing, unreachable, and non-GitHub remotes stop setup instead of falling back to local Markdown or another tracker.
 - **Triage labels are always the five canonical defaults** (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), created on the tracker when missing — and skipped entirely when the `triage` skill isn't installed.
 - **Agent instructions file**: edit `CLAUDE.md` if present, else `AGENTS.md`; create `AGENTS.md` only when neither exists. Never create a second agent file.
-- **Domain docs**: single-context by default; multi-context only on real monorepo signals.
+- **Domain docs**: single-context by default; multi-context only on real monorepo signals. Since v1.3 the files are `GLOSSARY.md` / `GLOSSARY-MAP.md` (see #21).
 
 **Files changed:** `setup-matt-pocock-skills/SKILL.md`
 
@@ -137,15 +137,15 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 
 **Files changed:** `handoff/SKILL.md`
 
-## 13. Tailscale-Reachable UI Prototype Preview
+## 13. Static UI Comparison Page
 
-**Problem:** Upstream `prototype` hands over a UI prototype via a localhost URL only, so the preview is unreachable when reviewing from another device over Tailscale.
+**Problem:** Upstream `prototype` builds UI variants on a single route switched by a URL param and a floating bar, served from a localhost dev server. The user sees one option at a time, the preview is unreachable from another device, and a dev server left running for review conflicts with the global rule to stop task-owned servers before handoff.
 
-**Solution:** The UI branch's hand-over step runs the dev server bound to all interfaces (`--host` / `0.0.0.0`) and surfaces both the localhost and Tailscale URLs.
+**Solution:** The UI branch mocks every option on one self-contained HTML comparison page (opens from `file://`, all options visible at once, labels matching the question) and links it before asking the user to choose. The page file stays available until the user decides. A dev server is used only when the comparison genuinely needs one; it binds to all interfaces (`--host` / `0.0.0.0`) with both localhost and Tailscale URLs, and is stopped before handoff with its port verified released unless the user explicitly asks to leave it running.
 
-**Files changed:** `prototype/UI.md`
+**Files changed:** `prototype/SKILL.md`, `prototype/UI.md`
 
-**v1.2 rebase note (2026-08):** v1.2 reshaped the logic branch from a terminal app into a single shareable HTML file (free-play buttons + guided walkthroughs) and made prototypes primary sources captured on a `prototype/<name>` throwaway branch instead of deleted. The reshape was adopted wholesale — a self-contained HTML file serves the multi-device review case behind this customization even better than a bound dev server — so the only surviving local edit is the Tailscale hand-over line in `prototype/UI.md` (`SKILL.md` and `LOGIC.md` are stock v1.2).
+**v1.2 rebase note (2026-08):** v1.2 reshaped the logic branch into a single shareable HTML file (free-play buttons + guided walkthroughs) and made prototypes primary sources captured on a `prototype/<name>` throwaway branch instead of deleted. That reshape was adopted wholesale; `LOGIC.md` is stock.
 
 ## 14. Resumable Wayfinder Grilling
 
@@ -196,6 +196,58 @@ Tickets carry a **`Requirement:`** field tracing each ticket back to the spec it
 **Solution:** Treat the invocation as approval when the request clearly maps to one complete ticket with no blockers, and publish it immediately. The review quiz remains for specs, plans, multi-requirement conversations, and multi-ticket breakdowns; ambiguity that prevents a complete ticket still triggers clarification.
 
 **Files changed:** `to-tickets/SKILL.md`
+
+## 20. Harness-Correct Skill Loading (2026-10)
+
+**Problem:** v1.3 replaced prose like "run `/grilling`" with "Call the Skill tool with ...", because naming a skill did not reliably load it. Pi has no Skill tool, so that instruction cannot be followed there, and reading another skill's file must never reach a user-invoked skill.
+
+**Solution:** The canonical policy is the `## Loading Skills` section of `global/AGENTS.md`. Each call site states both mechanisms in one clause: call the Skill tool when the harness has one; otherwise read the sibling `../<skill>/SKILL.md` (installed skills are sibling directories in every harness root). Call sites only target model-invoked skills. This customizes the `grill-me` and `grill-with-docs` wrappers, `triage`, `improve-codebase-architecture`, and `retro`.
+
+**Files changed:** `grill-me/SKILL.md`, `grill-with-docs/SKILL.md`, `triage/SKILL.md`, `improve-codebase-architecture/SKILL.md`, `retro/SKILL.md`
+
+## 21. GLOSSARY Migration (2026-10)
+
+**Problem:** v1.3 renamed the domain glossary from `CONTEXT.md` / `CONTEXT-MAP.md` to `GLOSSARY.md` / `GLOSSARY-MAP.md`. `update.py` skips customized skills and never deletes files removed upstream, so an update alone left the customized setup writing old names and the obsolete `domain-modeling/CONTEXT-FORMAT.md` in place.
+
+**Solution:** Every reader and writer in the repo uses the new names, and `CONTEXT-FORMAT.md` was deleted after confirming `GLOSSARY-FORMAT.md` is its renamed copy. Existing projects migrate one repository at a time: rerun `/setup-matt-pocock-skills` in that repository. Its **Legacy glossary names** rule (the single source for the procedure) `git mv`s only the domain glossary files, updates their pointers, and reports each rename; any unrelated `CONTEXT.md` stays put.
+
+**Files changed:** `setup-matt-pocock-skills/SKILL.md`, `setup-matt-pocock-skills/domain.md`, `domain-modeling/CONTEXT-FORMAT.md` (deleted)
+
+## 22. GitHub-Only Router
+
+**Problem:** Upstream `ask-matt` routes per-ticket work through a local `.scratch/` tracker and advertises custom trackers, while this repo's setup is GitHub-only. Its "run `/retro`" lines also read as automatic steps.
+
+**Solution:** Routing names GitHub Issues only, presents `/retro` as something the user chooses to run, notes that `/setup-git-repo` runs setup during bootstrap, and states that the summaries are orientation rather than a substitute for the skill definitions.
+
+**Files changed:** `ask-matt/SKILL.md`
+
+## 23. Scoped, Proposal-Only Retro
+
+**Problem:** Upstream `retro` says to search "session logs on this machine" without naming where Pi, Codex, and Claude Code keep them, and does not bound what it reads or edits. A retro that rewrites its own environment can drift a repository through false-positive improvements.
+
+**Solution:** `retro` names each harness's session directory, reads only the session the user names (or the current one), keeps raw transcripts local with secrets redacted, and changes nothing until the user approves a specific proposal. It stays user-invoked.
+
+**Files changed:** `retro/SKILL.md`
+
+## 24. Scoped Architecture Vocabulary
+
+**Problem:** `codebase-design` and `improve-codebase-architecture` banned "component", "service", "API", and "boundary" everywhere, including where those are the code's actual names.
+
+**Solution:** The deep-module vocabulary governs architectural discussion; real identifiers and glossary terms keep their names. `codebase-design` holds the rule; `improve-codebase-architecture` follows it.
+
+**Files changed:** `codebase-design/SKILL.md`, `improve-codebase-architecture/SKILL.md`
+
+## 25. v1.3 Execution and Writing Adaptations
+
+- **`code-review`** reviews outstanding working-tree changes, so `implement`'s review-before-commit close-out covers the implementation it just wrote.
+- **`implement-spec`** is user-invoked whole-spec orchestration. Its workers reuse the local `tdd` policy instead of running `implement`'s single-ticket branch and PR close-out, and the orchestrator owns integration, combined validation, the single final code review, and the aggregate PR. Cleanup keeps the integration branch and open PR and removes only landed ticket and fix worktrees and branches.
+- **`unslop`** applies to user-facing prose, keeps exact technical terms and quotations, and treats punctuation as judgment rather than a ban.
+
+**Files changed:** `code-review/SKILL.md`, `implement/SKILL.md`, `implement/REQUIREMENT-CHANGES.md`, `implement-spec/SKILL.md`, `to-spec/SKILL.md`, `to-tickets/SKILL.md`, `unslop/SKILL.md`
+
+## Retired Skills
+
+- **`resolving-merge-conflicts`** (retired 2026-10): removed upstream in v1.3 with no replacement. Its unconditional "never --abort" and "stage everything" rules did not fit every conflict; conflict resolution is ordinary task-specific Git work. `update.py` no longer tracks it and `setup.py`'s `RETIRED_SKILLS` removes installed copies.
 
 ## Retired Customizations
 

@@ -66,6 +66,7 @@ RETIRED_SKILLS = [
     "dispatching-parallel-agents",
     "using-git-worktrees",
     "finishing-a-development-branch",
+    "resolving-merge-conflicts",  # retired upstream in mattpocock/skills v1.3
 ]
 
 # Directories where coding harnesses look for skills

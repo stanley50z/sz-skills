@@ -1,82 +1,57 @@
 # Visual and End-to-End UI Tests
 
-UI look-and-feel is tested visually: do not write code tests for UI layout,
-styling, responsive behavior, visual hierarchy, or interaction-state
-appearance. UI behavior is additionally verified with a live end-to-end
-browser walkthrough (see below). Neither check replaces the other.
+The canonical UI testing policy for [the TDD loop](SKILL.md). Two checks, both
+required, neither replacing the other:
 
-## Tool Priority
+- **Look-and-feel is verified visually.** Layout, styling, visual hierarchy,
+  and interaction-state appearance are checked by looking at the rendered UI.
+  Write no component, DOM, or snapshot code tests for them.
+- **Behavior is verified with a live browser walkthrough** of every changed
+  flow. Scripted e2e suites (Playwright, Cypress, etc.) still run where the
+  project has them, but they do not replace the walkthrough.
 
-1. Use the strongest available real-browser inspection tool that supports
-   screenshots, live inspection, and simulated clicks/keys.
-2. For local `file://` pages, prefer Chrome DevTools MCP when it is available.
-3. In Codex, the Chrome plugin may satisfy this role; in Claude Code, t3code,
-   or other harnesses, use Chrome DevTools MCP or the harness's equivalent
-   DevTools/browser MCP.
-4. If no DevTools-capable browser tool is available, use the best available
-   browser/screenshot tool and state the fallback.
+## Browser
 
-Project instructions may name a more specific browser tool for a target. Follow
-those instructions when they are more specific than this default order.
-
-Use a full-screen desktop browser for UI checks unless the user explicitly
-requests another device or viewport.
+Drive the browser through the `browser-harness` skill: use the native Skill
+tool when the harness has one, otherwise read its `SKILL.md`. It owns tool
+choice, tab ownership, and cleanup. Use a full-screen desktop browser unless
+the user explicitly requests another device or viewport.
 
 ## Visual RED/GREEN
 
-For UI work, the TDD cycle becomes:
-
 ```text
-RED:   Open the current UI and capture/inspect the broken or missing state
-GREEN: Implement the smallest change
-VERIFY: Reopen, interact, screenshot, and inspect the relevant screens/states
+RED:    open the current UI and capture the broken or missing state
+GREEN:  implement the smallest change
+VERIFY: reopen, interact, screenshot, and inspect the relevant screens and states
 ```
 
-The evidence is a screenshot or live browser observation plus concise notes.
-Do not replace visual inspection with DOM assertions, snapshot tests, component
-unit tests, or "it should render" tests.
+The evidence is a screenshot or live observation plus concise notes, never a
+DOM guess.
 
-## Required Checks
+Inspect each relevant screen and state for:
 
-Inspect each relevant screen/state for:
-
-- Text clipping, unintended truncation, overflow, or hidden text.
-- Labels, button text, badges, and table cells fitting inside their containers.
-- UI components aligned to a coherent grid.
-- Balanced horizontal and vertical visual weight.
-- Clear hierarchy, grouping, and spacing.
-- No incoherent overlap between adjacent sections, controls, cards, modals, or
-  navigation.
+- Text fully visible: no clipping, unintended truncation, overflow, or text
+  hidden behind other elements; controls fit their longest expected labels.
+- Components aligned to a coherent grid, repeated components lined up.
+- Balanced horizontal and vertical visual weight; no lopsided, crowded, or
+  empty regions.
+- Clear hierarchy, grouping, and spacing; the primary action and current
+  state are obvious.
+- No incoherent overlap between sections, controls, cards, modals, or
+  navigation; no unexpected scrollbars, layout jumps, or off-screen controls.
 - Hover, focus, active, disabled, selected, loading, empty, and error states
-  when those states exist.
-- No unexpected scrollbars, layout jumps, or off-screen controls.
+  where they exist.
 
-## Visual Quality Rules
+## Behavior walkthrough
 
-- Text must remain readable and fully visible.
-- Controls must have enough space for their longest expected labels.
-- Repeated components should line up consistently.
-- Dense UIs should still scan cleanly; spacious UIs should not feel empty.
-- Primary actions and current state should be visually obvious.
-- Visual decisions should serve the product workflow, not decoration.
+For every changed flow, drive the real UI:
 
-## End-to-End Behavior Walkthrough
-
-Visual checks confirm the UI looks right; the walkthrough confirms it works.
-For every changed flow in a web app, drive the real UI in the browser using
-the same tool priority as above:
-
-- Perform the actual user workflow: navigate to the page, click the real
-  buttons and controls, type input into the real fields, submit.
+- Perform the actual user workflow: navigate, click the real controls, type
+  into the real fields, submit.
 - Use real data when it is available (dev database, sample files, live dev
-  API) rather than only placeholder input.
-- Review the result the user would see: rendered data is correct, state
-  changes took effect, navigation and redirects land where expected, and
-  changes persist across a reload when relevant.
+  API) rather than placeholder input.
+- Review the result the user would see: correct data rendered, state changes
+  applied, navigation and redirects landing where expected, persistence across
+  a reload when relevant.
 - Exercise reachable error and edge flows, not just the happy path.
-- Capture evidence of the outcome — screenshots or observation notes of the
-  result state, not just the initial screen.
-
-Scripted e2e suites (Playwright, Cypress, etc.) are good additions where the
-project uses them, but they do not replace this live walkthrough of the
-changed flow.
+- Capture evidence of the result state, not just the initial screen.

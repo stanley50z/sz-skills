@@ -1,11 +1,15 @@
 ---
 name: unslop
-description: Cut AI tells from any writing. Must always apply.
+description: Cut AI tells from user-facing writing. Must always apply.
 ---
 
 # Unslop
 
 Edit text to remove AI patterns and add human voice.
+
+## Scope
+
+Apply this to prose a person reads: replies, docs, reports, commit and PR text. Leave code, commands, logs, error messages, and quotations exactly as they are. Keep API names, identifiers, defined terms, and domain terms verbatim, even when a pattern below lists the word. The patterns are judgment calls about tells, not substitutions to apply mechanically; precision wins over any of them.
 
 ## Process
 
@@ -47,13 +51,13 @@ Removing patterns is half the job. Sterile, voiceless writing is just as obvious
 
 ### Style
 
-13. **Em dash overuse.** Avoid em dashes entirely. Use periods or commas only (no parentheses, no en dashes, no hyphen-as-dash substitutes). Em dashes are an AI tell, and reaching for parentheses instead just trades one tell for another. If a thought needs separation, end the sentence or use a comma.
-14. **Colon overuse.** Colons are fine before a list or example. Not as mid-sentence connectors. "If you're coming from traditional automation: instead of registering event handlers, you describe conditions" adds nothing with the colon. Rewrite to let the point stand on its own without comparison framing. "Describing when the scheduler should fire works best as plain English." Same meaning, no crutch punctuation.
+13. **Em dash overuse.** A dash in every other sentence is an AI tell, and swapping each one for parentheses just trades one tell for another. When a thought needs separation, ending the sentence or using a comma usually reads better. Keep a dash or parenthetical where it carries the meaning most clearly, such as an aside, a range, or a technical qualifier.
+14. **Colon overuse.** Colons fit before a list, an example, or a definition. As a habitual mid-sentence connector they are a crutch. "If you're coming from traditional automation: instead of registering event handlers, you describe conditions" adds nothing with the colon. Rewrite to let the point stand on its own without comparison framing. "Describing when the scheduler should fire works best as plain English." Same meaning, no crutch punctuation.
 15. **Boldface overuse.** Don't bold every proper noun or acronym.
 16. **Inline-header lists.** The tell is a bold label and colon that restates the line: "**Performance:** Performance improved...". Convert those to prose. A bold lead-in that ends in a period, names the item, and is followed by genuinely new detail ("**Schema in TypeScript.** Tables live in one file.") is fine, not a tell.
 17. **Title case headings.** Use sentence case.
 18. **Decorative emojis.** Remove from headings and bullets.
-19. **Curly quotes.** Replace with straight quotes.
+19. **Curly quotes.** Prefer straight quotes in text you write. Leave quoted material and code as written.
 
 ### Communication artifacts
 
@@ -69,7 +73,7 @@ Removing patterns is half the job. Sterile, voiceless writing is just as obvious
 
 ### Jargon
 
-26. **Abstract metaphor nouns.** Substrate, wedge, vector, locus, vantage, nexus, primitive (as noun), harness (as metaphor), surface (as in "API surface"), bedrock, scaffolding (as metaphor), modality, paradigm, gold-plating, ratchet (as metaphor), evacuate (for moving code), endgame, north star, flywheel. These read as technical but usually have a plainer concrete word. "Substrate" becomes "base". "Wedge in" becomes "add". "Vector" becomes "way" or "method". "Gold-plating" becomes "more than the job needs". "Ratchet" becomes the mechanism's real name or "a limit that only tightens". "Evacuate" becomes "move out". "Endgame" becomes "the last phase". Pick the concrete word.
+26. **Abstract metaphor nouns.** Substrate, wedge, vector, locus, vantage, nexus, primitive (as noun), harness (as metaphor), surface (as in "API surface"), bedrock, scaffolding (as metaphor), modality, paradigm, gold-plating, ratchet (as metaphor), evacuate (for moving code), endgame, north star, flywheel. Used as metaphors, these read as technical but usually have a plainer concrete word: "wedge in" usually means "add", "gold-plating" means "more than the job needs", "evacuate" means "move out". Pick the concrete word for what you mean. Keep the word when it is the exact technical term: a math vector, a type-system primitive, a test harness, a product named with one of these words.
 
 ### Plain speech
 
@@ -77,4 +81,4 @@ Removing patterns is half the job. Sterile, voiceless writing is just as obvious
 28. **Shorten or split dense sentences.** If the reader has to backtrack to parse a sentence, break it in two or drop clauses. One idea per sentence.
 29. **Active voice.** Prefer it. Catch "is/are/was/were + past participle" and name the actor: "queries are validated" becomes "the compiler validates queries", "the file is parsed by the loader" becomes "the loader parses the file". Passive is fine only when the actor is unknown or genuinely doesn't matter.
 30. **Cut adverbs, or use a stronger verb.** "runs quickly" becomes "is fast" or the number. "significantly improves" becomes the measured delta. An adverb propping up a weak verb means the verb is wrong.
-31. **Prefer the plain word.** "utilize" becomes "use", "leverage" becomes "use", "facilitate" becomes "help", "numerous" becomes "many", "in the event that" becomes "if". The fancier synonym is rarely clearer.
+31. **Prefer the plain word.** "utilize" becomes "use", "leverage" as a verb becomes "use", "facilitate" becomes "help", "numerous" becomes "many", "in the event that" becomes "if". The fancier synonym is rarely clearer.

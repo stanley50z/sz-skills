@@ -24,7 +24,7 @@ This skill is for human comprehension. Do not replace it with a raw node graph w
 4. Build a file graph from imports/requires/includes, CLI or config entry references, and obvious runtime calls. Label uncertain or dynamic edges as `dynamic/indirect` instead of inventing certainty.
 5. For each included code file, capture every field in the File Details table below.
 6. Generate `docs/repo_structure.html`, creating `docs/` if needed. Regenerate from source when updating; do not patch stale facts by hand.
-7. Open the local HTML page and verify Mermaid renders, file clicks change the details panel, text is readable, and there are no script errors. For `file://` pages, prefer Chrome DevTools MCP when available.
+7. Open the local HTML page in a desktop browser through the `browser-harness` skill (native Skill tool when the harness has one, otherwise read its `SKILL.md`) and verify Mermaid renders, file clicks change the details panel, text is readable, and there are no script errors.
 
 ## File Details
 

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A source-backed review of Matt Pocock v1.3 against Stanley's skill stack, independent of Automode implementation constraints.">
+<title>Matt Pocock v1.3 | Skill stack review</title>
+<style>
+:root{--page:#edf2f7;--paper:#fff;--ink:#172338;--muted:#4c5c73;--line:#cbd5e3;--blue:#184db5;--green:#185c3d;--green-bg:#e8f5ed;--amber:#795000;--amber-bg:#fff4d8;--red:#a62535;--red-bg:#fcebee;--rail:#172e55;--radius:8px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--page);color:var(--ink);font:16px/1.65 "Segoe UI",Arial,sans-serif}a{color:var(--blue);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{text-decoration-thickness:2px}a:focus-visible,summary:focus-visible{outline:3px solid #ffcc57;outline-offset:4px}code{font: .88em/1.5 Consolas,"Courier New",monospace;overflow-wrap:anywhere;background:#f0f3f8;padding:.1em .3em;border-radius:3px}p{max-width:78ch;margin:0 0 16px}h1,h2,h3{line-height:1.2;letter-spacing:-.025em}h1{font-size:clamp(30px,3.1vw,43px);margin:0 0 20px;max-width:24ch;font-weight:720}h2{font-size:27px;margin:0 0 20px}h3{font-size:20px;margin:25px 0 12px}ul,ol{padding-left:24px;margin:12px 0 20px}li{margin:7px 0}.layout{max-width:1410px;margin:auto;display:grid;grid-template-columns:224px minmax(0,1fr);gap:28px;padding:28px}.rail{align-self:start;position:sticky;top:28px;background:var(--rail);color:#fff;padding:26px 22px;border-radius:var(--radius)}.rail strong{display:block;font-size:19px;line-height:1.4;margin-bottom:24px}.rail nav a{display:block;color:#e7efff;text-decoration:none;padding:9px 0;border-top:1px solid #3b5075;font-size:14px}.rail nav a:hover{color:#fff;text-decoration:underline}.rail .meta{font-size:13px;color:#c9d7ed;border-top:1px solid #3b5075;margin-top:24px;padding-top:16px}.rail p{margin:0 0 8px}.document{min-width:0}.hero,section{background:var(--paper);padding:34px 38px;margin-bottom:22px;border:1px solid var(--line);border-radius:var(--radius)}.hero{border-top:7px solid var(--blue);padding-top:29px}.lead{font-size:19px;color:#304664;line-height:1.6}.verdict{font-size:21px;font-weight:650;color:var(--ink);margin:24px 0 15px}.correction{border-left:4px solid var(--blue);background:#eef4ff;padding:16px 20px;margin:22px 0 0}.correction p:last-child{margin:0}.small{font-size:14px;color:var(--muted)}.status{display:inline-block;padding:3px 9px;border-radius:4px;font-size:13px;font-weight:650;white-space:nowrap}.add{background:var(--green-bg);color:var(--green)}.update{background:var(--amber-bg);color:var(--amber)}.remove{background:var(--red-bg);color:var(--red)}.keep{background:#eaf0f8;color:#304866}.decision{display:grid;grid-template-columns:140px 1fr;gap:18px;padding:20px 0;border-top:1px solid var(--line)}.decision:first-of-type{border-top:0;padding-top:4px}.decision .name{font-size:20px;font-weight:700;letter-spacing:-.025em}.decision .name .status{display:block;width:max-content;margin-top:8px}.decision p:last-child{margin:0}.scope{font-weight:650;color:#294466}.table-wrap{overflow-x:auto;margin-top:20px}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.5}caption{text-align:left;font-size:15px;color:var(--muted);padding:0 0 12px}th{text-align:left;font-size:13px;color:#344864;background:#eef3fa;padding:13px 12px;vertical-align:top;border-bottom:2px solid #adbed5}td{padding:13px 12px;vertical-align:top;border-bottom:1px solid #d9e1ec}td:first-child{width:26%;font-weight:600}td:nth-child(2){width:15%}td code{background:none;padding:0}tbody tr:hover{background:#f7f9fc}.group td{background:#e3ebf5;color:#253d61;font-weight:700;padding:11px 12px}.release-table td:first-child{width:22%}.release-table td:nth-child(2){width:45%}.release-table td:nth-child(3){width:33%}.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:22px 0}.flow div{border:1px solid var(--line);border-top:3px solid var(--blue);padding:14px;background:#f8faff;font-size:14px}.flow strong{display:block;margin-bottom:8px;color:#214788}.flow code{display:block;background:none;padding:0;margin:5px 0;font-size:14px}.flow p{font-size:13px;margin:8px 0 0;line-height:1.55}.notice{border:1px solid #d6ae4d;background:var(--amber-bg);padding:16px 20px;margin:20px 0}.notice p:last-child{margin:0}.policy{background:#f4f7fb;border-left:4px solid #405b83;padding:18px 22px;max-width:80ch}details{border-top:1px solid var(--line);padding:15px 0}summary{cursor:pointer;font-weight:650;color:#294a7c}details p,details ul{margin-top:13px}.source-list li{font-size:14px;line-height:1.65;margin:12px 0}.path{display:block;font-family:Consolas,"Courier New",monospace;font-size:13px;overflow-wrap:anywhere;color:#354a67;margin:8px 0}.footer{color:var(--muted);font-size:13px;padding:0 4px 24px}.footer p{margin-bottom:8px}.action-list li{margin-bottom:14px}.action-list strong{color:#294466}.section-note{border-bottom:1px solid var(--line);padding-bottom:17px;margin-bottom:21px}
+@media(max-width:1000px){.layout{grid-template-columns:180px minmax(0,1fr);gap:18px;padding:18px}.rail{padding:22px 16px}.hero,section{padding:28px}.flow{grid-template-columns:1fr 1fr}.decision{grid-template-columns:120px 1fr}}
+@media(max-width:730px){.layout{display:block;padding:12px}.rail{position:static;margin-bottom:16px;padding:19px}.rail strong{margin-bottom:12px}.rail nav{display:flex;flex-wrap:wrap;gap:4px 15px}.rail nav a{border:0;padding:5px 0}.rail .meta{margin-top:12px;padding-top:12px}.hero,section{padding:23px 20px}.decision{display:block}.decision .name{margin-bottom:14px}.decision .name .status{display:inline-block;margin:0 0 0 10px}table{min-width:620px}h2{font-size:25px}.flow{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{body{background:#fff;font-size:11pt}.layout{display:block;padding:0}.rail{display:none}.hero,section{border:0;border-radius:0;padding:18px 0;margin:0;break-inside:auto}.hero{border-top:3px solid var(--blue)}h1{font-size:26pt}h2{font-size:19pt;break-after:avoid}h3{break-after:avoid}.decision,.flow div,tr{break-inside:avoid}.table-wrap{overflow:visible}table{min-width:0;font-size:9pt}a{color:#172338}.footer{padding:16px 0}details{display:block}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="rail" aria-label="Report navigation">
+<strong>Skill stack<br>decision report</strong>
+<nav aria-label="Sections">
+<a href="#verdict">Revised verdict</a><a href="#release">What v1.3 added</a><a href="#additions">The three additions</a><a href="#workflow">Workflow roles</a><a href="#fixes">What to fix and prune</a><a href="#inventory">Every current skill</a><a href="#policy">Recorded decision</a><a href="#next">Recommended change set</a><a href="#sources">Sources and boundaries</a>
+</nav>
+<div class="meta"><p>Reviewed 8 October 2026</p><p>Release source: v1.3.0 and v1.3.1</p><p>36 current repo-managed skills</p><p>Automode implementation excluded from the judgment</p></div>
+</aside>
+<main class="document">
+<header class="hero" id="verdict">
+<p class="small">Approved recommendations applied. <a href="mattpocock-v1.3-application-report.html">Open the application and verification report</a>. This page retains the pre-change assessment.</p>
+<h1>Matt's v1.3, judged against your skill stack</h1>
+<p class="lead">Add all three newly shipped skills. Retire the conflict-resolution skill. Keep the existing development cycle, but remove duplicated policy and fix the places where its instructions disagree.</p>
+<p class="verdict">Add <code>retro</code>, <code>pr</code>, and <code>implement-spec</code>.</p>
+<p>These have different jobs: improve future sessions, explain a pull request, and orchestrate a complete ticket graph. None replaces your single-ticket <code>implement</code>, personal <code>commit</code>, or two-axis <code>code-review</code>.</p>
+<div class="correction"><p><strong>Correction to the previous review.</strong> I withdraw the recommendation to defer <code>implement-spec</code> because of Automode. Its value is now assessed solely against your skills. Automode provides first-class support for Matt's suite and adapts to the chosen workflows, rather than constraining which skills you adopt.</p></div>
+<p class="small" style="margin-top:18px;margin-bottom:0">Only the requested Automode instruction file and research artifacts were changed. No skills were installed, removed, or edited.</p>
+</header>
+
+<section id="release" aria-labelledby="release-title">
+<h2 id="release-title">Are these the only skills added in v1.3?</h2>
+<p><strong>Yes, exactly three skills were added to the shipped suite: <code>implement-spec</code>, <code>pr</code>, and <code>retro</code>.</strong> More precisely, all three were promoted from the repository's <code>in-progress</code> bucket into Engineering. They already existed experimentally before this release.</p>
+<p>I compared the plugin's pre-release manifest, which identifies itself as 1.2.3, with the v1.3.0 manifest. It gains those three entries and loses <code>resolving-merge-conflicts</code>. The shipped catalog goes from 25 to 27 skills, a net increase of two. <a href="https://github.com/mattpocock/skills/compare/c55ee46073ed923f86ce59a5eb3b6d895095d1b7...v1.3.0">Release comparison</a>.</p>
+<div class="table-wrap"><table class="release-table"><caption>The release contains more than three changes, but only three newly shipped skills.</caption><thead><tr><th>Change</th><th>What actually changed</th><th>Effect on your stack</th></tr></thead><tbody>
+<tr><td>Three promotions</td><td><code>implement-spec</code>, <code>pr</code>, and <code>retro</code> enter the shipped Engineering suite.</td><td>All three are absent locally and worth adding.</td></tr>
+<tr><td>One retirement</td><td><code>resolving-merge-conflicts</code> is removed without a replacement.</td><td>Retire your local copy and its installed copies.</td></tr>
+<tr><td>Glossary naming</td><td><code>CONTEXT.md</code> becomes <code>GLOSSARY.md</code>; map and format filenames change too.</td><td>Migrate readers, writers, templates, and project pointers together.</td></tr>
+<tr><td>Reliability fixes</td><td>Explicit cross-skill loading, user-invocation boundaries, YAML quoting, domain-modeling triggers, grilling formatting, and multi-glossary lookup.</td><td>Port the useful behavior without overwriting your customizations.</td></tr>
+<tr><td>v1.3.1</td><td>Corrects the diagnosis route and its documentation. It points prevention analysis at <code>retro</code>.</td><td>No additional skill. Update the stale local handoff.</td></tr>
+</tbody></table></div>
+<p class="small" style="margin-top:18px">Experimental skills elsewhere in the repository are not additional v1.3 suite additions. Changes on upstream main after the tags are also not v1.3 release features.</p>
+</section>
+
+<section id="additions" aria-labelledby="additions-title">
+<h2 id="additions-title">Why all three earn a place</h2>
+<article class="decision"><div class="name"><code>retro</code><span class="status add">Add first</span></div><div>
+<p><strong>The clearest missing capability.</strong> Your stack can review a diff, diagnose a bug, and propose architecture improvements. It cannot currently audit a session's tool usage, missing information, ineffective instructions, or unwired checks as a dedicated workflow.</p>
+<p>Use it on a troublesome session or a small sample of recent sessions. Its output should be a ranked set of proposals. Mechanical mistakes belong in deterministic checks; judgment calls can become review standards. Keep execution safety visible to the implementation agent.</p>
+<p class="scope">Keep it user-invoked. Approve changes individually, rather than letting it continuously rewrite its own environment.</p>
+<p class="small"><a href="https://github.com/mattpocock/skills/blob/v1.3.1/skills/engineering/retro/SKILL.md">Tagged skill</a> · <a href="https://www.youtube.com/watch?v=BsJGo1wFTvQ&amp;t=577s">Video, 9:37</a> · <a href="https://www.youtube.com/watch?v=BsJGo1wFTvQ&amp;t=756s">Human judgment warning, 12:36</a></p>
+</div></article>
+<article class="decision"><div class="name"><code>pr</code><span class="status add">Add</span></div><div>
+<p><strong>Improve the review input, not the review process.</strong> Your <code>implement</code> asks for a clear summary and validation list, but does not define a consistent explanation of the change, observed before/after behavior, and merge risk.</p>
+<p>The new skill supplies that format. Let it own the body, while <code>implement</code> owns PR creation, ticket references, validation, target branch, and readiness. Keep <code>commit</code> responsible for Git closure.</p>
+<p class="scope">Use screenshots for visual changes and observed execution evidence for nonvisual work. A risk label is not permission to merge.</p>
+<p class="small"><a href="https://github.com/mattpocock/skills/blob/v1.3.1/skills/engineering/pr/SKILL.md">Tagged skill</a> · <a href="https://www.youtube.com/watch?v=BsJGo1wFTvQ&amp;t=294s">Video, 4:54</a></p>
+</div></article>
+<article class="decision"><div class="name"><code>implement-spec</code><span class="status add">Add</span></div><div>
+<p><strong>A distinct execution scale.</strong> Your <code>implement</code> works tickets one at a time. <code>implement-spec</code> orchestrates the ready frontier of an entire ticket graph across isolated worktrees, then brings the work together on one integration branch and reviews the combined diff.</p>
+<p>This is complementary to single-ticket implementation, not a duplicate and not a reason to remove it. Add it as a user-invoked route for approved, multi-ticket specs. Installation does not mean every small task should use it.</p>
+<p class="scope">Share your approved requirements and TDD rules with workers. Keep integration-based branching, final combined validation, and aggregate PR ownership in the orchestrator.</p>
+<p>Do not invoke your local <code>implement</code> wholesale inside each worker: it branches from the repository default and creates its own ready PR. Reuse the relevant policy, not an incompatible close-out sequence. Pin seams in the approved tickets so workers do not invent decisions or repeatedly ask the same questions.</p>
+<p class="small"><a href="https://github.com/mattpocock/skills/blob/v1.3.1/skills/engineering/implement-spec/SKILL.md">Tagged skill</a> · <a href="https://github.com/mattpocock/skills/blob/v1.3.1/docs/engineering/implement-spec.md">Worktree and integration limitations</a> · <a href="https://www.youtube.com/watch?v=BsJGo1wFTvQ&amp;t=25s">Video, 0:25</a></p>
+</div></article>
+<div class="notice"><p><strong>Matt's preference is still worth knowing.</strong> In the video he favors deterministic orchestration for reliability and cost. That is context about how to execute work, not a reason to leave a useful whole-spec skill out of your stack. Its natural scope remains an explicitly chosen multi-ticket build.</p></div>
+</section>
+
+<section id="workflow" aria-labelledby="workflow-title">
+<h2 id="workflow-title">Keep the responsibilities separate</h2>
+<p>The new skills complete the cycle without flattening it into one oversized command.</p>
+<div class="flow" aria-label="Skill responsibility map">
+<div><strong>Understand and decide</strong><code>research</code><code>grill-with-docs</code><code>prototype</code><code>wayfinder</code><p>Facts, decisions, and runnable answers when conversation is insufficient.</p></div>
+<div><strong>Specify</strong><code>to-spec</code><code>to-tickets</code><p>One canonical specification, then verifiable slices with explicit blockers.</p></div>
+<div><strong>Build and review</strong><code>implement</code><code>implement-spec</code><code>tdd</code><code>code-review</code><p>Choose single-ticket or whole-spec execution. Verify the resulting behavior and diff.</p></div>
+<div><strong>Explain and learn</strong><code>commit</code><code>pr</code><code>retro</code><p>Git closure, a reviewable PR body, and proposals for improving later sessions.</p></div>
+</div>
+<p class="small">Domain modeling and codebase design supply shared reference underneath the cycle. They are not additional mandatory stages for every task.</p>
+</section>
+
+<section id="fixes" aria-labelledby="fixes-title">
+<h2 id="fixes-title">What to remove, update, and prune</h2>
+<h3>Retire <code>resolving-merge-conflicts</code></h3>
+<p>The <a href="https://github.com/mattpocock/skills/blob/v1.3.1/CHANGELOG.md">release explicitly removes it with no replacement</a>. Your 14-line copy mostly describes ordinary Git work, but adds unconditional "never --abort" and "stage everything" instructions. Those commitments are not justified for every conflict. Preserve both sides' intent and validate the result as ordinary task-specific Git work.</p>
+<p>Retirement must remove the catalog and updater entries, the router reference, and managed installed copies. Stopping synchronization alone does not remove a skill.</p>
+
+<h3>Fix review coverage before adding more ceremony</h3>
+<p>Your <a href="../../skills/implement/SKILL.md">implementation close-out</a> reviews before committing, but <a href="../../skills/code-review/SKILL.md">code review</a> uses <code>git diff &lt;fixed-point&gt;...HEAD</code>. That command reviews commits, not outstanding working-tree changes. It can miss the implementation it was asked to review.</p>
+<p>Keep the two-axis review. Define a working-tree mode covering tracked and relevant untracked changes, and pass a resolved comparison point from the caller. This is a static instruction inconsistency, not a measured session failure.</p>
+
+<h3>Migrate the glossary as one coherent change</h3>
+<p>Update glossary producers and consumers together, including customized setup and its <code>domain.md</code> template, the router, diagnosis, architecture guidance, triage, and supporting references. Rename existing project domain files deliberately; do not rename every unrelated file called <code>CONTEXT.md</code>.</p>
+<p>The updater downloads files but does not prune upstream deletions. It also skips customized skills and tracks main without a release ref. Neither obsolete format files nor customized old-name writers will disappear merely because <code>update.py</code> ran.</p>
+
+<h3>Shorten TDD's common path, preserving its requirements</h3>
+<p>Your <a href="../../skills/tdd/SKILL.md">TDD entry file</a> is 401 lines; tagged v1.3.1 is 38. Size alone is not a verdict, but the local file repeats end-to-end policy in several sections and makes non-UI work read detailed UI-only guidance.</p>
+<p>Keep the common RED/GREEN loop, agreed seams, command timeouts, explicit failures, and final end-to-end gate in the entry file. Put extended examples and UI-specific reference behind clear pointers. Have <code>implement</code> refer to this canonical policy instead of restating it. Preserve real-browser behavior checks and desktop defaults.</p>
+
+<h3>Make cross-skill loading and browser routing consistent</h3>
+<p>The tiny grilling wrappers still name <code>/grilling</code> in prose. Port v1.3's explicit-loading fix using each tool's real mechanism. Pi reads the skill file; a nonexistent Skill tool is not a valid instruction.</p>
+<p><code>repo-visualizer</code> and TDD contain their own browser-tool preference lists. Prefer a pointer to the required <code>browser-harness</code> workflow so tool choice, ownership, and cleanup stay consistent with your global policy.</p>
+
+<h3>Resolve presentation and scope contradictions</h3>
+<ul>
+<li><strong>Prototype.</strong> Your global policy asks for all UI options on a self-contained comparison page. The UI prototype reference prefers switching between variants on one route. Align it with your preferred comparison format without changing the mock-before-real-components rule.</li>
+<li><strong>To spec.</strong> "A LONG" and "extremely extensive" user-story lists can inflate a small feature. Ask for complete coverage of the agreed requirements, not length for its own sake.</li>
+<li><strong>To tickets.</strong> Keep requirement traceability, verified parent/blocker relationships, and change propagation. Remove obsolete local-tracker branches from the active path if GitHub-only remains your chosen setup. Offer both execution routes at handoff.</li>
+<li><strong>Ask Matt.</strong> It still mentions the old glossary, local tracker, retired conflict skill, and diagnosis post-mortem handoff. Align it with the actual stack and make summaries orientation, not substitutes for reading skill definitions.</li>
+</ul>
+
+<h3>Refine instructions rather than deleting their useful purpose</h3>
+<p>Keep <code>unslop</code>'s plain-language discipline and <code>codebase-design</code>'s shared vocabulary. Their absolute language rules can be too rigid: punctuation bans can hurt technical explanation, and banning "component" or "API" everywhere is not appropriate when those are the subject's actual names. Apply architectural vocabulary to architectural discussion; preserve exact code and domain terminology.</p>
+<p>Keep operational safety, authorization, secret handling, shell correctness, and resource cleanup in global instructions. Disclose detailed style guidance on demand. These are recommendations for later approval, not changes to your existing preferences.</p>
+</section>
+
+<section id="inventory" aria-labelledby="inventory-title">
+<h2 id="inventory-title">Every repo-managed skill, reassessed</h2>
+<p class="section-note">A keep verdict means its role earns a place, not that every line is perfect. Update means retain the capability and correct the named issue. No skill is rejected because of Automode.</p>
+<div class="table-wrap"><table><caption>36 existing top-level skills and the three v1.3 candidates. Use your browser's Find to jump to a skill name.</caption><thead><tr><th scope="col">Skill</th><th scope="col">Verdict</th><th scope="col">Stack-only judgment</th></tr></thead><tbody>
+<tr class="group"><td colspan="3">New v1.3 candidates</td></tr>
+<tr><td><code>retro</code></td><td><span class="status add">Add</span></td><td>Unique session/environment audit. Keep proposals human-approved.</td></tr>
+<tr><td><code>pr</code></td><td><span class="status add">Add</span></td><td>Unique PR-body reference. Complement review and Git closure.</td></tr>
+<tr><td><code>implement-spec</code></td><td><span class="status add">Add</span></td><td>Unique whole-spec orchestration. User-invoked, complementary to single-ticket work.</td></tr>
+<tr class="group"><td colspan="3">Engineering and planning</td></tr>
+<tr><td><a href="../../skills/ask-matt/SKILL.md"><code>ask-matt</code></a></td><td><span class="status update">Update</span></td><td>Useful index for manual commands. Correct routes and local conventions.</td></tr>
+<tr><td><a href="../../skills/code-review/SKILL.md"><code>code-review</code></a></td><td><span class="status update">Update</span></td><td>Keep Standards/Spec separation. Add working-tree coverage and explicit comparison-point handoff.</td></tr>
+<tr><td><a href="../../skills/codebase-design/SKILL.md"><code>codebase-design</code></a></td><td><span class="status update">Refine</span></td><td>Keep module/interface design reference. Scope vocabulary rules to their intended discussion.</td></tr>
+<tr><td><a href="../../skills/diagnosing-bugs/SKILL.md"><code>diagnosing-bugs</code></a></td><td><span class="status update">Update</span></td><td>Keep reproducible feedback-loop discipline. Migrate glossary and replace stale post-mortem handoff.</td></tr>
+<tr><td><a href="../../skills/domain-modeling/SKILL.md"><code>domain-modeling</code></a></td><td><span class="status update">Update</span></td><td>Distinct domain glossary and selective ADR role. Adopt glossary names and broader v1.3 triggers.</td></tr>
+<tr><td><a href="../../skills/grill-me/SKILL.md"><code>grill-me</code></a></td><td><span class="status update">Update</span></td><td>Keep the tiny stateless manual entry. Make shared skill loading explicit.</td></tr>
+<tr><td><a href="../../skills/grill-with-docs/SKILL.md"><code>grill-with-docs</code></a></td><td><span class="status update">Update</span></td><td>Keep the documented interview entry. Explicitly load grilling and domain modeling.</td></tr>
+<tr><td><a href="../../skills/grilling/SKILL.md"><code>grilling</code></a></td><td><span class="status keep">Keep</span></td><td>Shared interview engine, not a redundant wrapper. Preserve your bounded scope and human decisions.</td></tr>
+<tr><td><a href="../../skills/implement/SKILL.md"><code>implement</code></a></td><td><span class="status update">Update</span></td><td>Keep single-ticket/direct execution and close-out. Reuse TDD policy and load PR-body guidance.</td></tr>
+<tr><td><a href="../../skills/improve-codebase-architecture/SKILL.md"><code>improve-codebase-architecture</code></a></td><td><span class="status update">Update</span></td><td>Keep change-oriented architecture assessment. Different from documenting a codebase. Migrate glossary.</td></tr>
+<tr><td><a href="../../skills/prototype/SKILL.md"><code>prototype</code></a></td><td><span class="status update">Align</span></td><td>Keep runnable design experiments. Align UI previews with your all-options comparison policy.</td></tr>
+<tr><td><a href="../../skills/research/SKILL.md"><code>research</code></a></td><td><span class="status keep">Keep</span></td><td>Owns delegated primary-source reading and a cited artifact, not web retrieval mechanics.</td></tr>
+<tr><td><a href="https://github.com/mattpocock/skills/blob/c55ee46073ed923f86ce59a5eb3b6d895095d1b7/skills/engineering/resolving-merge-conflicts/SKILL.md"><code>resolving-merge-conflicts</code></a></td><td><span class="status remove">Remove</span></td><td>Retired upstream. Generic Git steps plus unnecessarily unconditional abort/staging rules.</td></tr>
+<tr><td><a href="../../skills/setup-matt-pocock-skills/SKILL.md"><code>setup-matt-pocock-skills</code></a></td><td><span class="status update">Update</span></td><td>Keep GitHub-only, model-invocable configuration. Migrate domain seeds coherently.</td></tr>
+<tr><td><a href="../../skills/tdd/SKILL.md"><code>tdd</code></a></td><td><span class="status update">Prune</span></td><td>Keep tests and verification requirements. Shorten common path and disclose branch-only reference.</td></tr>
+<tr><td><a href="../../skills/to-spec/SKILL.md"><code>to-spec</code></a></td><td><span class="status update">Refine</span></td><td>Keep canonical spec and review companion. Replace length demands with requirement completeness.</td></tr>
+<tr><td><a href="../../skills/to-tickets/SKILL.md"><code>to-tickets</code></a></td><td><span class="status update">Update</span></td><td>Keep vertical slices, traceability, and graph verification. Add whole-spec handoff and align tracker wording.</td></tr>
+<tr><td><a href="../../skills/triage/SKILL.md"><code>triage</code></a></td><td><span class="status update">Update</span></td><td>Keep intake, reproduction, and durable briefs. Different from slicing an already agreed spec.</td></tr>
+<tr><td><a href="../../skills/wayfinder/SKILL.md"><code>wayfinder</code></a></td><td><span class="status keep">Keep</span></td><td>Useful for unresolved multi-session decisions. Preserve checkpoints; avoid it for well-scoped work.</td></tr>
+<tr><td><a href="../../skills/wizard/SKILL.md"><code>wizard</code></a></td><td><span class="status keep">Keep</span></td><td>Repeatable human-only procedures, distinct from browser automation the agent can perform.</td></tr>
+<tr class="group"><td colspan="3">Writing, learning, and context</td></tr>
+<tr><td><a href="../../skills/handoff/SKILL.md"><code>handoff</code></a></td><td><span class="status keep">Keep</span></td><td>Portable continuation artifact. Preserve workspace-root output and model invocation.</td></tr>
+<tr><td><a href="../../skills/teach/SKILL.md"><code>teach</code></a></td><td><span class="status keep">Keep</span></td><td>Stateful multi-session learning is different from a one-off answer. Manual-entry, not coding ceremony.</td></tr>
+<tr><td><a href="../../skills/to-questionnaire/SKILL.md"><code>to-questionnaire</code></a></td><td><span class="status keep">Keep</span></td><td>Extracts knowledge from another person. Cannot be replaced by interviewing you.</td></tr>
+<tr><td><a href="../../skills/wait-what/SKILL.md"><code>wait-what</code></a></td><td><span class="status update">Update</span></td><td>Tiny manual corrective. Update glossary/map lookup; deleting it yields little benefit.</td></tr>
+<tr><td><a href="../../skills/writing-for-agents/SKILL.md"><code>writing-for-agents</code></a></td><td><span class="status keep">Keep</span></td><td>Shared instruction-authoring reference. Distinct from human-facing prose editing.</td></tr>
+<tr><td><a href="../../skills/unslop/SKILL.md"><code>unslop</code></a></td><td><span class="status update">Refine</span></td><td>Keep plain writing. Reconsider absolute punctuation prescriptions without losing precision.</td></tr>
+<tr class="group"><td colspan="3">Personal workflows and domain tools</td></tr>
+<tr><td><a href="../../skills/browser-harness/SKILL.md"><code>browser-harness</code></a></td><td><span class="status keep">Keep</span></td><td>Canonical browser interaction workflow. Other skills should point to it rather than compete with it.</td></tr>
+<tr><td><a href="../../skills/commit/SKILL.md"><code>commit</code></a></td><td><span class="status keep">Keep</span></td><td>Bounded Git closure. PR-body formatting does not replace staging, commits, or push rules.</td></tr>
+<tr><td><a href="../../skills/download-online-video/SKILL.md"><code>download-online-video</code></a></td><td><span class="status keep">Keep</span></td><td>Concrete media/subtitle workflow. Retrieval for this research demonstrated its relevance.</td></tr>
+<tr><td><a href="../../skills/frontend-design/SKILL.md"><code>frontend-design</code></a></td><td><span class="status keep">Keep</span></td><td>Your sole visual-design reference. No competing design skill is needed.</td></tr>
+<tr><td><a href="../../skills/global-project-preferences/SKILL.md"><code>global-project-preferences</code></a></td><td><span class="status keep">Keep</span></td><td>Compact greenfield defaults, with explicit constraints overriding them. Not a package-install checklist.</td></tr>
+<tr><td><a href="../../skills/openwiki/SKILL.md"><code>openwiki</code></a></td><td><span class="status keep">Keep</span></td><td>Owns generation and native Wiki publication. Separate from static architecture reports.</td></tr>
+<tr><td><a href="../../skills/repo-visualizer/SKILL.md"><code>repo-visualizer</code></a></td><td><span class="status update">Align</span></td><td>Keep human-readable structure documentation. Align browser verification with the canonical workflow.</td></tr>
+<tr><td><a href="../../skills/remotion-best-practices/SKILL.md"><code>remotion-best-practices</code></a></td><td><span class="status keep">Keep</span></td><td>Domain-specific video creation reference. Not redundant with frontend design or downloading video.</td></tr>
+<tr><td><a href="../../skills/setup-git-repo/SKILL.md"><code>setup-git-repo</code></a></td><td><span class="status keep">Keep</span></td><td>Composes GitHub, engineering setup, and Wiki setup. Delegation is intentional here.</td></tr>
+<tr><td><a href="../../skills/t3code-file-links/SKILL.md"><code>t3code-file-links</code></a></td><td><span class="status keep">Keep</span></td><td>Specific file-handoff conventions. Only use in its matching tool, not every coding task.</td></tr>
+</tbody></table></div>
+<h3>Other skills available in this session</h3>
+<p>Ketch and Firecrawl handle source retrieval; <code>research</code> handles delegation and the cited deliverable. Keep one default retrieval route and Firecrawl for difficult extraction. Subagent guidance concerns execution mechanics, not another planning stage.</p>
+<p>Document, spreadsheet, and native-GUI skills cover different file formats or interaction methods. There is no v1.3 reason to remove them. Native computer use remains explicit-request-only. These are outside the 36-skill repo catalog and were assessed for role overlap, not audited as implementations.</p>
+</section>
+
+<section id="policy" aria-labelledby="policy-title">
+<h2 id="policy-title">The decision is now recorded in Automode</h2>
+<p>Added a <strong>Matt Pocock skill support</strong> section to <a href="file:///C:/Users/13982/sz-pi-auto-mode/AGENTS.md">Automode's AGENTS.md</a>.</p>
+<span class="path">C:\Users\13982\sz-pi-auto-mode\AGENTS.md</span>
+<blockquote class="policy">Automode provides first-class support for Matt Pocock's skill suite. Judge skill additions, removals, and upgrades by their value and fit within the user's skill stack, independently of Automode's current implementation. Adapt Automode to the chosen skill workflows when needed; current orchestration constraints are not a reason to reject or weaken a skill. Preserve the user's chosen skill customizations when adapting support.</blockquote>
+<h3>Related recommendations reconsidered</h3>
+<ul>
+<li><strong>Changed.</strong> Defer <code>implement-spec</code> because of Automode compatibility becomes add it for its distinct whole-spec role.</li>
+<li><strong>Still valid.</strong> Keep single-ticket <code>implement</code> and personal <code>commit</code>, because their responsibilities remain distinct.</li>
+<li><strong>Still valid.</strong> Share local testing and requirement policy with whole-spec workers, rather than copying the single-ticket branch/PR sequence.</li>
+<li><strong>Still valid.</strong> Keep <code>retro</code> human-directed, because its false-positive risk exists independently of any runner.</li>
+<li><strong>Excluded.</strong> Current Automode queues, claims, scheduling, and orchestration limitations are not adoption criteria. This report does not propose weakening your chosen skill workflows to fit them.</li>
+</ul>
+</section>
+
+<section id="next" aria-labelledby="next-title">
+<h2 id="next-title">Recommended change set, not yet applied</h2>
+<ol class="action-list">
+<li><strong>Add the three original vendor skills.</strong> Keep official names and provenance. <code>pr</code> is model-invoked; <code>retro</code> and <code>implement-spec</code> are user-invoked. Wire the router only to skills that are actually installed.</li>
+<li><strong>Retire the conflict skill and migrate the glossary.</strong> Update catalog, updater, installer retirement, tests, custom templates, and existing project consumer pointers as a coordinated change.</li>
+<li><strong>Fix review and execution handoffs.</strong> Cover working-tree changes, explicitly load references, add PR-body guidance, and offer both single-ticket and whole-spec routes.</li>
+<li><strong>Prune repeated policy while preserving behavior.</strong> Shorten TDD's common path, align browser/prototype guidance, and replace spec-length demands with exact coverage.</li>
+<li><strong>Trial the roles on real work.</strong> Run a bounded whole-spec build and a human-reviewed retrospective. Use observed behavior to decide further customization rather than adding speculative instructions.</li>
+</ol>
+<p>With only the catalog additions and retirement, your repo-managed stack would move from <strong>36 to 38 top-level skills</strong>. That is a useful expansion, not duplication for its own sake.</p>
+<p class="small">Future local edits to a new vendor skill must follow your classification rules: install the original first, then convert to customized status if it needs local changes. Existing preferences remain unchanged until you approve their revision.</p>
+</section>
+
+<section id="sources" aria-labelledby="sources-title">
+<h2 id="sources-title">Sources and evidence boundaries</h2>
+<ul class="source-list">
+<li><a href="https://www.youtube.com/watch?v=BsJGo1wFTvQ">Matt Pocock's v1.3 video</a>, 14:34. Read the full English auto-caption transcript. Chapter markers are 0:25 whole-spec execution, 4:54 PR bodies, 8:10 glossary rename, and 9:37 retrospectives. Captions contain errors, so tagged source controls exact names.</li>
+<li><a href="https://github.com/mattpocock/skills/blob/v1.3.1/CHANGELOG.md">Release changelog</a>. Defines the three promotions, retirement, glossary migration, and reliability fixes. v1.3.1 is a routing/docs correction.</li>
+<li><a href="https://github.com/mattpocock/skills/blob/c55ee46073ed923f86ce59a5eb3b6d895095d1b7/.claude-plugin/plugin.json">Pre-release manifest, version 1.2.3</a> and <a href="https://github.com/mattpocock/skills/blob/v1.3.0/.claude-plugin/plugin.json">v1.3.0 manifest</a>. Compared actual shipped entries, not the video headline. <a href="https://github.com/mattpocock/skills/tree/c55ee46073ed923f86ce59a5eb3b6d895095d1b7/skills/in-progress">Prior in-progress tree</a> confirms all three existed before graduation.</li>
+<li><a href="https://github.com/mattpocock/skills/compare/v1.3.0...v1.3.1">v1.3.0 to v1.3.1 comparison</a>. No new skills. Only <code>ask-matt</code> changes inside the skill tree.</li>
+<li><a href="https://github.com/mattpocock/skills/blob/v1.3.1/skills/engineering/ask-matt/SKILL.md">Tagged router</a> and <a href="https://github.com/mattpocock/skills/blob/v1.3.1/skills/engineering/tdd/SKILL.md">tagged TDD</a>. Used to distinguish workflow roles and compare the loaded entry file.</li>
+<li>Local <a href="../../README.md">catalog</a>, <a href="../../update.py">updater</a>, <a href="../../setup.py">installer</a>, <a href="../../global/AGENTS.md">global instructions</a>, <a href="../mattpocock-customization-rationale.md">customization rationale</a>, and linked definitions in the inventory. Existing tests remain authoritative for the requested behavior.</li>
+</ul>
+<details><summary>Research artifacts and scope</summary>
+<p>This HTML report supersedes the earlier recommendation where that recommendation used Automode compatibility to defer a skill. Earlier Markdown research is retained as history and marked superseded.</p>
+<p>The upstream reference checkout already existed and was pulled with <code>git pull --ff-only</code>. Conclusions use release tags; newer main changes are not presented as v1.3 features.</p>
+<p>Caption evidence and retrieval logs remain at:</p><span class="path">C:\Users\13982\.tmp\mattpocock-v1.3-audit\video-transcript.txt</span><span class="path">C:\Users\13982\.tmp\mattpocock-v1.3-audit\ytdlp.log</span>
+<p>This is a source and instruction review, not a benchmark of agent sessions. No unrelated historical sessions were read, and no production skills were installed or executed.</p>
+<p>Report validation passed: all 39 inventory entries are present, 45 local links resolve, the manifest comparison matches the release claims, and desktop browser checks at 1440 by 1050 found no horizontal overflow or external resources. The native disclosure opened successfully. Task-owned tabs were closed and temporary verification scripts were removed. No test server was needed.</p>
+<span class="path">C:\Users\13982\.tmp\mattpocock-v1.3-audit\report-verification.json</span><span class="path">C:\Users\13982\.tmp\mattpocock-v1.3-audit\report-static-verification.json</span><span class="path">C:\Users\13982\.tmp\mattpocock-v1.3-audit\report-browser.log</span>
+</details>
+</section>
+<footer class="footer"><p>Self-contained HTML. No CDN, remote fonts, JavaScript, or server required. Local source links open the inspected definitions.</p><p>Recommendations are for approval. The only applied policy change is the requested Automode AGENTS.md section.</p></footer>
+</main>
+</div>
+</body>
+</html>
