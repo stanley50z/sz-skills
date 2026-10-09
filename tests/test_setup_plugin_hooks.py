@@ -274,32 +274,16 @@ class PluginHookSetupTests(unittest.TestCase):
         self.assertTrue((repo_root / "hooks" / "stop-cdp-session-reminder.py").is_file())
         self.assertTrue((repo_root / "hooks" / "run-hook.cmd").is_file())
 
-    def test_claude_hook_definition_has_session_start_context_and_notify_stop(self):
+    def test_local_plugins_register_no_agent_hooks(self):
         repo_root = Path(setup.REPO_ROOT)
-        hooks = json.loads((repo_root / "hooks" / "hooks.json").read_text(encoding="utf-8"))["hooks"]
-
-        self.assertEqual(set(hooks), {"SessionStart", "Stop"})
-        rendered = json.dumps(hooks)
-        self.assertIn("agent-notify", json.dumps(hooks["Stop"]))
-        self.assertNotIn("cleanup", rendered.lower())
-        self.assertNotIn("chrome", rendered.lower())
-
-    def test_codex_hook_definition_adds_stop_and_devtools_marker_hook(self):
-        repo_root = Path(setup.REPO_ROOT)
-
         for hook_file in [
+            repo_root / "hooks" / "hooks.json",
             repo_root / "hooks" / "hooks-codex.json",
             repo_root / setup.CODEX_HOOK_PLUGIN_DIR / "hooks" / "hooks-codex.json",
         ]:
-            hooks = json.loads(hook_file.read_text(encoding="utf-8"))["hooks"]
-
-            self.assertEqual(set(hooks), {"SessionStart", "PostToolUse", "Stop"})
-            rendered = json.dumps(hooks)
-            self.assertNotIn("PreToolUse", rendered)
-            self.assertIn("mcp__chrome[_-]devtools__", rendered)
-            self.assertIn("mark-cdp-tool-use", rendered)
-            self.assertIn("stop-cdp-session-reminder", rendered)
-            self.assertIn("agent-notify", rendered)
+            with self.subTest(hook_file=hook_file):
+                hooks = json.loads(hook_file.read_text(encoding="utf-8"))["hooks"]
+                self.assertEqual(hooks, {})
 
     def test_session_start_hooks_inject_chrome_devtools_context_only_guidance(self):
         repo_root = Path(setup.REPO_ROOT)

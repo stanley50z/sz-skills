@@ -77,7 +77,7 @@ cd ~/sz-skills
 python setup.py
 ```
 
-`setup.py` installs every skill in this repo, installs the repo-managed global instructions under `global/`, and enables the local `sz-skills` plugin hooks for Codex and Claude Code.
+`setup.py` installs every skill in this repo, installs the repo-managed global instructions under `global/`, and registers the local `sz-skills` plugins for Codex and Claude Code. Their agent-hook manifests are intentionally empty.
 The installed global instructions read the detailed UI checklist from `~/sz-skills/global/UI-GUIDELINES.md`; keep the source checkout at `~/sz-skills`. That reference is not copied separately. If the checkout moves, update the source pointer and rerun setup.
 It prepends the current user's GitHub username to the `AGENTS.md` files installed for Codex, Pi, and Opencode. Pass `--github-username <name>` to set it explicitly, set `SZ_GITHUB_USERNAME`, or let setup read the authenticated account from `gh`. If none is available, setup installs the generic instructions and prints a warning.
 To choose specific skills from a terminal menu instead, run:
@@ -104,7 +104,7 @@ The script creates those directories if they do not exist yet. For each skill in
 - `global/AGENTS.md` => generated `~/.config/opencode/AGENTS.md`, with the same identity header for Opencode
 - `global/CLAUDE.md` -> `~/.claude/CLAUDE.md`
 
-It also registers local `sz-skills` plugin hooks:
+It also registers the local `sz-skills` plugins:
 
 - Codex: adds the hook-only `.codex-hook-plugin` package as the `sz-skills` local marketplace and enables `sz-skills@sz-skills` in `~/.codex/config.toml`.
 - Claude Code: enables `sz-skills@sz-skills` in `~/.claude/settings.json` and records the repo path in Claude's plugin install state.
@@ -113,9 +113,11 @@ It also registers local `sz-skills` plugin hooks:
 
 `setup.py` also points `core.hooksPath` at the repo-managed `githooks/` directory. The `githooks/post-commit` hook re-runs `setup.py` after any commit that touches `skills/` or `global/`, while `githooks/post-merge` runs it after successful merge-based pulls. Together they keep the installed skill copies in sync with the repo.
 
-The Codex plugin package is context-only and does not contain a `skills/` directory, so Codex should load these skills through the copied/mirrored skill directories above instead of as plugin-bundled skills. The SessionStart hook injects Chrome DevTools MCP ownership guidance so the browser cleanup rules are available before the model chooses any browser behavior. A Codex PostToolUse hook records Chrome DevTools MCP usage for the active turn, and the Stop hook checks that marker plus transcript evidence. Only when needed, it blocks finalization with a reminder to close only owned isolated DevTools browser sessions. It does not run cleanup scripts.
+The Codex plugin package does not contain a `skills/` directory; Codex loads skills through the copied/mirrored directories above. Both plugins register no agent hooks. The old browser-context, Chrome DevTools tracking/reminder, and desktop-notification registrations were removed on 2026-10-08. Keep these manifests empty so setup does not restore them. Herdr manages its own integrations separately and is the only agent-hook integration retained on this machine.
 
-Both plugins also register an `agent-notify` Stop hook that fires a desktop notification (Windows toast / macOS / Linux) when the agent finishes a turn, titled "Claude Code" or "Codex" plus the working directory. The script (`hooks/agent-notify.py`) spawns the notifier detached and exits immediately, so it never delays turn end. This covers Claude Code and Codex wherever they run — including inside T3 Code, which loads user-level Claude settings and spawns `codex app-server` with the user's `CODEX_HOME`. Codex prompts once to trust the new hook after it changes.
+The same cleanup removed Claude's permission toast, the installed Superpowers startup hook (without removing its skills), and Codex's native `notify` command. A Superpowers plugin update can restore its vendor hook; check its installed `hooks/hooks.json` after updates. Git hooks and Pi extension callbacks were not changed.
+
+Cleanup backups, verification results, and test logs are under `C:/Users/13982/.codex/diagnostics/hook-failure-2026-10-08/`.
 
 ## Updating Vendor Skills
 

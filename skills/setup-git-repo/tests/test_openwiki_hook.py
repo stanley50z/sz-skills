@@ -60,7 +60,7 @@ class WikiHookTests(unittest.TestCase):
             "import os, sys\nfrom pathlib import Path\n"
             "assert sys.argv[1:] == ['code', '--update', '--print']\n"
             "assert os.environ['OPENWIKI_PROVIDER'] == 'openai-chatgpt'\n"
-            "assert os.environ['OPENWIKI_MODEL_ID'] == 'gpt-5.6-luna'\n"
+            "assert os.environ['OPENWIKI_MODEL_ID'] == 'gpt-6.1-sol'\n"
             "root = Path.cwd()\nassert (root / 'README.md').exists()\n"
             "wiki = root / 'openwiki'\n"
             "assert (wiki / 'Remote.md').exists(), 'Wiki must be pulled before generation'\n"
@@ -230,6 +230,86 @@ class WikiHookTests(unittest.TestCase):
         self.assertNotIn('AGENTS.md', self.git(self.root, 'ls-tree', '--name-only', 'HEAD').stdout)
         self.assertNotIn('AGENTS.md', self.git(self.remote, 'ls-tree', '--name-only', 'HEAD').stdout)
         self.assertIn('uncommitted', result.stdout + result.stderr)
+
+    def seed_local_instructions(self):
+        """Give the CLI tests tracked local-only blocks that generation tries to replace."""
+        instructions = {
+            'AGENTS.md': '# Project rules\n\n<!-- OPENWIKI:START -->\nGenerate locally using the saved ChatGPT login.\n<!-- OPENWIKI:END -->\n',
+            'CLAUDE.md': '# Claude rules\n\n<!-- OPENWIKI:START -->\nSee AGENTS.md for local Wiki publication.\n<!-- OPENWIKI:END -->\n',
+        }
+        for name, content in instructions.items():
+            (self.root / name).write_text(content, encoding='utf-8')
+        self.git(self.root, 'add', '--', 'AGENTS.md', 'CLAUDE.md')
+        self.git(self.root, 'commit', '-m', 'configure local wiki instructions')
+        with self.stub.open('a', encoding='utf-8') as script:
+            for name in instructions:
+                script.write(
+                    'p = root / ' + repr(name) + '\n'
+                    'text = p.read_text(encoding="utf-8")\n'
+                    'start = text.index("<!-- OPENWIKI:START -->")\n'
+                    'end = text.index("<!-- OPENWIKI:END -->") + len("<!-- OPENWIKI:END -->")\n'
+                    'p.write_text(text[:start] + "<!-- OPENWIKI:START -->\\nThe scheduled GitHub Actions workflow refreshes the wiki.\\n<!-- OPENWIKI:END -->" + text[end:], encoding="utf-8")\n'
+                )
+        return instructions
+
+    def test_generation_preserves_local_managed_instruction_blocks(self):
+        instructions = self.seed_local_instructions()
+        self.install()
+        result = self.commit()
+        self.assertIn('Wiki synced', result.stdout + result.stderr)
+        for name, expected in instructions.items():
+            self.assertEqual((self.root / name).read_text(encoding='utf-8'), expected)
+        self.assertEqual(self.git(self.root, 'status', '--porcelain').stdout, '')
+
+    def test_generation_failure_preserves_local_managed_instruction_blocks(self):
+        instructions = self.seed_local_instructions()
+        with self.stub.open('a', encoding='utf-8') as script:
+            script.write('raise SystemExit(7)\n')
+        self.install()
+        result = self.commit()
+        self.assertIn('generation failed (exit 7)', result.stdout + result.stderr)
+        for name, expected in instructions.items():
+            self.assertEqual((self.root / name).read_text(encoding='utf-8'), expected)
+        self.assertEqual(self.git(self.root, 'status', '--porcelain').stdout, '')
+
+    def test_preserves_generated_edits_outside_local_instruction_blocks_for_review(self):
+        instructions = self.seed_local_instructions()
+        with self.stub.open('a', encoding='utf-8') as script:
+            script.write('with (root / "AGENTS.md").open("a", encoding="utf-8") as p:\n    p.write("\\nNew project rule.\\n")\n')
+        self.install()
+        result = self.commit()
+        self.assertIn('Wiki synced', result.stdout + result.stderr)
+        self.assertEqual((self.root / 'AGENTS.md').read_text(encoding='utf-8'),
+                         instructions['AGENTS.md'] + '\nNew project rule.\n')
+        self.assertEqual(self.git(self.root, 'status', '--porcelain').stdout.strip(), 'M AGENTS.md')
+
+    def test_malformed_existing_instruction_markers_stop_before_generation(self):
+        self.seed_local_instructions()
+        with (self.root / 'AGENTS.md').open('a', encoding='utf-8') as file:
+            file.write('<!-- OPENWIKI:START -->\n')
+        self.git(self.root, 'add', '--', 'AGENTS.md')
+        self.git(self.root, 'commit', '-m', 'malformed instruction block')
+        self.install()
+        result = self.commit()
+        self.assertIn('Malformed OpenWiki instruction markers', result.stdout + result.stderr)
+        self.assertFalse((self.wiki / 'Guide.md').exists())
+
+    def test_generation_timeout_preserves_local_managed_instruction_blocks(self):
+        instructions = self.seed_local_instructions()
+        with self.stub.open('a', encoding='utf-8') as script:
+            script.write('import time\ntime.sleep(60)\n')
+        self.install()
+        self.git(self.root, '-c', 'core.hooksPath=', 'commit', '-m', 'install hook')
+        result = subprocess.run(
+            [sys.executable, str(self.root / '.githooks/openwiki_post_commit.py'),
+             '--root', str(self.root), '--generation-timeout', '2'],
+            env=self.env, capture_output=True, text=True, timeout=15, creationflags=NO_WINDOW,
+        )
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('generation timed out', result.stderr)
+        for name, expected in instructions.items():
+            self.assertEqual((self.root / name).read_text(encoding='utf-8'), expected)
+        self.assertEqual(self.git(self.root, 'status', '--porcelain').stdout, '')
 
     def test_unexpected_project_changes_stop_publication(self):
         with self.stub.open('a', encoding='utf-8') as script:

@@ -46,7 +46,7 @@ The launcher starts a detached worker with redirected input/output and returns i
 1. Check repository identities and clean working trees; acquire a per-Wiki lock.
 2. Pull the Wiki's actual remote default branch with `--ff-only`. Stop on divergence or unrelated unpublished local commits.
 3. Run `openwiki code --update --print` from the main project root with the pinned provider/model.
-4. Remove only newly generated OpenWiki GitHub CI workflow files. Preserve project `AGENTS.md`/`CLAUDE.md` changes uncommitted; stop publication on unexpected project changes.
+4. Remove only newly generated OpenWiki GitHub CI workflow files. Restore existing `OPENWIKI` managed blocks in project `AGENTS.md`/`CLAUDE.md`, including on generation failure or timeout, so the CLI's CI template cannot replace local-only instructions. Keep generated edits outside those blocks uncommitted for review; malformed markers stop publication. Stop publication on unexpected project changes.
 5. Flatten nested Markdown pages in place, rewrite internal/source links, rebuild `_Sidebar.md`, and validate before staging. Keep generation instructions and dot-file metadata local and excluded. Unsupported links, filename collisions, and non-page changes require inspection, not a best-effort push.
 6. Commit changed Wiki pages and push only the Wiki branch. A no-op creates no commit. Verify the remote revision. Disable nested Git hooks and clear inherited repository/index variables so Wiki commits cannot recurse into the project hook.
 
