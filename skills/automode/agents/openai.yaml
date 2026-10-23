@@ -1,0 +1,5 @@
+interface:
+  display_name: "Automode"
+  short_description: "Coordinate GitHub triage, grilling, implementation, and review"
+policy:
+  allow_implicit_invocation: false

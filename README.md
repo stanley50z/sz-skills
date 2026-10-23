@@ -9,6 +9,7 @@ My personal collection of AI agent skills, synced across devices.
 | [download-online-video](skills/download-online-video/) | Download YouTube and Bilibili videos, audio, and subtitles with a cross-platform `yt-dlp` helper |
 | [global-project-preferences](skills/global-project-preferences/) | Default tech stack preferences for new projects, extensions, scripts, and other greenfield work |
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
+| [automode](skills/automode/) | Run the agent as the Automode Coordinator: poll GitHub and dispatch triage, grilling, implementation, and PR-review subagents with model Panels, without the Pi extension |
 | [commit](skills/commit/) | Fast, bounded Git closure workflow — reviews and stages all changes, commits, applies checkout-specific push rules, and verifies |
 | [openwiki](skills/openwiki/) | Generate the project's wiki directly in its ignored `openwiki/` GitHub Wiki clone using the CLI's default output and sync that same folder to GitHub |
 | [setup-git-repo](skills/setup-git-repo/) | Bootstrap a local and remote GitHub repository, add the engineering-skills config, generate and publish its Wiki from `openwiki/`, and install a bundled post-commit hook that pulls, regenerates, commits, and pushes the Wiki automatically in a detached background job |
@@ -104,18 +105,15 @@ The script creates those directories if they do not exist yet. For each skill in
 - `global/AGENTS.md` => generated `~/.config/opencode/AGENTS.md`, with the same identity header for Opencode
 - `global/CLAUDE.md` -> `~/.claude/CLAUDE.md`
 
-It also registers the local `sz-skills` plugins:
+It also registers the local `sz-skills` plugin for Codex: it adds the hook-only `.codex-hook-plugin` package as the `sz-skills` local marketplace and enables `sz-skills@sz-skills` in `~/.codex/config.toml`. Claude Code gets no plugin; it loads skills from `~/.claude/skills/` directly. The Claude plugin registration was removed on 2026-10-23 because its hook manifest was empty.
 
-- Codex: adds the hook-only `.codex-hook-plugin` package as the `sz-skills` local marketplace and enables `sz-skills@sz-skills` in `~/.codex/config.toml`.
-- Claude Code: enables `sz-skills@sz-skills` in `~/.claude/settings.json` and records the repo path in Claude's plugin install state.
-
-`hooks/` is the source of truth for every hook file. `setup.py` mirrors the Codex-relevant files (everything except the Claude-only `hooks.json` and `session-start`) into `.codex-hook-plugin/hooks/`, adding new files and deleting stale ones, so edit hooks only under `hooks/` and re-run `python setup.py`.
+`hooks/` is the source of truth for every hook file. `setup.py` mirrors them into `.codex-hook-plugin/hooks/`, adding new files and deleting stale ones, so edit hooks only under `hooks/` and re-run `python setup.py`.
 
 `setup.py` also points `core.hooksPath` at the repo-managed `githooks/` directory. The `githooks/post-commit` hook re-runs `setup.py` after any commit that touches `skills/` or `global/`, while `githooks/post-merge` runs it after successful merge-based pulls. Together they keep the installed skill copies in sync with the repo.
 
-The Codex plugin package does not contain a `skills/` directory; Codex loads skills through the copied/mirrored directories above. Both plugins register no agent hooks. The old browser-context, Chrome DevTools tracking/reminder, and desktop-notification registrations were removed on 2026-10-08. Keep these manifests empty so setup does not restore them. Herdr manages its own integrations separately and is the only agent-hook integration retained on this machine.
+The Codex plugin package does not contain a `skills/` directory; Codex loads skills through the copied/mirrored directories above. The plugin registers no agent hooks. The old browser-context, Chrome DevTools tracking/reminder, and desktop-notification registrations were removed on 2026-10-08. Keep these manifests empty so setup does not restore them. Herdr manages its own integrations separately and is the only agent-hook integration retained on this machine.
 
-The same cleanup removed Claude's permission toast, the installed Superpowers startup hook (without removing its skills), and Codex's native `notify` command. A Superpowers plugin update can restore its vendor hook; check its installed `hooks/hooks.json` after updates. Git hooks and Pi extension callbacks were not changed.
+The same cleanup removed Claude's permission toast, the installed Superpowers startup hook, and Codex's native `notify` command. The Superpowers plugin itself was uninstalled from Claude Code on 2026-10-23. Git hooks and Pi extension callbacks were not changed.
 
 Cleanup backups, verification results, and test logs are under `C:/Users/13982/.codex/diagnostics/hook-failure-2026-10-08/`.
 

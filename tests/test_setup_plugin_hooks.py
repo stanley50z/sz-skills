@@ -121,99 +121,11 @@ class PluginHookSetupTests(unittest.TestCase):
 
             self.assertFalse(second_changed)
 
-    def test_registers_claude_local_plugin_state(self):
-        with tempfile.TemporaryDirectory() as repo_tmp, tempfile.TemporaryDirectory() as home_tmp:
-            repo_root = Path(repo_tmp)
-            resolved_repo_root = str(repo_root.resolve())
-            claude_root = Path(home_tmp) / ".claude"
-            settings_path = claude_root / "settings.json"
-            installed_path = claude_root / "plugins" / "installed_plugins.json"
-            known_path = claude_root / "plugins" / "known_marketplaces.json"
-
-            changed = setup.install_claude_plugin_config(
-                settings_path=settings_path,
-                installed_plugins_path=installed_path,
-                known_marketplaces_path=known_path,
-                repo_root=repo_root,
-                now_iso="2026-06-24T00:00:00Z",
-                git_commit_sha="abc123",
-            )
-
-            self.assertTrue(changed)
-            settings = json.loads(settings_path.read_text(encoding="utf-8"))
-            self.assertTrue(settings["enabledPlugins"]["sz-skills@sz-skills"])
-
-            installed = json.loads(installed_path.read_text(encoding="utf-8"))
-            install_record = installed["plugins"]["sz-skills@sz-skills"][0]
-            self.assertEqual(install_record["scope"], "user")
-            self.assertEqual(install_record["installPath"], resolved_repo_root)
-            self.assertEqual(install_record["version"], setup.PLUGIN_VERSION)
-            self.assertEqual(install_record["gitCommitSha"], "abc123")
-
-            known = json.loads(known_path.read_text(encoding="utf-8"))
-            self.assertEqual(known["sz-skills"]["source"]["source"], "local")
-            self.assertEqual(known["sz-skills"]["source"]["path"], resolved_repo_root)
-            self.assertEqual(known["sz-skills"]["installLocation"], resolved_repo_root)
-
-            second_changed = setup.install_claude_plugin_config(
-                settings_path=settings_path,
-                installed_plugins_path=installed_path,
-                known_marketplaces_path=known_path,
-                repo_root=repo_root,
-                now_iso="2026-06-24T00:00:00Z",
-                git_commit_sha="abc123",
-            )
-
-            self.assertFalse(second_changed)
-
-    def test_claude_plugin_config_preserves_existing_settings_and_hooks(self):
-        with tempfile.TemporaryDirectory() as repo_tmp, tempfile.TemporaryDirectory() as home_tmp:
-            repo_root = Path(repo_tmp)
-            settings_path = Path(home_tmp) / ".claude" / "settings.json"
-            settings_path.parent.mkdir(parents=True)
-            settings_path.write_text(
-                json.dumps(
-                    {
-                        "permissions": {"defaultMode": "auto"},
-                        "hooks": {
-                            "PreToolUse": [
-                                {
-                                    "matcher": "Bash",
-                                    "hooks": [{"type": "command", "command": "echo existing"}],
-                                },
-                            ],
-                            "Stop": [{"hooks": [{"type": "command", "command": "echo stop"}]}],
-                        },
-                    },
-                    indent=2,
-                )
-                + "\n",
-                encoding="utf-8",
-            )
-
-            changed = setup.install_claude_plugin_config(
-                settings_path=settings_path,
-                installed_plugins_path=Path(home_tmp) / ".claude" / "plugins" / "installed_plugins.json",
-                known_marketplaces_path=Path(home_tmp) / ".claude" / "plugins" / "known_marketplaces.json",
-                repo_root=repo_root,
-                now_iso="2026-06-24T00:00:00Z",
-                git_commit_sha="abc123",
-            )
-
-            self.assertTrue(changed)
-            settings = json.loads(settings_path.read_text(encoding="utf-8"))
-            self.assertEqual(settings["permissions"]["defaultMode"], "auto")
-            self.assertEqual(settings["hooks"]["Stop"][0]["hooks"][0]["command"], "echo stop")
-            rendered_pre_tool = json.dumps(settings["hooks"]["PreToolUse"])
-            self.assertIn("echo existing", rendered_pre_tool)
-
-    def test_sync_codex_hook_plugin_hooks_mirrors_codex_files(self):
+    def test_sync_codex_hook_plugin_hooks_mirrors_hook_files(self):
         with tempfile.TemporaryDirectory() as repo_tmp:
             repo_root = Path(repo_tmp)
             hooks_dir = repo_root / "hooks"
             hooks_dir.mkdir(parents=True)
-            (hooks_dir / "hooks.json").write_text("{}", encoding="utf-8")
-            (hooks_dir / "session-start").write_text("claude only", encoding="utf-8")
             (hooks_dir / "hooks-codex.json").write_text("{}", encoding="utf-8")
             (hooks_dir / "agent-notify.py").write_text("print('hi')\n", encoding="utf-8")
 
@@ -259,13 +171,9 @@ class PluginHookSetupTests(unittest.TestCase):
         self.assertEqual(hook_marketplace["plugins"][0]["source"]["path"], ".")
         repo_marketplace = json.loads((repo_root / ".agents" / "plugins" / "marketplace.json").read_text(encoding="utf-8"))
         self.assertEqual(repo_marketplace["plugins"][0]["source"]["path"], f"./{setup.CODEX_HOOK_PLUGIN_DIR}")
-        self.assertTrue((repo_root / ".claude-plugin" / "plugin.json").is_file())
         self.assertTrue((repo_root / ".agents" / "plugins" / "marketplace.json").is_file())
-        self.assertTrue((repo_root / ".claude-plugin" / "marketplace.json").is_file())
         self.assertTrue((repo_root / "hooks" / "hooks-codex.json").is_file())
-        self.assertTrue((repo_root / "hooks" / "hooks.json").is_file())
         self.assertTrue((repo_root / "hooks" / "session-start-codex").is_file())
-        self.assertTrue((repo_root / "hooks" / "session-start").is_file())
         self.assertTrue((repo_root / "hooks" / "agent-notify").is_file())
         self.assertTrue((repo_root / "hooks" / "agent-notify.py").is_file())
         self.assertTrue((repo_root / "hooks" / "mark-cdp-tool-use").is_file())
@@ -277,7 +185,6 @@ class PluginHookSetupTests(unittest.TestCase):
     def test_local_plugins_register_no_agent_hooks(self):
         repo_root = Path(setup.REPO_ROOT)
         for hook_file in [
-            repo_root / "hooks" / "hooks.json",
             repo_root / "hooks" / "hooks-codex.json",
             repo_root / setup.CODEX_HOOK_PLUGIN_DIR / "hooks" / "hooks-codex.json",
         ]:
@@ -292,7 +199,6 @@ class PluginHookSetupTests(unittest.TestCase):
         for script_name, hooks_dir in [
             ("session-start-codex", repo_root / "hooks"),
             ("session-start-codex", codex_plugin_hooks_dir),
-            ("session-start", repo_root / "hooks"),
         ]:
             context = self._run_hook_script(script_name, hooks_dir=hooks_dir)
 
@@ -308,7 +214,6 @@ class PluginHookSetupTests(unittest.TestCase):
         for script_name, hooks_dir in [
             ("session-start-codex", repo_root / "hooks"),
             ("session-start-codex", codex_plugin_hooks_dir),
-            ("session-start", repo_root / "hooks"),
         ]:
             context = self._run_hook_script(script_name, hooks_dir=hooks_dir)
 
