@@ -4,7 +4,7 @@
 Requires: gh CLI (authenticated), Python 3.8+
 
 Usage:
-    cd ~/.sz-skills
+    cd ~/sz-skills
     python update.py
 """
 

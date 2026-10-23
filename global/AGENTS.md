@@ -52,7 +52,7 @@ In T3 Code, use `t3code-file-links` whenever returning or displaying a local fil
 
 ## HTML Reports
 
-When the user asks for an HTML report, the report is the deliverable: put all findings, analysis, and summaries in the HTML file. Keep the chat reply to one line stating the report is done plus a ctrl-clickable `file:///` link to it, and nothing else.
+Explain and report through an HTML report: investigations, reviews, comparisons, walkthroughs, and any answer longer than a few paragraphs. Short answers stay in chat. The report is the deliverable: put all findings, analysis, and summaries in the HTML file, then open it in the OS default app (`open` on macOS, `Start-Process` on Windows, `xdg-open` on Linux). Keep the chat reply to one line stating the report is done plus a ctrl-clickable `file:///` link to it, and nothing else.
 
 ## Global Agent Instructions
 

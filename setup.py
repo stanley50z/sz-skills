@@ -2,8 +2,8 @@
 """sz-skills setup script — install repo skills into coding harness directories.
 
 Run this after cloning on a new device:
-    git clone https://github.com/stanley50z/sz-skills ~/.sz-skills
-    cd ~/.sz-skills
+    git clone https://github.com/stanley50z/sz-skills ~/sz-skills
+    cd ~/sz-skills
     python setup.py
 
 On Windows: creates NTFS junctions for link targets (no admin / developer-mode
