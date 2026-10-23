@@ -28,6 +28,16 @@ When the user asks how something works or why, investigate and answer. Start edi
 
 Work a single agent finishes in one pass gets a single agent. Delegate to sub-agents only for breadth or adversarial review.
 
+## T3 Code model and subagent preferences
+
+These preferences apply inside T3 Code; standalone Pi keeps its own configuration.
+
+- Prefer native Codex for OpenAI models, native Claude Code for Anthropic models, and Pi for third-party models. Apply the same routing to subagents, regardless of the parent's harness. Respect the user's explicitly selected model.
+- Prefer Opus 5.5 with high effort for front-end design, code review, daily coding, exploration, and everyday use unless the user requests another model or effort.
+- Resolve provider instances, model IDs, and supported options through T3's `orchestrator_capabilities`. Use `delegate_task` for cross-provider work or explicit model options; native same-provider subagents are suitable when they support the selected model and no model options are needed.
+- For Opus 5.5 subagents, explicitly pass high effort in the delegation options, not just the task prompt. Use the provider's advertised option names and confirm the returned provider, model, and options match the request. Give each child a self-contained brief.
+- If a required native provider or option is unavailable, report it rather than silently routing OpenAI or Anthropic models through Pi, Claude Bridge, or Azure Foundry.
+
 ## Visual and Design Work
 
 - Use Anthropic's `frontend-design` as the sole visual-design skill.
@@ -59,6 +69,8 @@ Give context in plain text before asking a question.
 ## Web Search
 
 When unsure about a fact involving real-world products/news/repositories, use web search before answering.
+
+In Codex and Claude Code, prefer the harness's native web-search tools; Ketch and Firecrawl skills are not required for ordinary web research. Pi keeps its configured Ketch and specialist research skills. Browser automation follows the separate Browser Use policy.
 
 ## Browser Use
 
