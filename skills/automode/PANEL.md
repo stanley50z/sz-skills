@@ -10,8 +10,10 @@ The Coordinator resolves the roster once at preflight and passes it in every gri
 |---|---|---|
 | Codex | GPT-6 Astra | high |
 | Claude | Claude Opus 5.5 | high |
-| Kimi | Kimi K3 | max |
 | Grok | Grok 4.7 | high |
+| Muse | Muse Wonder Full 1.0 | high |
+
+Launch the Muse seat through Muse Code, not Pi.
 
 Add the Coordinator's own model as an extra seat when it matches none of these; a reasoning difference alone adds no seat. Launch each seat through the route your harness supports for that model with explicit reasoning options. In T3 Code, resolve provider instances and option names through `orchestrator_capabilities` and launch with `delegate_task`. Drop a seat your harness cannot reach and name it in the preflight report. With fewer than two reachable seats, ask the user before starting.
 
