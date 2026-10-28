@@ -30,5 +30,7 @@ Once the tdd done gate passes:
 
 1. Load the `code-review` skill with the branch's start commit as the resolved comparison point, plus the spec, ticket, or issue references. Its scope covers the uncommitted work. Address what it finds.
 2. Commit to the current branch with the commit skill.
-3. Push the feature branch and create a ready-to-review pull request that targets that same default branch explicitly. The PR must not be a draft. Give it a clear title, and load the `pr` skill to write the body. Its Evidence lists the validation performed. Add a line that links the relevant spec or tickets, with a closing reference for an implementation issue this session created so the merge closes it.
+3. Check the owner of the repository that will receive the PR. When the user's GitHub account owns it, open the PR now. When another account owns it, keep the committed branch local, report it, and open the PR only after the user asks.
+
+   To open the PR, push the feature branch and create a ready-to-review pull request that targets that same default branch explicitly. The PR must not be a draft. Give it a clear title, and load the `pr` skill to write the body. Its Evidence lists the validation performed. Add a line that links the relevant spec or tickets, with a closing reference for an implementation issue this session created so the merge closes it.
 4. Ask the user to test the feature themselves before wrapping up. Passing automated tests does not mean it works as they expected.

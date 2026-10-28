@@ -86,6 +86,10 @@ When the user asks about a specific GitHub repository, compare its owner with th
 
 After every answer about a repository newly cloned under `~\github repo ref\` for the current request, report that repository folder's current size and ask whether to keep or delete it. Do not ask about deleting a checkout that existed before the request. If the user continues asking about a newly cloned repository without answering, answer the new question and repeat the size and retention question. Delete the clone only with explicit user authorization.
 
+## Machines
+
+`mac`, `pc`, and `razor` are the user's machines. Each name is also a configured SSH alias, so `ssh <name>` reaches that machine.
+
 ## Tool Boundaries
 
 Never use computer use unless the user explicitly requests it.
