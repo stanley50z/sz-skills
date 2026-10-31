@@ -35,8 +35,9 @@ These preferences apply inside T3 Code; standalone Pi keeps its own configuratio
 - Prefer native Codex for OpenAI models, native Claude Code for Anthropic models, and Pi for third-party models. Apply the same routing to subagents, regardless of the parent's harness. Respect the user's explicitly selected model.
 - Prefer Opus 5.5 with high effort for front-end design, code review, daily coding, exploration, and everyday use unless the user requests another model or effort.
 - Resolve provider instances, model IDs, and supported options through T3's `orchestrator_capabilities`. Use `delegate_task` for cross-provider work or explicit model options; native same-provider subagents are suitable when they support the selected model and no model options are needed.
-- For Opus 5.5 subagents, explicitly pass high effort in the delegation options, not just the task prompt. Use the provider's advertised option names and confirm the returned provider, model, and options match the request. Give each child a self-contained brief.
-- If a required native provider or option is unavailable, report it rather than silently routing OpenAI or Anthropic models through Pi, Claude Bridge, or Azure Foundry.
+- For Opus 5.5 subagents, explicitly pass high effort in the delegation options, not just the task prompt. Use the provider's advertised option names and confirm the returned provider, model, and options match the request.
+- When the user dictates a child's prompt, pass it word for word and omit the optional `role` field. Add no length target, format, or skill instructions unless asked. Otherwise, give each child a self-contained brief.
+- If the requested provider, model, or option is unavailable or fails, report the failure and stop that delegation. Switch providers, models, or routes only when the user authorizes it. Retry authentication failures only after the user confirms access is restored.
 
 ## Visual and Design Work
 
@@ -52,7 +53,9 @@ In T3 Code, use `t3code-file-links` whenever returning or displaying a local fil
 
 ## HTML Reports
 
-Explain and report through an HTML report: investigations, reviews, comparisons, walkthroughs, and any answer longer than a few paragraphs. Short answers stay in chat. The report is the deliverable: put all findings, analysis, and summaries in the HTML file, then open it in the OS default app (`open` on macOS, `Start-Process` on Windows, `xdg-open` on Linux). Keep the chat reply to one line stating the report is done plus a ctrl-clickable `file:///` link to it, and nothing else.
+- Answer explanations, summaries, and ordinary questions in chat. Length alone does not require a file. Create an HTML report when the user requests one or the task explicitly calls for a saved visual artifact, such as the UI comparisons above.
+- Subagents return findings as text to the parent unless their assigned task explicitly requests a report artifact.
+- Link reports according to File handoff and include the main finding in the reply. In T3 Code, when asked to show the report here, use `html_preview` then `html_render`. Open a report in the host's default app only when the user requests it; the user may be viewing T3 remotely.
 
 ## Global Agent Instructions
 
@@ -61,6 +64,8 @@ Explain and report through an HTML report: investigations, reviews, comparisons,
 ## Loading Skills
 
 When an instruction says to load or use a named skill, call the harness's native skill tool if it has one; otherwise read that skill's `SKILL.md` from the location the harness lists. A skill marked `disable-model-invocation: true` runs only when the user names it; never load it on your own or from another skill.
+
+Keep Claude Code's retired `superpowers` plugin and duplicate `frontend-design` plugin disabled. Use the repo-installed Anthropic `frontend-design` skill.
 
 ## Question Dialogs and Hidden Text
 
@@ -105,6 +110,12 @@ Stop every temporary test or dev server you start once testing finishes, includi
 ## Utility Scripts
 
 For projects requiring a repeatable launch command, provide cross-platform `start.py` and `stop.py` scripts. Both scripts must run without opening a terminal window, and `start.py` must leave long-running processes in the background. Default utility scripts to Python unless another language is specified.
+
+## Shell Commands on macOS / zsh
+
+- Quote patterns intended for a tool, such as `rg -g '*.ts'` or `grep --include='*.ts'`, so zsh does not expand them. Quote literal arguments beginning with `=` to avoid zsh's command-path expansion.
+- Check command exit status and stderr before treating empty output as a finding. After a quoting error, move complex logic into a temporary script and remove it after use.
+- macOS does not ship GNU `timeout`. Use the execution tool's timeout option when available, or Python's `subprocess.run(..., timeout=...)` for a command deadline. A tool's yield/wait interval only controls when output returns; it does not terminate the command.
 
 ## Shell Commands on Windows
 
