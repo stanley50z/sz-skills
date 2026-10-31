@@ -55,7 +55,8 @@ In T3 Code, use `t3code-file-links` whenever returning or displaying a local fil
 
 - Answer explanations, summaries, and ordinary questions in chat. Length alone does not require a file. Create an HTML report when the user requests one or the task explicitly calls for a saved visual artifact, such as the UI comparisons above.
 - Subagents return findings as text to the parent unless their assigned task explicitly requests a report artifact.
-- Link reports according to File handoff and include the main finding in the reply. In T3 Code, when asked to show the report here, use `html_preview` then `html_render`. Open a report in the host's default app only when the user requests it; the user may be viewing T3 remotely.
+- Link reports according to File handoff and include the main finding in the reply. Open a report in the host's default app only when the user requests it; the user may be viewing T3 remotely.
+- Render every HTML artifact you hand the user (reports, UI comparisons, diagrams) inline in the conversation whenever the harness offers an inline HTML tool: in T3 Code, `html_preview` then `html_render`; elsewhere, the harness's listed inline-HTML or artifact tool. Without one, the file link alone suffices.
 
 ## Global Agent Instructions
 
