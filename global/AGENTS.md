@@ -4,6 +4,8 @@ Build complex things as simple as possible. Understand the real constraint, then
 
 ## General Coding Preferences
 
+- When a requested fix is already merged upstream, fetch and rebase the fork onto the newest upstream branch, preserving unrelated fork changes and dropping duplicate patches. Use the upstream fix instead of implementing or cherry-picking it separately.
+- After rebasing the T3 Code fork, build a fresh Windows installer from the rebased source, verify the artifact exists, and include its clickable local file link in the final reply. A source-only rebase is incomplete.
 - Type safety is useful; lean on it.
 - Propose bold ideas when they can meaningfully benefit the work.
 - Limit destructive actions to targets explicitly authorized by the user.
@@ -96,6 +98,8 @@ After every answer about a repository newly cloned under `~\github repo ref\` fo
 
 `mac`, `pc`, and `razor` are the user's machines. Each name is also a configured SSH alias, so `ssh <name>` reaches that machine.
 
+Use these SSH aliases rather than hostnames or Tailscale names; they select the configured user and key. macOS GUI permission grants need someone at the Mac's screen; an SSH connection cannot approve them.
+
 ## Tool Boundaries
 
 Never use computer use unless the user explicitly requests it.
@@ -123,12 +127,13 @@ For projects requiring a repeatable launch command, provide cross-platform `star
 The shell depends on the tool that runs your commands:
 
 - **A tool named `bash`/`Bash`** (Pi, Claude Code): Git Bash (MSYS2). Use Bash syntax; `&&`, `$(...)`, and heredocs work. `C:\Users\13982` is `/c/Users/13982` or `~`. Call Windows-only commands explicitly, e.g. `powershell.exe -NoProfile -Command '...'`.
-- **A tool named `powershell`, or Codex's shell tool**: Windows PowerShell 5.1 via `powershell.exe -Command "<string>"`, inside an extra quoting layer you cannot see. Use no POSIX-only syntax: no heredocs, no `&&`/`||` chaining, no `$(...)`, no `export VAR=x`, and no here-strings (`@'...'@`).
+- **A tool named `powershell`, or Codex's shell tool**: check `$PSVersionTable.PSVersion` before assuming its version. `powershell.exe` is Windows PowerShell 5.1; `pwsh.exe` is PowerShell 7. Both use PowerShell syntax, with no Bash heredocs or `export VAR=x`. Only PowerShell 7 supports `&&`/`||`. For complex commands, run a `.ps1` file to avoid the tool's extra quoting layer.
 
 In either shell:
 
 - For multiline Python or scripts: write the code to a temp file with the file-write tool, run `python tempfile.py`, then delete it. Do NOT pipe multiline code via stdin.
 - On a parse or quoting error, switch to the temp-file approach immediately — don't retry with different quoting.
+- For targeted file edits, use the harness's patch/Edit tool instead of Python string-replacement scripts; those often mismatch CRLF or encoding.
 
 ## Windows UAC approval
 
