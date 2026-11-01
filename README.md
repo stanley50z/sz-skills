@@ -78,7 +78,7 @@ cd ~/sz-skills
 python setup.py
 ```
 
-`setup.py` installs every skill in this repo, installs the repo-managed global instructions under `global/`, and registers the local `sz-skills` plugins for Codex and Claude Code. Their agent-hook manifests are intentionally empty.
+`setup.py` installs every skill in this repo, installs the repo-managed global instructions under `global/`, and registers the local `sz-skills` hook-only plugin for Codex. Its agent-hook manifest is intentionally empty. On Windows, setup registers the shell syntax guard directly in Claude Code's settings. On every platform, it also registers a Claude Code SessionStart hook that preloads the `unslop` skill.
 The installed global instructions read the detailed UI checklist from `~/sz-skills/global/UI-GUIDELINES.md`; keep the source checkout at `~/sz-skills`. That reference is not copied separately. If the checkout moves, update the source pointer and rerun setup.
 It prepends the current user's GitHub username to the `AGENTS.md` files installed for Codex, Pi, and Opencode. Pass `--github-username <name>` to set it explicitly, set `SZ_GITHUB_USERNAME`, or let setup read the authenticated account from `gh`. If none is available, setup installs the generic instructions and prints a warning.
 To choose specific skills from a terminal menu instead, run:
@@ -111,7 +111,13 @@ It also registers the local `sz-skills` plugin for Codex: it adds the hook-only 
 
 `setup.py` also points `core.hooksPath` at the repo-managed `githooks/` directory. The `githooks/post-commit` hook re-runs `setup.py` after any commit that touches `skills/` or `global/`, while `githooks/post-merge` runs it after successful merge-based pulls. Together they keep the installed skill copies in sync with the repo.
 
-The Codex plugin package does not contain a `skills/` directory; Codex loads skills through the copied/mirrored directories above. The plugin registers no agent hooks. The old browser-context, Chrome DevTools tracking/reminder, and desktop-notification registrations were removed on 2026-10-08. Keep these manifests empty so setup does not restore them. Herdr manages its own integrations separately and is the only agent-hook integration retained on this machine.
+The Codex plugin package does not contain a `skills/` directory; Codex loads skills through the copied/mirrored directories above. The plugin registers no agent hooks. The old browser-context, Chrome DevTools tracking/reminder, and desktop-notification registrations were removed on 2026-10-08. Keep these manifests empty so setup does not restore them. Herdr manages its own integrations separately.
+
+The shell syntax guard is the requested exception to the earlier hook cleanup. On Windows, `setup.py` adds a `Bash|PowerShell` PreToolUse hook to `~/.claude/settings.json`, preserving other settings and hooks. It rejects Bash heredocs in the PowerShell tool and common PowerShell cmdlets in Bash command positions. It is a mistake detector, not a shell parser or security boundary. Claude Code must reload settings before new sessions use it; it does not run in Codex or Pi.
+
+Guard rejections and unexpected exceptions (with stack traces) persist in `~/.sz-skills/logs/shell-syntax-guard.log`, with two rotated backups of up to 1 MB each. Full command text is not logged. Verify the hook with `python -m pytest tests/test_shell_syntax_guard.py tests/test_setup_plugin_hooks.py`.
+
+The unslop preload is the second exception, added on 2026-11-01. A log audit that day found Claude Code loaded the `unslop` skill unprompted in 8 of 223 T3 sessions, while Codex loaded it in 94% of conversations. On every platform, `setup.py` adds a `startup|clear|compact` SessionStart hook to `~/.claude/settings.json` that runs `hooks/unslop-context.py`, which injects the body of `skills/unslop/SKILL.md` as session context. T3's Claude sessions (SDK entrypoint) run user-level SessionStart hooks too. Hook failures and their stack traces are logged to `~/.sz-skills/logs/unslop-context.log`; the session still starts without the preload.
 
 The same cleanup removed Claude's permission toast, the installed Superpowers startup hook, and Codex's native `notify` command. The Superpowers plugin itself was uninstalled from Claude Code on 2026-10-23. Git hooks and Pi extension callbacks were not changed.
 

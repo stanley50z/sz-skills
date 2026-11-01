@@ -12,6 +12,7 @@ instead of linked so Codex does not namespace the resolved repo path.
 """
 
 import argparse
+import json
 import os
 import platform
 import shutil
@@ -318,8 +319,44 @@ def sync_codex_hook_plugin_hooks(
     return synced
 
 
+def _install_claude_hook(settings_path: Path, event: str, matcher: str, script: Path) -> bool:
+    """Add one Python hook to Claude settings, keeping other settings; False if already present."""
+    settings = json.loads(settings_path.read_text(encoding="utf-8")) if settings_path.exists() else {}
+    command = f'"{sys.executable}" "{script}"'
+    entry = {"matcher": matcher, "hooks": [
+        {"type": "command", "command": command, "timeout": 10}
+    ]}
+    entries = settings.setdefault("hooks", {}).setdefault(event, [])
+    if entry in entries:
+        return False
+    entries.append(entry)
+    settings_path.parent.mkdir(parents=True, exist_ok=True)
+    settings_path.write_text(json.dumps(settings, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return True
+
+
+def install_claude_shell_guard(
+    *, settings_path: Path = HOME / ".claude" / "settings.json",
+    repo_root: Path = REPO_ROOT,
+) -> bool:
+    """Register the Windows shell guard without changing other Claude settings."""
+    return _install_claude_hook(
+        settings_path, "PreToolUse", "Bash|PowerShell", repo_root / "hooks" / "shell-syntax-guard.py"
+    )
+
+
+def install_claude_unslop_context(
+    *, settings_path: Path = HOME / ".claude" / "settings.json",
+    repo_root: Path = REPO_ROOT,
+) -> bool:
+    """Preload the unslop skill at Claude session start, since Claude rarely calls it unprompted."""
+    return _install_claude_hook(
+        settings_path, "SessionStart", "startup|clear|compact", repo_root / "hooks" / "unslop-context.py"
+    )
+
+
 def install_plugin_hooks() -> int:
-    """Enable the local hook plugin for Codex."""
+    """Enable the local hook plugin for Codex and register Claude Code's settings hooks."""
     installed = 0
     try:
         if install_codex_plugin_config():
@@ -327,6 +364,16 @@ def install_plugin_hooks() -> int:
         print(f"  {_green(f'Codex plugin enabled: {PLUGIN_ID}')}")
     except Exception as e:
         print(f"  {_red(f'FAILED: Codex plugin config — {e}')}")
+    if platform.system() == "Windows":
+        if install_claude_shell_guard():
+            installed += 1
+        print(f"  {_green('Claude Code shell syntax guard enabled')}")
+    try:
+        if install_claude_unslop_context():
+            installed += 1
+        print(f"  {_green('Claude Code unslop preload enabled')}")
+    except Exception as e:
+        print(f"  {_red(f'FAILED: Claude unslop preload — {e}')}")
     return installed
 
 

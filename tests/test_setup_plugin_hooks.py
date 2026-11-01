@@ -11,6 +11,47 @@ import setup
 
 
 class PluginHookSetupTests(unittest.TestCase):
+    def test_shell_guard_registration_preserves_settings_and_is_idempotent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            settings_path = Path(tmp) / "settings.json"
+            original = {"env": {"KEEP": "yes"}, "hooks": {"SessionStart": [], "PreToolUse": [
+                {"matcher": "Edit", "hooks": [{"type": "command", "command": "other-hook"}]}
+            ]}}
+            settings_path.write_text(json.dumps(original), encoding="utf-8")
+            self.assertTrue(setup.install_claude_shell_guard(settings_path=settings_path))
+            settings = json.loads(settings_path.read_text(encoding="utf-8"))
+            self.assertEqual(settings["env"], original["env"])
+            self.assertEqual(settings["hooks"]["SessionStart"], [])
+            self.assertEqual(settings["hooks"]["PreToolUse"][0], original["hooks"]["PreToolUse"][0])
+            guard = settings["hooks"]["PreToolUse"][1]
+            self.assertEqual(guard["matcher"], "Bash|PowerShell")
+            self.assertIn("shell-syntax-guard.py", guard["hooks"][0]["command"])
+            self.assertFalse(setup.install_claude_shell_guard(settings_path=settings_path))
+
+    def test_unslop_preload_registration_keeps_existing_session_start_hooks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            settings_path = Path(tmp) / "settings.json"
+            other = {"matcher": "startup", "hooks": [{"type": "command", "command": "other-hook"}]}
+            settings_path.write_text(json.dumps({"hooks": {"SessionStart": [other]}}), encoding="utf-8")
+            self.assertTrue(setup.install_claude_unslop_context(settings_path=settings_path))
+            entries = json.loads(settings_path.read_text(encoding="utf-8"))["hooks"]["SessionStart"]
+            self.assertEqual(entries[0], other)
+            self.assertEqual(entries[1]["matcher"], "startup|clear|compact")
+            self.assertIn("unslop-context.py", entries[1]["hooks"][0]["command"])
+            self.assertFalse(setup.install_claude_unslop_context(settings_path=settings_path))
+
+    def test_unslop_preload_hook_injects_skill_body_without_frontmatter(self):
+        script = Path(setup.REPO_ROOT) / "hooks" / "unslop-context.py"
+        result = subprocess.run(
+            [sys.executable, str(script)], check=True, capture_output=True, encoding="utf-8", timeout=30
+        )
+        output = json.loads(result.stdout)["hookSpecificOutput"]
+        self.assertEqual(output["hookEventName"], "SessionStart")
+        context = output["additionalContext"]
+        self.assertIn("do not call the Skill tool", context)
+        self.assertIn("## Patterns to detect and fix", context)
+        self.assertNotIn("description: Cut AI tells", context)
+
     def _run_hook_script(self, script_name, hooks_dir=None, env_overrides=None):
         bash_candidates = [
             Path("C:/Program Files/Git/bin/bash.exe"),
