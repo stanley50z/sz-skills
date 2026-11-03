@@ -4,8 +4,8 @@ Build complex things as simple as possible. Understand the real constraint, then
 
 ## General Coding Preferences
 
-- When a requested fix is already merged upstream, fetch and rebase the fork onto the newest upstream branch, preserving unrelated fork changes and dropping duplicate patches. Use the upstream fix instead of implementing or cherry-picking it separately.
-- After rebasing the T3 Code fork, build a fresh Windows installer from the rebased source, verify the artifact exists, and include its clickable local file link in the final reply. A source-only rebase is incomplete.
+- Build every app for any user. Machine names, hosts, paths and accounts come from that user's own configuration, such as an SSH alias resolved through their `~/.ssh/config`. Another person's setup then works with the same code, tool names and schemas.
+- Treat each user correction as a general rule. Search the whole codebase for every place it covers and fix them all in the same change.
 - Type safety is useful; lean on it.
 - Propose bold ideas when they can meaningfully benefit the work.
 - Limit destructive actions to targets explicitly authorized by the user.
@@ -25,6 +25,14 @@ Always provide persistent log and crash dump paths for debugging. Configure the 
 ## Questions Are Read-Only
 
 When the user asks how something works or why, investigate and answer. Start editing only when the user requests a change.
+
+## Quote Replies
+
+A quote reply arrives as a link, `[Assistant quote](t3-citation://...?text=<quoted passage>&comment=<user's comment>)`. Each one is a separate item. Act on its decoded `comment` as an instruction about its `text`. One message can hold several quote replies plus plain text. Handle each item on its own: a question elsewhere in the message stays read-only and leaves the quote-reply instructions in force.
+
+## Finish the Job
+
+Fix every problem, caveat or leftover you notice before you reply. End the reply with finished work. Leave an item open only when it needs the user's decision or access you lack, and name what you need.
 
 ## Match Ceremony to the Task
 
