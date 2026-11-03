@@ -125,8 +125,9 @@ UPSTREAM = {
         {"repo": "mattpocock/skills", "path": "skills/engineering/implement"},
     ],
     # Customized fork of Matt Pocock's `tdd` skill (command timeouts,
-    # user-requirement test priority, no fallbacks, stale v1/v2 test cleanup,
-    # visual-only UI testing).
+    # user-requirement test priority, post-green mutation check, no prose or
+    # removal-guard tests, no fallbacks, stale v1/v2 test cleanup, visual-only
+    # UI testing).
     "tdd": [
         {"repo": "mattpocock/skills", "path": "skills/engineering/tdd"},
     ],

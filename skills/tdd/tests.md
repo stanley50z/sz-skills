@@ -77,3 +77,31 @@ test("calculateTotal sums line items", () => {
   expect(calculateTotal([{ price: 10 }, { price: 5 }])).toBe(15);
 });
 ```
+
+The same trap has two quieter forms: pasting whatever the code currently
+returns as the expectation (a typo in the output becomes a pinned
+requirement), and using the code's own constants as the oracle
+(`expect(ids).toEqual(STAGES.map((s) => s.id))`). Write the expected value from
+the spec or the user's words, as a literal.
+
+**Prose and inventory tests**: Read a prompt, doc, skill file, CSS, `--help`
+text, or build output and assert that a phrase is present, or pin a list of
+exports or filenames. They fail on every rewording and pass when the behavior
+the words describe is broken.
+
+```typescript
+// BAD: Pins prompt wording
+test("prompt tells the agent to be brief", () => {
+  expect(buildPrompt()).toContain("in fewer than 100 words");
+});
+```
+
+Requirements about wording are checked by reading the diff. Tests check only
+structure a machine consumes: frontmatter parses, a referenced file exists, a
+package entry point resolves and exports what its consumer imports.
+
+**Removal guards**: When behavior or text is removed, the removed thing stays
+out of the tests too. An assertion like `expect(text).not.toContain("old
+phrase")` or "retired route is gone" fails only if someone types the exact old
+words back in. Delete the old tests instead, and delete code that only those
+tests still use.

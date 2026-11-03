@@ -7,9 +7,9 @@ description: Use when implementing any feature or bugfix, before writing impleme
 
 TDD is the red → green loop. This skill keeps Matt Pocock's upstream `tdd`
 core (agreed seams, independent expected values, vertical slices) plus local
-requirements: command timeouts, user-requirement test priority, explicit
-failure over fallbacks, stale-version cleanup, and a final end-to-end run on
-real data.
+requirements: command timeouts, user-requirement test priority, a mutation
+check after green, explicit failure over fallbacks, stale-version cleanup, and
+a final end-to-end run on real data.
 
 When exploring the codebase, use the project's domain glossary so test names
 match its language, and respect ADRs in the area you're touching.
@@ -30,8 +30,13 @@ Derive tests from what the user asked for, in this order:
 
 Expected values come from an independent source of truth: a spec example, a
 known literal, a fixture, a worked scenario. An assertion that recomputes the
-value the way the code does (`expect(add(a, b)).toBe(a + b)`) is tautological
-and passes by construction.
+value the way the code does (`expect(add(a, b)).toBe(a + b)`), copies the
+code's current output, or reads the code's own constants is tautological and
+passes by construction. Prose and inventory checks are not tests; see
+[tests.md](tests.md).
+
+For every comparison or limit, test the value on each side of the boundary:
+a `timeout <= 300` rule needs both 300 and 301.
 
 ## Seams
 
@@ -110,6 +115,22 @@ When the user asks to upgrade or replace existing behavior with a new version:
 - If the new version can't be built as described, surface the problem rather
   than silently keeping the old one.
 
+## Mutation check
+
+A test written before the code proves it fails when the code is missing, not
+that it pins each rule. Once behavior is green, and before review, plant one
+mutant per guard, clamp, tolerance, comparison, and branch the diff added or
+changed: flip the condition, move the boundary by one, drop the branch, or
+return early. Plant one at a time and run the relevant tests under a timeout.
+Then undo only that edit, by hand, and confirm `git diff` shows only your
+intended changes; the work under test is usually uncommitted, so `git
+checkout` on the file would discard it.
+
+The check is done when every mutant turns a test red. A mutant that survives
+marks a missing test: add one that goes red on that mutant, restore the code,
+and see it pass. Code no requirement needs is deleted instead. This check runs
+even when the caller owns review.
+
 ## After green: review, then refactor
 
 Refactoring is not part of the loop; never refactor while RED. Once behavior
@@ -131,6 +152,8 @@ Before calling the work done:
       full stack, no mocked internals.
 - [ ] The final end-to-end run used real data when real or production-like
       data exists; report explicitly when only synthetic data was available.
+- [ ] Every mutant from the [mutation check](#mutation-check) turned a test
+      red.
 - [ ] UI changes passed the checks in [visual-tests.md](visual-tests.md),
       including the live browser walkthrough.
 - [ ] The full test suite passed once, under a timeout. A required test
