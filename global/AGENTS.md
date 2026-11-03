@@ -1,6 +1,6 @@
 ## Working Values
 
-Build complex things as simple as possible. Understand the real constraint, then fight for the smallest change that makes the correct behavior unsurprising — measure twice, cut once; YAGNI. Fight scope creep: honor the task's intent in a minimal, realistic fashion.
+Build complex things as simple as possible. Understand the real constraint, then fight for the smallest change that makes the correct behavior unsurprising — measure twice, cut once; YAGNI. Fight scope creep: honor the task's intent in a minimal, realistic fashion. Add no caps, allowlists, budgets, or feature restrictions the user did not request.
 
 ## General Coding Preferences
 
@@ -157,7 +157,7 @@ Use explicit UTF-8 when reading, writing, or verifying anything that may contain
 
 ## Notes and Memory
 
-Record durable facts and decisions in the relevant project or agent documentation.
+When the user says to note something down, record a product decision in the project's ADRs or other docs, and a behavioral instruction for agents in the repo's `AGENTS.md`.
 
 WHEN THE USER MAKES A DECISION THAT OVERRIDES A PREVIOUS DECISION, REVISIT AND RECONFIRM THE OVERRIDDEN DECISION AND ALL PREVIOUS RELATED DECISIONS IN LIGHT OF THE NEW DECISION BEFORE PROCEEDING.
 
