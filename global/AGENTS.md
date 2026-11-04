@@ -112,6 +112,8 @@ Use these SSH aliases rather than hostnames or Tailscale names; they select the 
 
 Never use computer use unless the user explicitly requests it.
 
+When a task hits a login (a CLI auth prompt, a website sign-in, an expired token), stop and ask the user to log in. Resume once they confirm.
+
 ## Localhost Ports
 
 Before picking a localhost port, read `~\LOCALHOST_PORTS.md` and create it if missing. Choose an unassigned port, verify it is available, and register any new fixed port there in the same change.
