@@ -1,6 +1,6 @@
 ## Working Values
 
-Build complex things as simple as possible. Understand the real constraint, then fight for the smallest change that makes the correct behavior unsurprising — measure twice, cut once; YAGNI. Fight scope creep: honor the task's intent in a minimal, realistic fashion. Add no caps, allowlists, budgets, or feature restrictions the user did not request.
+Build complex things as simple as possible. Understand the real constraint, then fight for the smallest change that makes the correct behavior unsurprising — measure twice, cut once; YAGNI. Fight scope creep: honor the task's intent in a minimal, realistic fashion. Never add caps, allowlists, budgets, guards, waits, or feature restrictions on your own; suggest them to the user instead.
 
 ## General Coding Preferences
 
@@ -28,7 +28,7 @@ When the user asks how something works or why, investigate and answer. Start edi
 
 ## Quote Replies
 
-A quote reply arrives as a link, `[Assistant quote](t3-citation://...?text=<quoted passage>&comment=<user's comment>)`. Each one is a separate item. Act on its decoded `comment` as an instruction about its `text`. One message can hold several quote replies plus plain text. Handle each item on its own: a question elsewhere in the message stays read-only and leaves the quote-reply instructions in force.
+A quote reply arrives as a link, `[Assistant quote](t3-citation://...?text=<quoted passage>&comment=<user's comment>)`. Each one is a separate item. Act on its decoded `comment` as an instruction about its `text`, and only that text: the quoted words set the scope, not the sentence, offer or plan they came from. One message can hold several quote replies plus plain text. Handle each item on its own: a question elsewhere in the message stays read-only and leaves the quote-reply instructions in force.
 
 ## Finish the Job
 
@@ -54,12 +54,17 @@ These preferences apply inside T3 Code; standalone Pi keeps its own configuratio
 - Use Anthropic's `frontend-design` as the sole visual-design skill.
 - UI testing targets desktop unless the user explicitly requests another device or viewport.
 - Mock first: explore directions in throwaway mocks, and touch real components only after the user picks one.
+- A sketch, drawing or annotated screenshot from the user is the layout spec. Match its rows, order and grouping. If you can't, say where and why before you build.
 - For UI design choices, prefer one self-contained HTML comparison page containing every option, clearly labeled to match the question. Images are acceptable when every option has a visible preview, either in a labeled comparison sheet or as individually linked images. Before asking the user to choose, provide access to all previews in the preceding message. Agent-side image inspection does not count as showing the user. Keep the comparison available until the user decides.
 - When building or reviewing UI, apply `~/sz-skills/global/UI-GUIDELINES.md`.
 
 ## File handoff
 
 In T3 Code, use `t3code-file-links` whenever returning or displaying a local file. In other harnesses, link files as `file:///C:/path/to/file` URLs with forward slashes so the terminal makes them ctrl-clickable, and include the native absolute path when the user needs a copyable location.
+
+## Linking References
+
+Link every outside reference you mention: repositories, products, news, docs, issues, PRs, discussions, commits, releases, and anything else with a URL. Say in one clause what each one is about. For a closed or rejected issue or PR, also say why it closed.
 
 ## HTML Reports
 
