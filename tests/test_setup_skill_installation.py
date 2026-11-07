@@ -8,7 +8,7 @@ import setup
 
 
 class SkillInstallationTests(unittest.TestCase):
-    def test_copies_codex_root_and_mirrors_agents_root_to_that_copy(self):
+    def test_links_claude_root_and_copies_agents_root(self):
         with tempfile.TemporaryDirectory() as repo_tmp, tempfile.TemporaryDirectory() as home_tmp:
             skills_dir = Path(repo_tmp) / "skills"
             skill_dir = skills_dir / "alpha"
@@ -17,37 +17,70 @@ class SkillInstallationTests(unittest.TestCase):
             (skill_dir / "reference.txt").write_text("copied too\n", encoding="utf-8")
 
             claude_root = Path(home_tmp) / ".claude" / "skills"
-            codex_root = Path(home_tmp) / ".codex" / "skills"
             agents_root = Path(home_tmp) / ".agents" / "skills"
 
             with redirect_stdout(StringIO()):
                 installed = setup.install_skills(
                     ["alpha"],
                     skills_dir=skills_dir,
-                    target_roots=[claude_root, codex_root, agents_root],
-                    copy_target_roots=[codex_root],
-                    mirror_target_roots={agents_root: codex_root},
+                    target_roots=[claude_root, agents_root],
+                    copy_target_roots=[agents_root],
                 )
 
-            self.assertEqual(installed, 3)
+            self.assertEqual(installed, 2)
             self.assertTrue(setup._is_link_or_junction(claude_root / "alpha"))
 
-            copied_skill = codex_root / "alpha"
+            copied_skill = agents_root / "alpha"
             self.assertFalse(setup._is_link_or_junction(copied_skill))
             self.assertEqual((copied_skill / "SKILL.md").read_text(encoding="utf-8"), "# alpha\n")
             self.assertEqual((copied_skill / "reference.txt").read_text(encoding="utf-8"), "copied too\n")
 
-            mirrored_skill = agents_root / "alpha"
-            self.assertTrue(setup._is_link_or_junction(mirrored_skill))
-            self.assertEqual(mirrored_skill.resolve(), copied_skill.resolve())
-            self.assertEqual((mirrored_skill / "SKILL.md").read_text(encoding="utf-8"), "# alpha\n")
+    def test_moves_old_codex_mirror_into_agents_copy_and_cleans_former_roots(self):
+        with tempfile.TemporaryDirectory() as repo_tmp, tempfile.TemporaryDirectory() as home_tmp:
+            skills_dir = Path(repo_tmp) / "skills"
+            (skills_dir / "alpha").mkdir(parents=True)
+            (skills_dir / "alpha" / "SKILL.md").write_text("# alpha\n", encoding="utf-8")
+
+            home = Path(home_tmp)
+            agents_root = home / ".agents" / "skills"
+            codex_root = home / ".codex" / "skills"
+            opencode_root = home / ".config" / "opencode" / "skills"
+            for root in (agents_root, codex_root, opencode_root):
+                root.mkdir(parents=True)
+
+            # Layout left by the old setup.py: a Codex copy, an Agents link to it,
+            # an Opencode link into the repo, and a retired skill.
+            (codex_root / "alpha").mkdir()
+            (codex_root / "alpha" / "SKILL.md").write_text("# old\n", encoding="utf-8")
+            setup.make_link(codex_root / "alpha", agents_root / "alpha")
+            setup.make_link(skills_dir / "alpha", opencode_root / "alpha")
+            (codex_root / "ketch").mkdir()
+            (codex_root / "unrelated").mkdir()
+
+            with redirect_stdout(StringIO()):
+                setup.install_skills(
+                    ["alpha"],
+                    skills_dir=skills_dir,
+                    target_roots=[agents_root],
+                    copy_target_roots=[agents_root],
+                )
+                removed = setup.remove_from_former_roots(
+                    ["alpha"], former_roots=[codex_root, opencode_root]
+                )
+
+            self.assertEqual(removed, 3)
+            self.assertFalse(setup._is_link_or_junction(agents_root / "alpha"))
+            self.assertEqual((agents_root / "alpha" / "SKILL.md").read_text(encoding="utf-8"), "# alpha\n")
+            self.assertFalse((codex_root / "alpha").exists())
+            self.assertFalse((codex_root / "ketch").exists())
+            self.assertFalse(setup._is_link_or_junction(opencode_root / "alpha"))
+            self.assertTrue((skills_dir / "alpha" / "SKILL.md").exists())
+            self.assertTrue((codex_root / "unrelated").exists())
 
     def test_ketch_is_retired_from_general_harness_roots(self):
         with tempfile.TemporaryDirectory() as home_tmp:
             target_roots = [
                 Path(home_tmp) / ".claude" / "skills",
-                Path(home_tmp) / ".codex" / "skills",
-                Path(home_tmp) / ".config" / "opencode" / "skills",
                 Path(home_tmp) / ".agents" / "skills",
             ]
             for root in target_roots:
@@ -56,12 +89,9 @@ class SkillInstallationTests(unittest.TestCase):
                 (stale / "SKILL.md").write_text("# ketch\n", encoding="utf-8")
 
             with redirect_stdout(StringIO()):
-                removed = setup.remove_retired_skills(
-                    target_roots=target_roots,
-                    mirror_target_roots={},
-                )
+                removed = setup.remove_retired_skills(target_roots=target_roots)
 
-            self.assertEqual(removed, 4)
+            self.assertEqual(removed, 2)
             for root in target_roots:
                 self.assertFalse((root / "ketch").exists())
 
@@ -69,7 +99,6 @@ class SkillInstallationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as home_tmp:
             target_roots = [
                 Path(home_tmp) / ".claude" / "skills",
-                Path(home_tmp) / ".codex" / "skills",
                 Path(home_tmp) / ".agents" / "skills",
             ]
             for root in target_roots:
@@ -82,13 +111,9 @@ class SkillInstallationTests(unittest.TestCase):
             (unrelated / "SKILL.md").write_text("# keep me\n", encoding="utf-8")
 
             with redirect_stdout(StringIO()):
-                removed = setup.remove_retired_skills(
-                    ["old-skill"],
-                    target_roots=target_roots,
-                    mirror_target_roots={target_roots[2]: target_roots[1]},
-                )
+                removed = setup.remove_retired_skills(["old-skill"], target_roots=target_roots)
 
-            self.assertEqual(removed, 3)
+            self.assertEqual(removed, 2)
             for root in target_roots:
                 self.assertFalse((root / "old-skill").exists())
             self.assertTrue(unrelated.exists())

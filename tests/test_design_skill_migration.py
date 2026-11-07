@@ -26,7 +26,7 @@ class DesignSkillMigrationTests(unittest.TestCase):
                     (skill / "SKILL.md").write_text(f"name: {name}\n", encoding="utf-8")
 
             with redirect_stdout(StringIO()):
-                removed = setup.remove_retired_skills(target_roots=roots, mirror_target_roots={})
+                removed = setup.remove_retired_skills(target_roots=roots)
 
             self.assertEqual(removed, len(roots) * len(RETIRED_DESIGN_SKILLS))
             for root in roots:

@@ -73,7 +73,7 @@ class V13CatalogTests(unittest.TestCase):
             (roots[0] / "pr").mkdir()
 
             with redirect_stdout(StringIO()):
-                setup.remove_retired_skills(target_roots=roots, mirror_target_roots={})
+                setup.remove_retired_skills(target_roots=roots)
 
             for root in roots:
                 self.assertFalse((root / "resolving-merge-conflicts").exists())

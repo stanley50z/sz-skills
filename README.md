@@ -90,13 +90,11 @@ python interactive_setup.py
 Both setup scripts install skills into these coding harness skill directories:
 
 - `~/.claude/skills/` — Claude Code
-- `~/.codex/skills/` — OpenAI Codex, copied so Codex keeps plain skill names
-- `~/.config/opencode/skills/` — Opencode
-- `~/.agents/skills/` — Pi coding agent and Codex-compatible agents, mirrored to the copied Codex skills
+- `~/.agents/skills/` — OpenAI Codex, Opencode, and Pi coding agent
 
-The Claude Code and Opencode targets use junctions (Windows) or symlinks (macOS/Linux) into this repo. The Codex target uses real copied directories because Codex scans both `~/.codex/skills` and `~/.agents/skills`; when either target is a junction into this repo, Codex exposes those entries as `sz-skills:<skill>`. The Agents target points to the copied Codex skill directories so Codex-compatible scanners see one canonical plain skill source instead of duplicate entries.
+The Claude Code target uses junctions (Windows) or symlinks (macOS/Linux) into this repo. The Agents target uses real copied directories, because Codex names a skill `sz-skills:<skill>` when its folder resolves into this repo. Codex ([skill locations](https://learn.chatgpt.com/docs/build-skills)) and Opencode ([skill locations](https://opencode.ai/docs/skills)) both read `~/.agents/skills`, so they need no root of their own. Opencode also reads `~/.claude/skills`; its `~/.agents/skills` copy registers later and wins.
 
-The script creates those directories if they do not exist yet. For each skill in this repo, it adds the skill if missing and replaces the target only when a skill with the same name already exists. Retired repo-managed skill names are removed; unrelated skills in those directories are left alone.
+The script creates those directories if they do not exist yet. For each skill in this repo, it adds the skill if missing and replaces the target only when a skill with the same name already exists. Retired repo-managed skill names are removed; unrelated skills in those directories are left alone. The script also removes repo-managed skills from `~/.codex/skills` and `~/.config/opencode/skills`, where older versions installed them.
 
 `setup.py` also installs:
 

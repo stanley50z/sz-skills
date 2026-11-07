@@ -115,7 +115,7 @@ Use these SSH aliases rather than hostnames or Tailscale names; they select the 
 
 ## Tool Boundaries
 
-Never use computer use unless the user explicitly requests it.
+Use computer use only when the user explicitly requests it, and run it through the `cua-driver` skill (its CLI or MCP server) in place of any built-in computer-use tool.
 
 When a task hits a login (a CLI auth prompt, a website sign-in, an expired token), stop and ask the user to log in. Resume once they confirm.
 

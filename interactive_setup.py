@@ -24,6 +24,7 @@ from setup import (
     install_global_instructions,
     install_plugin_hooks,
     install_skills,
+    remove_from_former_roots,
     remove_retired_skills,
     resolve_github_username,
 )
@@ -115,6 +116,7 @@ def main() -> int:
     print(_cyan(f"Installing skills for: {', '.join(selected)}"))
     remove_retired_skills()
     installed_skills = install_selected_skills(selected)
+    remove_from_former_roots(skills)
 
     print(f"\n{_cyan('Installing global instructions')}")
     github_username = resolve_github_username()

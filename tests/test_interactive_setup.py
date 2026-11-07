@@ -70,6 +70,7 @@ class InstallSelectionTests(unittest.TestCase):
             patch.object(interactive_setup, "resolve_github_username", return_value="interactive-user"),
             patch.object(interactive_setup, "install_plugin_hooks", return_value=2) as install_hooks,
             patch.object(interactive_setup, "remove_retired_skills", return_value=1) as remove_retired,
+            patch.object(interactive_setup, "remove_from_former_roots", return_value=0) as remove_former,
             patch.object(interactive_setup, "TARGET_ROOTS", target_roots),
             patch.object(interactive_setup, "GLOBAL_INSTRUCTION_LINKS", global_links),
             redirect_stdout(StringIO()),
@@ -78,6 +79,7 @@ class InstallSelectionTests(unittest.TestCase):
 
         self.assertEqual(result, 0)
         remove_retired.assert_called_once_with()
+        remove_former.assert_called_once_with(["alpha"])
         install_globals.assert_called_once_with(github_username="interactive-user")
         install_hooks.assert_called_once_with()
 

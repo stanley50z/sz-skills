@@ -7,8 +7,8 @@ Run this after cloning on a new device:
     python setup.py
 
 On Windows: creates NTFS junctions for link targets (no admin / developer-mode
-required). On macOS / Linux: creates symlinks. Codex-readable roots are copied
-instead of linked so Codex does not namespace the resolved repo path.
+required). On macOS / Linux: creates symlinks. ~/.agents/skills gets copies
+instead of links so Codex does not namespace the resolved repo path.
 """
 
 import argparse
@@ -42,6 +42,7 @@ RETIRED_SKILLS = [
     "browser-use",  # upstream browser-harness skill's former name
     "docker-expert",
     "find-skills",
+    "gh-cli",  # agents use the gh CLI without a skill
     "graphify",
     "ketch",  # Pi-only; provided by the sz-pi-extensions package
     "pr-codex-review",  # retired personal skill
@@ -68,23 +69,25 @@ RETIRED_SKILLS = [
     "resolving-merge-conflicts",  # retired upstream in mattpocock/skills v1.3
 ]
 
-# Directories where coding harnesses look for skills
+# Directories where coding harnesses look for skills. Codex, Opencode and Pi all
+# read ~/.agents/skills; Claude Code reads only ~/.claude/skills.
 TARGET_ROOTS = [
     HOME / ".claude" / "skills",    # Claude Code
-    HOME / ".codex" / "skills",      # OpenAI Codex
-    HOME / ".config" / "opencode" / "skills",  # Opencode
-    HOME / ".agents" / "skills",     # Pi coding agent
+    HOME / ".agents" / "skills",     # OpenAI Codex, Opencode, Pi coding agent
 ]
 
-# Codex currently reads both ~/.codex/skills and ~/.agents/skills. Use
-# ~/.codex/skills as the canonical copied root, then mirror ~/.agents/skills to
-# that copy. This avoids both sz-skills:<skill> names and duplicate entries.
+# Codex names a skill sz-skills:<skill> when its folder resolves into this repo,
+# so ~/.agents/skills gets real copies instead of links.
 COPY_TARGET_ROOTS = [
-    HOME / ".codex" / "skills",
+    HOME / ".agents" / "skills",
 ]
-MIRROR_TARGET_ROOTS = {
-    HOME / ".agents" / "skills": HOME / ".codex" / "skills",
-}
+
+# Roots setup.py installed into before Codex and Opencode read ~/.agents/skills.
+# setup.py removes repo-managed skills from them so each skill has one source.
+FORMER_TARGET_ROOTS = [
+    HOME / ".codex" / "skills",
+    HOME / ".config" / "opencode" / "skills",
+]
 
 # Global instruction files for harnesses that support user-level memory.
 GLOBAL_INSTRUCTION_LINKS = [
@@ -382,48 +385,26 @@ def install_skills(
     *,
     skills_dir: Path = SKILLS_DIR,
     target_roots: list[Path] = TARGET_ROOTS,
-    copy_target_roots: list[Path] | None = None,
-    mirror_target_roots: dict[Path, Path] | None = None,
+    copy_target_roots: list[Path] = COPY_TARGET_ROOTS,
 ) -> int:
     """Install selected skills into each coding harness root and return success count."""
     installed = 0
-    copy_roots = {
-        _path_key(root)
-        for root in (COPY_TARGET_ROOTS if copy_target_roots is None else copy_target_roots)
-    }
-    mirror_roots = {
-        _path_key(target_root): mirror_root
-        for target_root, mirror_root in (
-            MIRROR_TARGET_ROOTS if mirror_target_roots is None else mirror_target_roots
-        ).items()
-    }
+    copy_roots = {_path_key(root) for root in copy_target_roots}
     for root in target_roots:
         root.mkdir(parents=True, exist_ok=True)
-        root_key = _path_key(root)
-        copy_root = root_key in copy_roots
-        mirror_root = mirror_roots.get(root_key)
+        copy_root = _path_key(root) in copy_roots
         for skill in skills:
             source = skills_dir / skill
             target = root / skill
             try:
-                if mirror_root is not None:
-                    mirror_source = mirror_root / skill
-                    if not mirror_source.exists():
-                        mirror_source.parent.mkdir(parents=True, exist_ok=True)
-                        make_copy(source, mirror_source)
-                    make_link(mirror_source, target)
-                    relation = "->"
-                    printed_source = mirror_source
-                elif copy_root:
+                if copy_root:
                     make_copy(source, target)
                     relation = "<="
-                    printed_source = source
                 else:
                     make_link(source, target)
                     relation = "->"
-                    printed_source = source
                 installed += 1
-                print(f"  {_green(f'{target} {relation} {printed_source}')}")
+                print(f"  {_green(f'{target} {relation} {source}')}")
             except Exception as e:
                 print(f"  {_red(f'FAILED: {target} — {e}')}")
     return installed
@@ -433,11 +414,9 @@ def remove_retired_skills(
     retired_skills: list[str] | None = None,
     *,
     target_roots: list[Path] = TARGET_ROOTS,
-    mirror_target_roots: dict[Path, Path] | None = None,
 ) -> int:
     """Remove retired repo-managed skill directories from install targets."""
     retired_skills = RETIRED_SKILLS if retired_skills is None else retired_skills
-    mirror_target_roots = MIRROR_TARGET_ROOTS if mirror_target_roots is None else mirror_target_roots
     removed = 0
 
     for root in target_roots:
@@ -452,22 +431,30 @@ def remove_retired_skills(
             except Exception as e:
                 print(f"  {_red(f'FAILED: remove retired {target} — {e}')}")
 
-    # If a mirror source was not part of target_roots, remove retired copies from
-    # there too. The default roots already include the canonical Codex copy.
-    target_keys = {_path_key(root) for root in target_roots}
-    for mirror_root in mirror_target_roots.values():
-        if _path_key(mirror_root) in target_keys:
-            continue
-        for skill in retired_skills:
-            target = mirror_root / skill
+    return removed
+
+
+def remove_from_former_roots(
+    skills: list[str],
+    *,
+    former_roots: list[Path] = FORMER_TARGET_ROOTS,
+) -> int:
+    """Remove repo-managed and retired skills from roots setup.py no longer installs into.
+
+    Run after install_skills: the old ~/.agents/skills links point at the
+    ~/.codex/skills copies this removes. Unrelated skills stay.
+    """
+    removed = 0
+    for root in former_roots:
+        for skill in [*skills, *RETIRED_SKILLS]:
+            target = root / skill
             try:
                 if target.exists() or target.is_symlink() or _is_link_or_junction(target):
                     _remove_existing_target(target)
                     removed += 1
-                    print(f"  {_yellow(f'Removed retired skill: {target}')}")
+                    print(f"  {_yellow(f'Removed from former root: {target}')}")
             except Exception as e:
-                print(f"  {_red(f'FAILED: remove retired {target} — {e}')}")
-
+                print(f"  {_red(f'FAILED: remove {target} — {e}')}")
     return removed
 
 
@@ -545,6 +532,7 @@ def main(argv: list[str] | None = None):
     remove_retired_skills()
 
     install_skills(skills)
+    remove_from_former_roots(skills)
 
     print(f"\n{_cyan('Installing global instructions')}")
     github_username = resolve_github_username(args.github_username)
