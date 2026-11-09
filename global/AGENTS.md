@@ -70,7 +70,7 @@ Link every outside reference you mention: repositories, products, news, docs, is
 
 - Answer explanations, summaries, and ordinary questions in chat. Length alone does not require a file. Create an HTML report when the user requests one or the task explicitly calls for a saved visual artifact, such as the UI comparisons above.
 - Subagents return findings as text to the parent unless their assigned task explicitly requests a report artifact.
-- Link reports according to File handoff and include the main finding in the reply. Open a report in the host's default app only when the user requests it; the user may be viewing T3 remotely.
+- Link reports according to File handoff and include the main finding in the reply. Always open a UI comparison in the host's default browser without being asked. Open any other HTML report there too when its layout needs the full screen and won't read well in a 50%-width inline render.
 - Render every HTML artifact you hand the user (reports, UI comparisons, diagrams) inline in the conversation whenever the harness offers an inline HTML tool: in T3 Code, `html_preview` then `html_render`; elsewhere, the harness's listed inline-HTML or artifact tool. Without one, the file link alone suffices.
 
 ## Global Agent Instructions
@@ -85,11 +85,11 @@ Keep Claude Code's retired `superpowers` plugin and duplicate `frontend-design` 
 
 ## Question Dialogs and Hidden Text
 
-Give context in plain text before asking a question.
+Give context in plain text before asking a question. Say what the thing is, where it comes from and what each answer changes, in words a reader of that message alone can follow. Do the same for any internal term or item you bring up.
 
-## Web Search
+## Checking Facts
 
-When unsure about a fact involving real-world products/news/repositories, use web search before answering.
+Check before you state how a product, tool or repository behaves, or that something exists or is still running: read live state or the source, and use web search for anything outside this machine. Say so when you have not checked.
 
 In Codex and Claude Code, prefer the harness's native web-search tools; Ketch and Firecrawl skills are not required for ordinary web research. Pi keeps its configured Ketch and specialist research skills. Browser automation follows the separate Browser Use policy.
 
@@ -115,7 +115,7 @@ Use these SSH aliases rather than hostnames or Tailscale names; they select the 
 
 ## Tool Boundaries
 
-Use computer use only when the user explicitly requests it, and run it through the `cua-driver` skill (its CLI or MCP server) in place of any built-in computer-use tool.
+Use computer use only when the user explicitly requests it, and never through a built-in computer-use tool. On Windows, run it through the `acu` skill. On other systems, run it through the `cua-driver` skill (its CLI or MCP server).
 
 When a task hits a login (a CLI auth prompt, a website sign-in, an expired token), stop and ask the user to log in. Resume once they confirm.
 

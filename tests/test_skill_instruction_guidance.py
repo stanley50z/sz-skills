@@ -111,6 +111,7 @@ class GlobalInstructionScopeTests(unittest.TestCase):
             "## Windows UAC approval",
             "close every browser tab opened for the task",
             "## Localhost Ports",
+            "On Windows, run it through the `acu` skill",
             "run it through the `cua-driver` skill",
             "as the sole visual-design skill",
             "UI testing targets desktop",
