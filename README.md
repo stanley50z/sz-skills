@@ -11,6 +11,7 @@ My personal collection of AI agent skills, synced across devices.
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
 | [automode](skills/automode/) | Run the agent as the Automode Coordinator: poll GitHub and dispatch triage, grilling, implementation, and PR-review subagents with model Panels, without the Pi extension |
 | [commit](skills/commit/) | Fast, bounded Git closure workflow — reviews and stages all changes, commits, applies checkout-specific push rules, and verifies |
+| [one-off](skills/one-off/) | Fix a small bug or add a small feature, then commit, push, and restart the app in one pass (user-invoked) |
 | [openwiki](skills/openwiki/) | Generate the project's wiki directly in its ignored `openwiki/` GitHub Wiki clone using the CLI's default output and sync that same folder to GitHub |
 | [setup-git-repo](skills/setup-git-repo/) | Bootstrap a local and remote GitHub repository, add the engineering-skills config, generate and publish its Wiki from `openwiki/`, and install a bundled post-commit hook that pulls, regenerates, commits, and pushes the Wiki automatically in a detached background job |
 | [t3code-file-links](skills/t3code-file-links/) | Hand off local files in T3 Code with copyable native paths, valid in-project links, and rendered image previews |
