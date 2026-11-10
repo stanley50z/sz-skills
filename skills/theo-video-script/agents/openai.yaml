@@ -1,0 +1,5 @@
+interface:
+  display_name: "Theo Video Script"
+  short_description: "Write or critique a tech video script built the way Theo (t3.gg) builds his."
+policy:
+  allow_implicit_invocation: false
