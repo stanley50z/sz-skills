@@ -4,7 +4,7 @@ Drawn from the 20 most-viewed videos on [@t3dotgg](https://www.youtube.com/@t3do
 
 ## The sample
 
-Median runtime is 38 minutes (range 25 to 77). He speaks at 200 to 220 words per minute. All 20 are about AI coding tools or models, and all 20 carry a sponsor read right after the hook.
+Median runtime is 38 minutes (range 25 to 77). He speaks at 200 to 220 words per minute. All 20 are about AI coding tools or models.
 
 | # | Title | Views | Length | Type | Breakdown |
 |---|---|---|---|---|---|
@@ -62,9 +62,8 @@ Titles overclaim and the video hedges. When the title baits, the first two minut
 | Part | Share of runtime | Job |
 |---|---|---|
 | Hook | 3 to 8% (1:00 to 2:30) | Subject, one hard number, stance, personal stake, promise |
-| Bridge and sponsor | 3 to 7% (65 to 140 s) | One topical sentence into the ad, starting between 0:32 and 3:01 |
-| Re-entry | 1 to 5% | Scope, disclosure, roadmap, or pre-empted objections |
-| Body | 70 to 80% | Blocks of 1 to 6 minutes alternating source, show, zoom out |
+| Lead-in | 1 to 5% | Scope, disclosure, roadmap, or pre-empted objections |
+| Body | 75 to 85% | Blocks of 1 to 6 minutes alternating source, show, zoom out |
 | Honesty block | about 10%, placed at 75 to 90% | Weaknesses, failed runs, caveats, late disclosures |
 | Verdict and close | 4 to 10% (1 to 4 min) | Placement verdict, emotional lift, question, sign-off |
 
@@ -110,19 +109,9 @@ Every hook names the subject within 30 seconds, gives one hard number or concret
 
 The hook ends on a promise ("I can't wait to show you ...") or a roadmap sentence listing what the video covers.
 
-## Bridge, sponsor, re-entry
+## Lead-in
 
-The bridge is one sentence that reuses the topic or the previous line:
-
-- "I have a bad feeling I'm about to piss off both mom and dad. So, let me cover my bases quick with a word from today's sponsor."
-- "But since my Shopify store isn't doing particularly well, we're going to have to make some money with a quick sponsor break."
-- "But first, we got to classify something. The next section, which is the sponsor break."
-- "On the topic of maximizing value, we should take a quick break for today's sponsor."
-- Plain form: "I can't wait to show you ... after a real quick break for today's sponsor."
-
-The read opens on a problem or question the viewer has, ties the product to the video's theme and to his own repo, and ends on the URL. Then a hard restart with no pause: "Let's dive into ...", "So, let's start with the official post", "Quick breakdown on how this all happened".
-
-Re-entry does one or more of these jobs:
+The lead-in opens on a hard restart with no pause: "Let's dive into ...", "So, let's start with the official post", "Quick breakdown on how this all happened". It then does one or more of these jobs before the first body block:
 
 - Scope: "I could probably go off for five plus hours about this model."
 - Disclosure of money, access and bias: "I was an early investor in Cursor... I might make some money off this deal", "I do have early access, but I'm not being paid in any way, shape, or form. OpenAI has no influence over what and how I say things, just when."

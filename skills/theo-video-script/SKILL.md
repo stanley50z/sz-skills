@@ -21,7 +21,7 @@ Read what the user gave, then ask once for whatever is missing:
 - **First-hand evidence.** What they ran, built, measured, paid for or broke, with numbers and units.
 - **Screen material.** What they can show, including runs that failed.
 - **Disclosures.** Money, access, or products of their own that touch the topic.
-- **Logistics.** Target runtime, speaking rate if known, sponsor if any, their sign-off.
+- **Logistics.** Target runtime, speaking rate if known, their sign-off.
 
 Done when every first-person line the script will need traces to the intake or a supplied source. Where the user has nothing to give, the script carries `[NEED: what would fill this]` in that spot.
 
@@ -45,7 +45,7 @@ Run the four topic tests in `PATTERNS.md`. When one fails, tell the user which a
 
 ### 4. Outline
 
-Build a segment table with start time, job, one-line content and word count. Jobs are hook, bridge, re-entry, source, show, zoom out, honesty block, verdict, close. The word budget is runtime times the user's speaking rate, or 150 words per minute when unknown. Shares of runtime follow the skeleton table in `PATTERNS.md`.
+Build a segment table with start time, job, one-line content and word count. Jobs are hook, lead-in, source, show, zoom out, honesty block, verdict, close. The word budget is runtime times the user's speaking rate, or 150 words per minute when unknown. Shares of runtime follow the skeleton table in `PATTERNS.md`.
 
 - Body blocks alternate between source, show and zoom out, each one to six minutes.
 - Each open loop is written next to the segment that pays it off.
@@ -56,9 +56,7 @@ Done when the word counts sum to the budget and every open loop has a payoff seg
 
 ### 5. Write
 
-Write the full script in the output format below, in this order: hook, bridge, re-entry, body, honesty block, verdict, close. Write every spoken line out. For a passage the user will read from a source, write a `[READ]` cue and then the reaction lines that follow it.
-
-With a sponsor, write the bridge sentence from the topic and leave a `[SPONSOR READ]` slot unless the user supplied the brief. With no sponsor, the hook's last line hands straight to re-entry.
+Write the full script in the output format below, in this order: hook, lead-in, body, honesty block, verdict, close. Write every spoken line out. For a passage the user will read from a source, write a `[READ]` cue and then the reaction lines that follow it.
 
 ### 6. Check
 
