@@ -62,9 +62,9 @@ Titles overclaim and the video hedges. When the title baits, the first two minut
 | Part | Share of runtime | Job |
 |---|---|---|
 | Hook | 3 to 8% (1:00 to 2:30) | Subject, one hard number, stance, personal stake, promise |
-| Lead-in | 1 to 5% | Scope, disclosure, roadmap, or pre-empted objections |
+| Lead-in | 1 to 5% | Scope, roadmap, or pre-empted objections |
 | Body | 75 to 85% | Blocks of 1 to 6 minutes alternating source, show, zoom out |
-| Honesty block | about 10%, placed at 75 to 90% | Weaknesses, failed runs, caveats, late disclosures |
+| Honesty block | about 10%, placed at 75 to 90% | Weaknesses, failed runs, caveats |
 | Verdict and close | 4 to 10% (1 to 4 min) | Placement verdict, emotional lift, question, sign-off |
 
 The three body block kinds:
@@ -79,7 +79,7 @@ The three body block kinds:
 
 **Comparison.** A visible category board. Categories run from least to most important to the audience, each closed with a one-line winner. Cost and subscription advice sit last. One long failure story is the emotional peak. Verdict split by viewer type.
 
-**News commentary.** News stated in the first 10 to 60 seconds, then disclosures, the primary statements read aloud, the detail everyone missed, a critique of both sides, practical advice, a short emotional close. Explainer-first when the audience lacks background ("Before we can talk about how Nvidia loses, it's important to understand how they won").
+**News commentary.** News stated in the first 10 to 60 seconds, then the primary statements read aloud, the detail everyone missed, a critique of both sides, practical advice, a short emotional close. Explainer-first when the audience lacks background ("Before we can talk about how Nvidia loses, it's important to understand how they won").
 
 **Source walkthrough.** The source's own headings are the outline. Read, restate in plain words ("To try and dumb this down"), apply it to himself, return ("Back to what Anthropic was saying here"). Source reading is 45 to 70%.
 
@@ -114,7 +114,6 @@ The hook ends on a promise ("I can't wait to show you ...") or a roadmap sentenc
 The lead-in opens on a hard restart with no pause: "Let's dive into ...", "So, let's start with the official post", "Quick breakdown on how this all happened". It then does one or more of these jobs before the first body block:
 
 - Scope: "I could probably go off for five plus hours about this model."
-- Disclosure of money, access and bias: "I was an early investor in Cursor... I might make some money off this deal", "I do have early access, but I'm not being paid in any way, shape, or form. OpenAI has no influence over what and how I say things, just when."
 - Roadmap: "I'm going to start by covering exactly what is changing ... But most importantly, I want to save some time at the very end to cover how to work around this."
 - Pre-empted objections: "I can already tell this video is going to cause huge blowback on Twitter. So, I'm going to just list the questions they're all going to bring up."
 
