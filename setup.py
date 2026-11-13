@@ -44,6 +44,7 @@ RETIRED_SKILLS = [
     "find-skills",
     "gh-cli",  # agents use the gh CLI without a skill
     "graphify",
+    "openwiki",  # dropped with the setup-git-repo Wiki steps
     "ketch",  # Pi-only; provided by the sz-pi-extensions package
     "pr-codex-review",  # retired personal skill
     "restart-stale-docker",
