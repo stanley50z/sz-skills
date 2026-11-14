@@ -12,6 +12,7 @@ My personal collection of AI agent skills, synced across devices.
 | [automode](skills/automode/) | Run the agent as the Automode Coordinator: poll GitHub and dispatch triage, grilling, implementation, and PR-review subagents with model Panels, without the Pi extension |
 | [commit](skills/commit/) | Fast, bounded Git closure workflow — reviews and stages all changes, commits, applies checkout-specific push rules, and verifies |
 | [one-off](skills/one-off/) | Fix a small bug or add a small feature, then commit, push, and restart the app in one pass (user-invoked) |
+| [search](skills/search/) | Search a topic with a panel of GPT-6.1 Sol, Opus 5.5, Grok 4.7, and Muse Wonder Full 1.0, then merge the findings and rank the top 3 sources by how many seats cited them (user-invoked) |
 | [setup-git-repo](skills/setup-git-repo/) | Bootstrap a local and remote GitHub repository and add the engineering-skills config |
 | [t3code-file-links](skills/t3code-file-links/) | Hand off local files in T3 Code with copyable native paths, valid in-project links, and rendered image previews |
 | [theo-video-script](skills/theo-video-script/) | Write or critique a tech video script with the structure Theo (t3.gg) uses, based on breakdowns of his 20 most-viewed videos from May to November 2026 (user-invoked) |
