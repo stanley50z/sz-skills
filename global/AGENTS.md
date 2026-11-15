@@ -24,7 +24,7 @@ Always provide persistent log and crash dump paths for debugging. Configure the 
 
 ## Questions Are Read-Only
 
-When the user asks how something works or why, investigate and answer. Start editing only when the user requests a change.
+Every question is read-only. Answer it, then stop. Act only when a message asks for an action; a question never does, however it is phrased.
 
 ## Quote Replies
 
@@ -70,7 +70,7 @@ Link every outside reference you mention: repositories, products, news, docs, is
 
 - Answer explanations, summaries, and ordinary questions in chat. Length alone does not require a file. Create an HTML report when the user requests one or the task explicitly calls for a saved visual artifact, such as the UI comparisons above.
 - Subagents return findings as text to the parent unless their assigned task explicitly requests a report artifact.
-- Link reports according to File handoff and include the main finding in the reply. Always open a UI comparison in the host's default browser without being asked. Open any other HTML report there too when its layout needs the full screen and won't read well in a 50%-width inline render.
+- Link reports according to File handoff and include the main finding in the reply. Open every HTML report and UI comparison you create or update in the host's default browser without being asked, in addition to rendering it inline.
 - Render every HTML artifact you hand the user (reports, UI comparisons, diagrams) inline in the conversation whenever the harness offers an inline HTML tool: in T3 Code, `html_preview` then `html_render`; elsewhere, the harness's listed inline-HTML or artifact tool. Without one, the file link alone suffices.
 
 ## Global Agent Instructions
@@ -170,7 +170,7 @@ WHEN THE USER MAKES A DECISION THAT OVERRIDES A PREVIOUS DECISION, REVISIT AND R
 
 ## Scope
 
-Keep changes within the user's requested scope.
+Keep changes within the user's requested scope. Commit, push, deploy or publish only when the current request asks for it. Permission given earlier in the thread covers only what it named.
 
 ## Installing Dependencies
 
