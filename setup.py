@@ -47,6 +47,7 @@ RETIRED_SKILLS = [
     "openwiki",  # dropped with the setup-git-repo Wiki steps
     "ketch",  # Pi-only; provided by the sz-pi-extensions package
     "pr-codex-review",  # retired personal skill
+    "search",  # renamed to council, which runs any task through the panel
     "restart-stale-docker",
     "supabase-postgres-best-practices",
     "writing-skills",  # replaced by vendored writing-for-agents (mattpocock/skills)
