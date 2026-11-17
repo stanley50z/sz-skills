@@ -27,7 +27,7 @@ Fail closed: report and stop before claiming anything when a check fails.
 1. Work from `git rev-parse --show-toplevel`. Record the default branch and whether the root checkout is on it.
 2. `gh auth status` succeeds; record your login (`gh api user -q .login`). `gh repo view --json nameWithOwner,viewerPermission` shows `WRITE`, `MAINTAIN`, or `ADMIN`.
 3. No other Coordinator is live. `<common>` is `git rev-parse --git-common-dir`. A Pi `/automode` Coordinator holds `<common>/automode/coordinator.lock` and refreshes it every few seconds; a ledger heartbeat under two minutes old means another run of this skill. Ask the user when either is live.
-4. You can launch background subagents that can launch their own subagents. When Auto-Grilling or Auto-Review is ON, resolve the Panel roster per [PANEL.md](PANEL.md).
+4. You can launch background subagents that can launch their own subagents. When Auto-Grilling or Auto-Review is ON, resolve the Council roster per [COUNCIL.md](COUNCIL.md).
 5. When Auto-Review is ON, load the external review bot configuration per [REVIEW.md](REVIEW.md#external-review-bots).
 6. Load or create the ledger (below). Every recovered `running`, `retrying`, `failed`, or `exhausted` entry restarts at attempt 0: each run gets a fresh budget. `waiting` entries stay waiting.
 
@@ -78,7 +78,7 @@ You are the Automode Ticket Session for <item URL>.
 Stage: <Stage>. Attempt <k> of 5.<Resuming: what changed since you reported waiting.>
 Repository root: <root>. Default branch: <branch>. GitHub actor: <login>.
 Read <absolute path of this skill directory>/<BRIEF>.md and follow it exactly.
-<For grilling and review: the Panel roster from PANEL.md.>
+<For grilling and review: the Council roster from COUNCIL.md.>
 <For review: the external review bot configuration.>
 Work autonomously. Make routine judgments yourself; a substantive blocker gets recorded once on the tracker and reported as waiting.
 End your final message with exactly one line:

@@ -175,7 +175,7 @@ class RepoVisualizerTests(SkillGuidanceAssertions):
 
 class LocalLinkTests(unittest.TestCase):
     def test_relative_links_in_owned_skills_resolve(self):
-        for skill in ("tdd", "prototype", "repo-visualizer"):
+        for skill in ("tdd", "prototype", "repo-visualizer", "automode", "council"):
             for doc in (SKILLS / skill).glob("*.md"):
                 for target in re.findall(r"\]\(([^)#:]+\.md)\)", read(doc)):
                     with self.subTest(doc=doc.name, target=target):

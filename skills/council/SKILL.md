@@ -9,16 +9,7 @@ Models from different vendors bring different training, judgment, and tools. Gro
 
 ## 1. Launch the panel
 
-Seats, unless the user names others:
-
-| Seat | Model | Reasoning |
-|---|---|---|
-| Codex | GPT-6.1 Sol | high |
-| Claude | Claude Opus 5.5 | high |
-| Grok | Grok 4.7 | high |
-| Muse | Muse Wonder Full 1.0 | high |
-
-In T3 Code, resolve provider instances and option names through `orchestrator_capabilities`, then launch every seat concurrently with `delegate_task`, passing the reasoning level in `target.options`. Launch the Muse seat through Muse Code. Elsewhere, use the route your harness supports for each model. Drop a seat your harness cannot reach and name it in the report.
+Read [MEMBERS.md](MEMBERS.md) for the rosters and how to launch each seat. Seat the Default roster. Seat the Max roster only when the user explicitly says "council max". Seats the user names replace either roster. Launch every seat concurrently.
 
 Give every seat the identical brief. Seats see none of this conversation, so the brief carries everything the task depends on:
 

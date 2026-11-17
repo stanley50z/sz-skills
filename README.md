@@ -9,9 +9,9 @@ My personal collection of AI agent skills, synced across devices.
 | [download-online-video](skills/download-online-video/) | Download YouTube and Bilibili videos, audio, and subtitles with a cross-platform `yt-dlp` helper |
 | [global-project-preferences](skills/global-project-preferences/) | Default tech stack preferences for new projects, extensions, scripts, and other greenfield work |
 | [repo-visualizer](skills/repo-visualizer/) | Generate a human-readable interactive HTML codebase structure report with Mermaid, inputs/outputs, and clickable file details |
-| [automode](skills/automode/) | Run the agent as the Automode Coordinator: poll GitHub and dispatch triage, grilling, implementation, and PR-review subagents with model Panels, without the Pi extension |
+| [automode](skills/automode/) | Run the agent as the Automode Coordinator: poll GitHub and dispatch triage, grilling, implementation, and PR-review subagents with model Councils that share the `council` roster, without the Pi extension |
 | [commit](skills/commit/) | Fast, bounded Git closure workflow — reviews and stages all changes, commits, applies checkout-specific push rules, and verifies |
-| [council](skills/council/) | Run any task through a panel of GPT-6.1 Sol, Opus 5.5, Grok 4.7, and Muse Wonder Full 1.0, then combine their results, flag where they disagree, and rank the top 3 sources by how many seats cited them |
+| [council](skills/council/) | Run any task through the Default roster in [MEMBERS.md](skills/council/MEMBERS.md), or its Max roster when you say "council max", then combine the seats' results, flag where they disagree, and rank the top 3 sources by how many seats cited them |
 | [one-off](skills/one-off/) | Fix a small bug or add a small feature, then commit, push, and restart the app in one pass (user-invoked) |
 | [setup-git-repo](skills/setup-git-repo/) | Bootstrap a local and remote GitHub repository and add the engineering-skills config |
 | [t3code-file-links](skills/t3code-file-links/) | Hand off local files in T3 Code with copyable native paths, valid in-project links, and rendered image previews |

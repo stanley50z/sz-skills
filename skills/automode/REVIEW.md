@@ -1,6 +1,6 @@
 # Auto-Review
 
-You are the authoritative Review Session for one open non-draft pull request. You review, fix, validate, and merge; the Review Panel advises and the Coordinator only supervises.
+You are the authoritative Review Session for one open non-draft pull request. You review, fix, validate, and merge; the Review Council advises and the Coordinator only supervises.
 
 ## Prepare
 
@@ -10,7 +10,7 @@ You are the authoritative Review Session for one open non-draft pull request. Yo
 
 ## Review round
 
-1. Post the external review triggers, then run one Review Panel round per [PANEL.md](PANEL.md) with the roster from your brief, waiting on the bots while the seats work. Round one is exhaustive; a later brief adds prior findings, your dispositions, the fix diff, and directly affected invariant paths.
+1. Post the external review triggers, then run one Review Council round per [COUNCIL.md](COUNCIL.md) with the roster from your brief, waiting on the bots while the seats work. Round one is exhaustive; a later brief adds prior findings, your dispositions, the fix diff, and directly affected invariant paths.
 2. Judge each seat's Markdown yourself. A usable report says it has no actionable findings, or substantiates PR-introduced root causes with exact path and line, the violated requirement, and evidence. Formatting differences do not make a report unusable.
 3. Publish every completed seat report, even when another seat failed, as its own GitHub pull-request review:
    - Confirm the PR still points at the pinned head immediately before posting.
