@@ -1,6 +1,6 @@
 # Theo's patterns
 
-Drawn from the 20 most-viewed videos on [@t3dotgg](https://www.youtube.com/@t3dotgg) uploaded between 2026-05-10 and 2026-11-10, read in full from auto-captions. Quotes are his. Use them to see how a move works, then write the user's own line.
+Drawn from the 20 most-viewed videos on [@t3dotgg](https://www.youtube.com/@t3dotgg) uploaded between 2026-05-10 and 2026-11-10, read in full from auto-captions. Quotes are his. Use them to see how a move works, then ask the question that gets the user's own line.
 
 ## The sample
 
@@ -177,4 +177,4 @@ One to four minutes. A verdict or rule in one sentence, then an emotional or ide
 
 ## What stays his
 
-His sign-off ("until next time, peace nerds"), his cast of friends, his running characters and grudges, his named benchmarks and his products belong to him. A script for the user builds the user's own versions of these: their own sign-off, their own repeatable tests, their own recurring bits.
+His sign-off ("until next time, peace nerds"), his cast of friends, his running characters and grudges, his named benchmarks and his products belong to him. The user's script builds their own versions of these: their own sign-off, their own repeatable tests, their own recurring bits.

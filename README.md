@@ -15,7 +15,7 @@ My personal collection of AI agent skills, synced across devices.
 | [one-off](skills/one-off/) | Fix a small bug or add a small feature, then commit, push, and restart the app in one pass (user-invoked) |
 | [setup-git-repo](skills/setup-git-repo/) | Bootstrap a local and remote GitHub repository and add the engineering-skills config |
 | [t3code-file-links](skills/t3code-file-links/) | Hand off local files in T3 Code with copyable native paths, valid in-project links, and rendered image previews |
-| [theo-video-script](skills/theo-video-script/) | Write or critique a tech video script with the structure Theo (t3.gg) uses, based on breakdowns of his 20 most-viewed videos from May to November 2026 (user-invoked) |
+| [theo-video-script](skills/theo-video-script/) | Guide you through writing a tech video script with the structure Theo (t3.gg) uses, through guiding questions and a placeholder scaffold, or check your draft, based on breakdowns of his 20 most-viewed videos from May to November 2026 (user-invoked) |
 
 ## Vendor Skills (customized)
 
