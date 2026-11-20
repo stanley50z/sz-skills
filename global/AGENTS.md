@@ -12,6 +12,10 @@ Build complex things as simple as possible. Understand the real constraint, then
 - Write focused regression tests for real behavior.
 - Comment how a function or class is used, above its definition — not every line — and update comments when the code changes.
 
+## Editing Files
+
+Edit files with the harness's Edit/patch tool, even when the harness allows edits through shell commands or scripts. The Edit tool keeps CRLF line endings and encoding intact, and the user sees each change as a reviewable diff. Reserve scripted edits for one mechanical change applied across many files.
+
 ## Debugging artifacts
 
 Always provide persistent log and crash dump paths for debugging. Configure the application to write to them and document their locations in the project. If the runtime cannot produce native crash dumps, persist crash reports with stack traces instead.
@@ -146,9 +150,7 @@ The shell depends on the tool that runs your commands:
 
 In either shell:
 
-- For multiline Python or scripts: write the code to a temp file with the file-write tool, run `python tempfile.py`, then delete it. Do NOT pipe multiline code via stdin.
-- On a parse or quoting error, switch to the temp-file approach immediately — don't retry with different quoting.
-- For targeted file edits, use the harness's patch/Edit tool instead of Python string-replacement scripts; those often mismatch CRLF or encoding.
+- On a parse or quoting error, move the command into a script file and run that instead of retrying with different quoting.
 
 ## Windows UAC approval
 
