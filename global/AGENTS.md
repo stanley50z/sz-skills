@@ -93,6 +93,8 @@ Keep Claude Code's retired `superpowers` plugin and duplicate `frontend-design` 
 
 Give context in plain text before asking a question. Say what the thing is, where it comes from and what each answer changes, in words a reader of that message alone can follow. Do the same for any internal term or item you bring up.
 
+When you ask the user several questions and a reply does not answer each one plainly, because it skips one, answers something else, or could mean more than one thing, do not guess. Reply with your reading instead: list each question with the answer you took from the reply, mark any still unanswered, and wait for the user to confirm before you act on them.
+
 ## Checking Facts
 
 Check before you state how a product, tool or repository behaves, or that something exists or is still running: read live state or the source, and use web search for anything outside this machine. Say so when you have not checked.
