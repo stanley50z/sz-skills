@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Claude Code SessionStart hook that preloads the unslop skill into context.
+"""Claude Code SessionStart hook that tells the session to load the unslop skill.
 
 Claude Code rarely calls the Skill tool for a writing-style skill on its own, so
 setup.py registers this in ~/.claude/settings.json with matcher
 "startup|clear|compact":
     python C:/Users/13982/sz-skills/hooks/unslop-context.py
 
-Prints the skill body as SessionStart additionalContext. On any failure it logs
-the stack trace to ~/.sz-skills/logs/unslop-context.log and prints nothing, so a
-broken hook never blocks a session.
+Prints a one-line instruction as SessionStart additionalContext; the skill body
+itself loads only through the Skill tool. On any failure it logs the stack trace
+to ~/.sz-skills/logs/unslop-context.log and prints nothing, so a broken hook
+never blocks a session.
 """
 
 from __future__ import annotations
@@ -18,27 +19,16 @@ import logging
 import sys
 from pathlib import Path
 
-SKILL_PATH = Path(__file__).resolve().parent.parent / "skills" / "unslop" / "SKILL.md"
 LOG_PATH = Path.home() / ".sz-skills" / "logs" / "unslop-context.log"
-PREAMBLE = (
-    "The unslop skill is preloaded below; do not call the Skill tool for it. "
-    "Apply it to every reply and document you write for the user."
+INSTRUCTION = (
+    "Before your first reply, load the `unslop` skill with the Skill tool, "
+    "then apply it to every reply and document you write for the user."
 )
-
-
-def skill_body(text: str) -> str:
-    """Drop the YAML frontmatter so only the instructions remain."""
-    if text.startswith("---"):
-        _, _, rest = text[3:].partition("\n---")
-        text = rest.partition("\n")[2]
-    return text.strip()
 
 
 def main() -> int:
     try:
-        body = skill_body(SKILL_PATH.read_text(encoding="utf-8"))
-        context = f"{PREAMBLE}\n\n{body}"
-        output = {"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": context}}
+        output = {"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": INSTRUCTION}}
         sys.stdout.reconfigure(encoding="utf-8")
         print(json.dumps(output, ensure_ascii=False))
     except Exception:

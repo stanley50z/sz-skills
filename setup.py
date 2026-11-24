@@ -325,16 +325,28 @@ def sync_codex_hook_plugin_hooks(
 
 
 def _install_claude_hook(settings_path: Path, event: str, matcher: str, script: Path) -> bool:
-    """Add one Python hook to Claude settings, keeping other settings; False if already present."""
+    """Register one Python hook in Claude settings, keeping other settings; False if already current.
+
+    Any earlier entry for the same script, such as one written by another Python
+    interpreter, is replaced in place so the hook never runs twice.
+    """
     settings = json.loads(settings_path.read_text(encoding="utf-8")) if settings_path.exists() else {}
     command = f'"{sys.executable}" "{script}"'
     entry = {"matcher": matcher, "hooks": [
         {"type": "command", "command": command, "timeout": 10}
     ]}
     entries = settings.setdefault("hooks", {}).setdefault(event, [])
-    if entry in entries:
+    script_arg = f'"{script}"'
+
+    def runs_script(existing: dict) -> bool:
+        return any(h.get("command", "").endswith(script_arg) for h in existing.get("hooks", []))
+
+    updated = [e for e in entries if not runs_script(e)]
+    first = next((i for i, e in enumerate(entries) if runs_script(e)), len(entries))
+    updated.insert(min(first, len(updated)), entry)
+    if updated == entries:
         return False
-    entries.append(entry)
+    settings["hooks"][event] = updated
     settings_path.parent.mkdir(parents=True, exist_ok=True)
     settings_path.write_text(json.dumps(settings, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return True

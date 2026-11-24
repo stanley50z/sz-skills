@@ -40,7 +40,23 @@ class PluginHookSetupTests(unittest.TestCase):
             self.assertIn("unslop-context.py", entries[1]["hooks"][0]["command"])
             self.assertFalse(setup.install_claude_unslop_context(settings_path=settings_path))
 
-    def test_unslop_preload_hook_injects_skill_body_without_frontmatter(self):
+    def test_hook_registration_replaces_entry_from_other_interpreter(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            settings_path = Path(tmp) / "settings.json"
+            script = Path(setup.REPO_ROOT) / "hooks" / "unslop-context.py"
+            other = {"matcher": "startup", "hooks": [{"type": "command", "command": "other-hook"}]}
+            stale = {"matcher": "startup|clear|compact", "hooks": [
+                {"type": "command", "command": f'"C:\\Python\\python3.exe" "{script}"', "timeout": 10}
+            ]}
+            settings_path.write_text(json.dumps({"hooks": {"SessionStart": [stale, other, stale]}}), encoding="utf-8")
+            self.assertTrue(setup.install_claude_unslop_context(settings_path=settings_path))
+            entries = json.loads(settings_path.read_text(encoding="utf-8"))["hooks"]["SessionStart"]
+            self.assertEqual(len(entries), 2)
+            self.assertEqual(entries[0]["hooks"][0]["command"], f'"{sys.executable}" "{script}"')
+            self.assertEqual(entries[1], other)
+            self.assertFalse(setup.install_claude_unslop_context(settings_path=settings_path))
+
+    def test_unslop_preload_hook_injects_load_instruction_not_skill_body(self):
         script = Path(setup.REPO_ROOT) / "hooks" / "unslop-context.py"
         result = subprocess.run(
             [sys.executable, str(script)], check=True, capture_output=True, encoding="utf-8", timeout=30
@@ -48,9 +64,8 @@ class PluginHookSetupTests(unittest.TestCase):
         output = json.loads(result.stdout)["hookSpecificOutput"]
         self.assertEqual(output["hookEventName"], "SessionStart")
         context = output["additionalContext"]
-        self.assertIn("do not call the Skill tool", context)
-        self.assertIn("## Patterns to detect and fix", context)
-        self.assertNotIn("description: Cut AI tells", context)
+        self.assertIn("load the `unslop` skill with the Skill tool", context)
+        self.assertNotIn("## Patterns to detect and fix", context)
 
     def _run_hook_script(self, script_name, hooks_dir=None, env_overrides=None):
         bash_candidates = [
